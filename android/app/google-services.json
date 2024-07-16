@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1000578379733",
+    "project_id": "assistenteprofessor-9873d",
+    "storage_bucket": "assistenteprofessor-9873d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1000578379733:android:1aa7504e5dd34dfa59175c",
+        "android_client_info": {
+          "package_name": "com.apolotecnologia.assistenteprofessor"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC390XxaQyQg70xldUUb60SrnoKwxuqNx0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
