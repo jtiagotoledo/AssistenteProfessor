@@ -78,7 +78,7 @@ android {
 
     namespace "com.assistenteprofessor"
     defaultConfig {
-        applicationId "com.assistenteprofessor"
+        applicationId "com.apolotecnologia.assistenteprofessor"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

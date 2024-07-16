@@ -1,15 +1,23 @@
 import React from 'react';
 import {
+  Button,
   StyleSheet,Text,View,
 } from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 
 const App = () =>{
 
+  const adicionarDB = ()=>{
+    firestore().collection('teste').doc('teste2').set({
+      
+    })
+  }
   
+
   return(
     <View>
       <Text>oi</Text>
+      <Button  title='aperte' onPress={adicionarDB}></Button>
     </View>
   )
 }
