@@ -3,7 +3,7 @@ import React, { useState, useContext } from 'react';
 import firestore from '@react-native-firebase/firestore';
 import {Context} from "../data/Provider";
 import Globais from "../data/Globais";
-import Icon from 'react-native-vector-icons/FontAwesome';
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 
 const ModalEditPeriodo = () =>{
 
@@ -52,7 +52,7 @@ const ModalEditPeriodo = () =>{
                     <View style={styles.modalView}>
                         <View style={styles.containerIcon}>
                             <TouchableOpacity  onPress={()=>setModalEditPeriodo(!modalEditPeriodo)}>
-                                <Icon name="cancel-circle" color="white" size={20}></Icon>
+                                <MaterialIcon name="cancel" color="white" size={20}/>
                             </TouchableOpacity>
                         </View>
                         <Text style={styles.modalText}>Edite o nome do período:</Text>

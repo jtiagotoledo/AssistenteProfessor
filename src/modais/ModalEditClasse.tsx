@@ -2,7 +2,7 @@ import { Text, View, StyleSheet, Pressable, TextInput, Modal, NativeSyntheticEve
 import React, { useState, useContext } from 'react';
 import firestore from '@react-native-firebase/firestore';
 import { Context } from "../data/Provider";
-import Icon from 'react-native-vector-icons/FontAwesome';
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import Globais from "../data/Globais";
 
 
@@ -74,7 +74,7 @@ const ModalEditClasse = () => {
           <View style={styles.modalView}>
             <View style={styles.containerIcon}>
               <TouchableOpacity onPress={() => setModalEditClasse(!modalEditClasse)}>
-                <Icon name="cancel-circle" color="white" size={20}></Icon>
+                <MaterialIcon name="cancel" color="white" size={20}/>
               </TouchableOpacity>
             </View>
             <Text style={styles.modalText}>Edite o nome da classe:</Text>

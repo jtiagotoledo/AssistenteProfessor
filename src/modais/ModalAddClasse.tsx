@@ -76,7 +76,7 @@ const ModalAddClasse = () => {
           <View style={styles.modalView}>
             <View style={styles.containerIcon}>
               <TouchableOpacity onPress={() => setModalAddClasse(!modalAddClasse)}>
-                <MaterialIcon name="cancel-circle" color="white" size={20}/>
+                <MaterialIcon name="cancel" color="white" size={20}/>
               </TouchableOpacity>
             </View>
             <Text style={styles.modalText}>Crie uma nova classe:</Text>

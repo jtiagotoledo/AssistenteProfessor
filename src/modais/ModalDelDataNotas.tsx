@@ -2,7 +2,7 @@ import { Text, View, StyleSheet, Pressable, Modal, TouchableOpacity} from "react
 import React, { useContext } from 'react';
 import firestore from '@react-native-firebase/firestore';
 import {Context} from "../data/Provider";
-import Icon from 'react-native-vector-icons/FontAwesome';
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import Globais from "../data/Globais";
 
 const ModalDelDataNotas = () =>{
@@ -41,7 +41,7 @@ const ModalDelDataNotas = () =>{
                     <View style={styles.modalView}>
                         <View style={styles.containerIcon}>
                             <TouchableOpacity  onPress={()=>setModalDelDataNotas(!modalDelDataNotas)}>
-                                <Icon name="cancel-circle" color="black" size={20}></Icon>
+                                <MaterialIcon name="cancel" color="black" size={20}/>
                             </TouchableOpacity>
                         </View>
                         <Text style={styles.modalText}>Deseja realmente excluir a data?</Text>

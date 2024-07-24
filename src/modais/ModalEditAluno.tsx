@@ -3,8 +3,7 @@ import React, { useState, useContext } from 'react';
 import firestore from '@react-native-firebase/firestore';
 import { Context } from "../data/Provider";
 import Globais from "../data/Globais";
-import Icon from 'react-native-vector-icons/FontAwesome';
-
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 
 const ModalEditAluno = () => {
 
@@ -66,8 +65,8 @@ const ModalEditAluno = () => {
 
   const renderIconCheck = () => {
     return (
-      alunoInativo ? <Icon name="checkmark" color="white" size={20} /> :
-        <Icon name="checkmark2" color="white" size={20} />
+      alunoInativo ? <MaterialIcon name="check" color="white" size={20} /> :
+        <MaterialIcon name="check-box" color="white" size={20} />
     )
   }
 
@@ -84,7 +83,7 @@ const ModalEditAluno = () => {
           <View style={styles.modalView}>
             <View style={styles.containerIcon}>
               <TouchableOpacity onPress={() => [setModalEditAluno(!modalEditAluno), setAlunoInativo(false), setFlagLongPressAluno(false)]}>
-                <Icon name="cancel-circle" color="white" size={20}></Icon>
+                <MaterialIcon name="cancel" color="white" size={20}/>
               </TouchableOpacity>
             </View>
             <Text style={styles.modalText}>Edite o nome do aluno:</Text>
