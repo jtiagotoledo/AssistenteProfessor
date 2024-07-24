@@ -4,7 +4,7 @@ import { View, Text } from "react-native";
 const Frequencia = () =>{
     return(
         <View>
-            <Text>Classes</Text>
+            <Text>Frequencia</Text>
         </View>
     )
 }

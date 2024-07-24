@@ -4,7 +4,7 @@ import { View, Text } from "react-native";
 const Notas = () =>{
     return(
         <View>
-            <Text>Classes</Text>
+            <Text>Notas</Text>
         </View>
     )
 }

@@ -14,7 +14,7 @@ const Tab = createBottomTabNavigator();
 
 const App = ({ navigation }: any) => {
 
-  const { idUsuario,idClasseSelec, idPeriodoSelec, setIdPeriodoSelec, setDataSelec,
+  const { idUsuario, idClasseSelec, idPeriodoSelec, setIdPeriodoSelec, setDataSelec,
     setIdClasseSelec } = useContext(Context);
 
   const estadosAppRef = firestore().collection(idUsuario).doc('EstadosApp')
@@ -115,10 +115,10 @@ const App = ({ navigation }: any) => {
   return (
     <Provider>
       <Tab.Navigator
-        screenOptions={( route:any ) => ({
+        screenOptions={( {route} ) => ({
           headerShown: false,
           tabBarIcon: ({color,size}) => {
-            let iconName = 'book';
+            let iconName = 'user';
             if (route.name === 'Classes') {
               iconName = 'book'
             } else if (route.name === 'Frequencia') {
@@ -126,24 +126,23 @@ const App = ({ navigation }: any) => {
             } else if (route.name === 'Notas') {
               iconName = 'pencil'
             }
-
             return <Icon name={iconName} color={color} size={size}/>;
           },
           tabBarActiveTintColor: Globais.corPrimaria,
           tabBarInactiveTintColor: 'gray',
         })}>
         <Tab.Screen options={{
-          tabBarButton: (props:any) => (
+          tabBarButton: (props) => (
             <TouchableOpacity {...props} onPress={() => [cliqueClasses()]} />
           )
         }} name="Classes" component={Classes}></Tab.Screen>
         <Tab.Screen options={{
-          tabBarButton: (props:any) => (
+          tabBarButton: (props) => (
             <TouchableOpacity {...props} onPress={() => [cliqueFrequencia()]} />
           )
         }} name="Frequencia" component={Frequencia} />
         <Tab.Screen options={{
-          tabBarButton: (props:any) => (
+          tabBarButton: (props) => (
             <TouchableOpacity {...props} onPress={() => [cliqueNotas()]} />
           )
         }} name="Notas" component={Notas} />
