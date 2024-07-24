@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Icon } from '../assets/Icon'
+import Icon from 'react-native-vector-icons/FontAwesome';
 import Classes from '../telas/Classes';
 import Frequencia from '../telas/Frequencia';
 import Notas from '../telas/Notas';
