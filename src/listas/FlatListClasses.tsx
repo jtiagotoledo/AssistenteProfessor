@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
-import {SafeAreaView, FlatList, Text, StyleSheet, TouchableOpacity, View} from 'react-native'
+import { SafeAreaView, FlatList, Text, StyleSheet, TouchableOpacity, View } from 'react-native'
 import firestore from '@react-native-firebase/firestore';
-import {Context} from "../data/Provider";
+import { Context } from "../data/Provider";
 import Globais from '../data/Globais';
 
 type ItemData = {
@@ -17,48 +17,35 @@ type ItemProps = {
   textColor: string;
 };
 
-const Item = ({item, onPress, onLongPress, backgroundColor, textColor}: ItemProps) => (
-  <TouchableOpacity onPress={onPress} onLongPress={onLongPress} style={[styles.item, {backgroundColor}]}>
-    <Text style={[styles.title, {color: textColor}]}>{item.classe}</Text>
+const Item = ({ item, onPress, onLongPress, backgroundColor, textColor }: ItemProps) => (
+  <TouchableOpacity onPress={onPress} onLongPress={onLongPress} style={[styles.item, { backgroundColor }]}>
+    <Text style={[styles.title, { color: textColor }]}>{item.classe}</Text>
   </TouchableOpacity>
 );
 
 const FlatListClasses = () => {
-    let classes:any []= []
-    const {idPeriodoSelec,idClasseSelec,setIdClasseSelec,recarregarClasses,
-      flagLoadClasses,setflagLoadAlunos,setflagLoadClasses,
-      setFlagLoadFrequencia,listaClasses,setListaClasses,
-      setRecarregarClasses,idUsuario,setFlagLongPressClasse,
-      setSelectedIdAluno,setNumAlunoSelec,setFlagLongPressAluno,
-      nomePeriodoSelec,setFlagLongPressDataFreq,
-      setFlagLongPressDataNotas,setNomeClasseSelec} = useContext(Context)
+  const { idPeriodoSelec, idClasseSelec, setIdClasseSelec, recarregarClasses, flagLoadClasses, setflagLoadAlunos, setflagLoadClasses,
+    setFlagLoadFrequencia, listaClasses, setListaClasses, setRecarregarClasses, idUsuario, setFlagLongPressClasse,
+    setSelectedIdAluno, setNumAlunoSelec, setFlagLongPressAluno, nomePeriodoSelec, setFlagLongPressDataFreq, setFlagLongPressDataNotas, setNomeClasseSelec } = useContext(Context)
 
-  useEffect(()=>{
-    const data = async ()=>{
-      setListaClasses('');
-      setRecarregarClasses('');
-      setflagLoadClasses('carregando');
-      firestore().collection(idUsuario)
-      .doc(idPeriodoSelec).collection('Classes')
-      .orderBy('classe')
-      .onSnapshot(snapshot => {
-        if(snapshot.empty && idPeriodoSelec!=''){
-          setflagLoadClasses('vazio');
-        }else{
-          snapshot.forEach((documentSnapshot,index) => {
-          classes.push(documentSnapshot.data());
-            if(snapshot.size-index==1){
-              setflagLoadClasses('carregado')
-            } 
-          });
-        }
-    });
-    setListaClasses(classes);
-  }
-  data()   
-  },[idPeriodoSelec,recarregarClasses]);
+  let listaClassesRef = firestore().collection(idUsuario)
+    .doc(idPeriodoSelec).collection('Classes')
 
-  const onPressItem = (item:any) =>{
+  useEffect(() => {
+    listaClassesRef.orderBy('classe')
+      .onSnapshot(docSnapshot => {
+        const classes: any = [];
+        docSnapshot.forEach((item) => {
+          console.log(item.data());
+          classes.push( item.data() )
+        });
+        setListaClasses(classes);
+      }, err => {
+        console.log(`Encountered error: ${err}`);
+      });
+  }, [idPeriodoSelec])
+
+  const onPressItem = (item: any) => {
     setIdClasseSelec(item.idClasse)
     setNomeClasseSelec(item.classe)
     setflagLoadAlunos('carregando')
@@ -73,26 +60,26 @@ const FlatListClasses = () => {
     //salvando estado da classe
     firestore().collection(idUsuario).
       doc('EstadosApp').update({
-        idPeriodo:idPeriodoSelec,
-        periodo:nomePeriodoSelec,
-        idClasse:item.idClasse,
-        classe:item.classe,
-        data:''
+        idPeriodo: idPeriodoSelec,
+        periodo: nomePeriodoSelec,
+        idClasse: item.idClasse,
+        classe: item.classe,
+        data: ''
       })
   }
 
-  const onLongPressItem = (item:any) =>{
+  const onLongPressItem = (item: any) => {
     setIdClasseSelec(item.idClasse)
     setNomeClasseSelec(item.classe)
     setFlagLongPressClasse(true)
   }
 
-  const renderItem = ({item}: {item: ItemData}) => {
+  const renderItem = ({ item }: { item: ItemData }) => {
     const backgroundColor = item.idClasse === idClasseSelec ? Globais.corPrimaria : Globais.corTerciaria;
     const color = item.idClasse === idClasseSelec ? Globais.corTextoClaro : Globais.corTextoEscuro;
 
     return (
-        <Item
+      <Item
         item={item}
         onPress={() => onPressItem(item)}
         onLongPress={() => onLongPressItem(item)}
@@ -102,33 +89,18 @@ const FlatListClasses = () => {
     );
   };
 
-  const renderCarregamento = () =>{
-    if(idPeriodoSelec!=''){
-      switch(flagLoadClasses){
-        case 'vazio':
-          return(
-            <View>
-                <Text style={styles.textLoad}>Adicione uma classe...</Text>
-            </View>
-          )
-        case 'carregando':
-          return(
-            <View>
-                <Text style={styles.textLoad}>Carregando...</Text>
-            </View>
-          )
-        case 'carregado':
-          return(
+  const renderCarregamento = () => {
+    if (idPeriodoSelec != '') {
+          return (
             <SafeAreaView >
               <FlatList
-                horizontal = {true}
+                horizontal={true}
                 data={listaClasses}
                 renderItem={renderItem}
                 keyExtractor={item => item.idClasse}
               />
             </SafeAreaView>
           )
-      }
     }
   }
 
@@ -140,20 +112,20 @@ const FlatListClasses = () => {
 };
 
 const styles = StyleSheet.create({
-  
+
   item: {
     padding: 10,
     marginVertical: 8,
     marginHorizontal: 8,
-    borderRadius:40
+    borderRadius: 40
   },
   title: {
     fontSize: 20,
 
   },
-  textLoad:{
-    fontSize:24,
-    color:Globais.corTextoClaro,
+  textLoad: {
+    fontSize: 24,
+    color: Globais.corTextoClaro,
   }
 });
 

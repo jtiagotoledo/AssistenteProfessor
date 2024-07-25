@@ -8,19 +8,17 @@ import { Context } from "../data/Provider";
 import Globais from "../data/Globais";
 
 const DropDownPeriodo = () => {
-  const periodos: any[] = [];
   const [valuePSelec, setValuePSelec] = useState('');
   const [isFocus, setIsFocus] = useState(false);
-  const { setIdPeriodoSelec, setFlagLongPressAluno,
-    idUsuario, setModalMenu, setFlagLongPressClasse, setModalDelPeriodo,
-    recarregarPeriodo, listaPeriodos, setListaPeriodos,
-    setNomePeriodoSelec, nomePeriodoSelec, setModalEditPeriodo, abaSelec } = useContext(Context)
-
+  const { setIdPeriodoSelec, setFlagLongPressAluno, idUsuario, setModalMenu, setFlagLongPressClasse, setModalDelPeriodo, 
+    listaPeriodos, setListaPeriodos, setNomePeriodoSelec, nomePeriodoSelec, setModalEditPeriodo } = useContext(Context)
 
   useEffect(() => {
     firestore().collection(idUsuario)
       .where(firestore.FieldPath.documentId(), "!=", "EstadosApp")
       .onSnapshot(querySnapshot => {
+        const periodos: any[] = [];
+        console.log(querySnapshot.size, 'size');
         querySnapshot.forEach(documentSnapshot => {
           let label = documentSnapshot.data().periodo
           let value = documentSnapshot.data().periodo
@@ -30,7 +28,7 @@ const DropDownPeriodo = () => {
         });
         setListaPeriodos(periodos)
       });
-  }, [recarregarPeriodo])
+  }, [])
 
   const onChangePeriodo = (item: any) => {
     setValuePSelec(item.periodo);
@@ -115,7 +113,6 @@ const DropDownPeriodo = () => {
     </View>
   )
 }
-
 export default DropDownPeriodo;
 
 const styles = StyleSheet.create({

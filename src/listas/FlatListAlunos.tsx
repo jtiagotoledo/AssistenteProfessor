@@ -39,11 +39,9 @@ const Item = ({ item, onPress, onLongPress, backgroundColor, textColor }: ItemPr
 );
 
 const FlatListAlunos = () => {
-  let alunos: any[] = []
-  const { flagLoadAlunos, setflagLoadAlunos, idPeriodoSelec, idClasseSelec,
-    setNumAlunoSelec, setRecarregarAlunos, recarregarAlunos, setFlagLongPressClasse,
-    listaAlunos, setListaAlunos, idUsuario, setFlagLongPressAluno,
-    selectedIdAluno, setSelectedIdAluno, setNomeAlunoSelec, setIdAlunoSelec, setAlunoInativo } = useContext(Context)
+  const { idPeriodoSelec, idClasseSelec, setNumAlunoSelec, setFlagLongPressClasse,
+    listaAlunos, setListaAlunos, idUsuario, setFlagLongPressAluno,selectedIdAluno,
+    setSelectedIdAluno, setNomeAlunoSelec, setIdAlunoSelec, setAlunoInativo } = useContext(Context)
 
   let listaAlunosRef = firestore().collection(idUsuario)
     .doc(idPeriodoSelec).collection('Classes')
@@ -55,69 +53,12 @@ const FlatListAlunos = () => {
         const alunos: any = [];
         docSnapshot.forEach(item => {
           alunos.push({ ...item.data() })
-          console.log('item encontrado:', item.data());
         })
         setListaAlunos(alunos)
       }, err => {
         console.log(`Encountered error: ${err}`);
       });
   }, [idPeriodoSelec, idClasseSelec])
-
-  /* useEffect(() => {
-    const data = async () => {
-      setflagLoadAlunos('carregando');
-      listaAlunosRef.orderBy('numero')
-        .get().then((snapshot) => {
-          if (snapshot.empty && idClasseSelec != '') {
-            setflagLoadAlunos('vazio');
-            
-          } else {
-            snapshot.forEach((docSnapshot, index) => {
-              if (snapshot.size - index == 1) {
-                setflagLoadAlunos('carregado');
-              }
-
-              //recuperação das datas de frequencia e cálculo da porcentagem de frequência
-              let contFreq = 0, somaNotas = 0, porcentFreq, mediaNotas
-              let frequencias = docSnapshot.data().frequencias
-              let notas = docSnapshot.data().notas
-
-              //recuperar porcentagem de frequências
-              if (Object.keys(frequencias).length > 0) {
-                let qntDatas = Object.keys(frequencias).length
-                frequencias.forEach((item: any) => {
-                  if (item.freq !== undefined) {
-                    item.freq == 'P' ? contFreq += 1 : null
-                  }
-                })
-                porcentFreq = ((contFreq * 100) / qntDatas).toFixed(1)
-              } else {
-                porcentFreq = 0
-              }
-
-              //recuperar média das notas
-              if (Object.keys(notas).length > 0) {
-                let qntDatas = Object.keys(notas).length
-                notas.forEach((item: any) => {
-                  if (item.nota !== undefined) {
-                    item.nota == '' ? null : somaNotas += parseFloat(item.nota)
-                  }
-                })
-                mediaNotas = ((somaNotas) / qntDatas).toFixed(1)
-              } else {
-                mediaNotas = 0
-              }
-
-              alunos.push({ ...docSnapshot.data(), porcentFreq, mediaNotas })
-            })
-          }
-        }).catch((erro) => {
-          console.error(erro);
-        })
-      }
-      data()
-      setListaAlunos(alunos)
-  }, [idPeriodoSelec, idClasseSelec, recarregarAlunos]); */
 
   const onPressItem = (item: any) => {
     selectedIdAluno === '' || selectedIdAluno !== item.idAluno ? setSelectedIdAluno(item.idAluno) : setSelectedIdAluno('')
@@ -159,20 +100,6 @@ const FlatListAlunos = () => {
 
   const renderCarregamento = () => {
     if (idClasseSelec != '') {
-      /* switch (flagLoadAlunos) {
-        case 'vazio':
-          return (
-            <View>
-              <Text style={styles.textLoad}>Adicione os alunos...</Text>
-            </View>
-          )
-        case 'carregando':
-          return (
-            <View>
-              <Text style={styles.textLoad}>Carregando...</Text>
-            </View>
-          )
-        case 'carregado': */
       return (
         <FlatList
           data={listaAlunos}
