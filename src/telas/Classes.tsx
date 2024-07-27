@@ -1,3 +1,4 @@
+import { useContext, useEffect } from "react";
 import { View, StyleSheet, Text} from "react-native"
 import { Divider } from "react-native-paper";
 
@@ -7,8 +8,8 @@ import FlatListClasses from "../listas/FlatListClasses";
 import HeaderClasses from "../componentes/HeaderClasses";
 import ConexaoInternet from "../componentes/ConexaoInternet";
 import Globais from "../data/Globais";
+import consultaPeriodos from "../banco_dados/consultas"
 
-import { useContext, useEffect } from "react";
 import ModalAddPeriodo from "../modais/ModalAddPeriodo";
 import ModalAddClasse from "../modais/ModalAddClasse";
 import ModalAddAluno from "../modais/ModalAddAluno";
@@ -19,6 +20,7 @@ import ModalDelPeriodo from "../modais/ModalDelPeriodo";
 import ModalDelClasse from "../modais/ModalDelClasse";
 import ModalDelAluno from "../modais/ModalDelAluno";
 import ModalMenu from "../modais/ModalMenu";
+
 import firestore from '@react-native-firebase/firestore';
 import {Context} from "../data/Provider";
 
@@ -26,6 +28,8 @@ import {Context} from "../data/Provider";
 function Classes({navigation}:any) {
   const {nomePeriodoSelec,idUsuario,setIdPeriodoSelec,setIdClasseSelec,
     setNomePeriodoSelec} = useContext(Context)
+
+  consultaPeriodos()
 
   useEffect(()=>{
     //recuperar dados dos estados do app

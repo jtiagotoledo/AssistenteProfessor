@@ -11,24 +11,7 @@ const DropDownPeriodo = () => {
   const [valuePSelec, setValuePSelec] = useState('');
   const [isFocus, setIsFocus] = useState(false);
   const { setIdPeriodoSelec, setFlagLongPressAluno, idUsuario, setModalMenu, setFlagLongPressClasse, setModalDelPeriodo, 
-    listaPeriodos, setListaPeriodos, setNomePeriodoSelec, nomePeriodoSelec, setModalEditPeriodo } = useContext(Context)
-
-  useEffect(() => {
-    firestore().collection(idUsuario)
-      .where(firestore.FieldPath.documentId(), "!=", "EstadosApp")
-      .onSnapshot(querySnapshot => {
-        const periodos: any[] = [];
-        console.log(querySnapshot.size, 'size');
-        querySnapshot.forEach(documentSnapshot => {
-          let label = documentSnapshot.data().periodo
-          let value = documentSnapshot.data().periodo
-          let idPeriodo = documentSnapshot.data().idPeriodo
-          let periodo = documentSnapshot.data().periodo
-          periodos.push({ label: label, value: value, idPeriodo: idPeriodo, periodo: periodo });
-        });
-        setListaPeriodos(periodos)
-      });
-  }, [])
+    listaPeriodos, setNomePeriodoSelec, nomePeriodoSelec, setModalEditPeriodo } = useContext(Context)
 
   const onChangePeriodo = (item: any) => {
     setValuePSelec(item.periodo);
