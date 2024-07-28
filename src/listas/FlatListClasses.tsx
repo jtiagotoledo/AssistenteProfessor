@@ -28,23 +28,6 @@ const FlatListClasses = () => {
     setFlagLoadFrequencia, listaClasses, setListaClasses, setRecarregarClasses, idUsuario, setFlagLongPressClasse,
     setSelectedIdAluno, setNumAlunoSelec, setFlagLongPressAluno, nomePeriodoSelec, setFlagLongPressDataFreq, setFlagLongPressDataNotas, setNomeClasseSelec } = useContext(Context)
 
-  let listaClassesRef = firestore().collection(idUsuario)
-    .doc(idPeriodoSelec).collection('Classes')
-
-  useEffect(() => {
-    listaClassesRef.orderBy('classe')
-      .onSnapshot(docSnapshot => {
-        const classes: any = [];
-        docSnapshot.forEach((item) => {
-          console.log(item.data());
-          classes.push( item.data() )
-        });
-        setListaClasses(classes);
-      }, err => {
-        console.log(`Encountered error: ${err}`);
-      });
-  }, [idPeriodoSelec])
-
   const onPressItem = (item: any) => {
     setIdClasseSelec(item.idClasse)
     setNomeClasseSelec(item.classe)
@@ -91,16 +74,16 @@ const FlatListClasses = () => {
 
   const renderCarregamento = () => {
     if (idPeriodoSelec != '') {
-          return (
-            <SafeAreaView >
-              <FlatList
-                horizontal={true}
-                data={listaClasses}
-                renderItem={renderItem}
-                keyExtractor={item => item.idClasse}
-              />
-            </SafeAreaView>
-          )
+      return (
+        <SafeAreaView >
+          <FlatList
+            horizontal={true}
+            data={listaClasses}
+            renderItem={renderItem}
+            keyExtractor={item => item.idClasse}
+          />
+        </SafeAreaView>
+      )
     }
   }
 

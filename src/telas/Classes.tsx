@@ -1,5 +1,5 @@
-import { useContext, useEffect } from "react";
-import { View, StyleSheet, Text} from "react-native"
+import { useContext } from "react";
+import { View, StyleSheet, Text } from "react-native"
 import { Divider } from "react-native-paper";
 
 import FabClasses from "../componentes/FabClasses";
@@ -8,7 +8,7 @@ import FlatListClasses from "../listas/FlatListClasses";
 import HeaderClasses from "../componentes/HeaderClasses";
 import ConexaoInternet from "../componentes/ConexaoInternet";
 import Globais from "../data/Globais";
-import consultaPeriodos from "../banco_dados/consultas"
+import consultasBD from "../banco_dados/consultasBD"
 
 import ModalAddPeriodo from "../modais/ModalAddPeriodo";
 import ModalAddClasse from "../modais/ModalAddClasse";
@@ -21,31 +21,19 @@ import ModalDelClasse from "../modais/ModalDelClasse";
 import ModalDelAluno from "../modais/ModalDelAluno";
 import ModalMenu from "../modais/ModalMenu";
 
-import firestore from '@react-native-firebase/firestore';
-import {Context} from "../data/Provider";
+import { Context } from "../data/Provider";
 
 
-function Classes({navigation}:any) {
-  const {nomePeriodoSelec,idUsuario,setIdPeriodoSelec,setIdClasseSelec,
-    setNomePeriodoSelec} = useContext(Context)
+function Classes({ navigation }: any) {
+  const { nomePeriodoSelec } = useContext(Context)
 
-  consultaPeriodos()
+  consultasBD()
 
-  useEffect(()=>{
-    //recuperar dados dos estados do app
-    firestore().collection(idUsuario)
-    .doc('EstadosApp').onSnapshot(snapShot=>{
-      setIdPeriodoSelec(snapShot.data()?.idPeriodo)
-      setNomePeriodoSelec(snapShot.data()?.periodo)
-      setIdClasseSelec(snapShot.data()?.idClasse)
-    })
-  },[])
-    
   return (
     <View style={styles.container}>
       <HeaderClasses title="Classes"></HeaderClasses>
       <ConexaoInternet></ConexaoInternet>
-      <Text style={styles.textLoad}>{nomePeriodoSelec!=''?'Período: '+nomePeriodoSelec:'Adicione um período'}</Text>
+      <Text style={styles.textLoad}>{nomePeriodoSelec != '' ? 'Período: ' + nomePeriodoSelec : 'Adicione um período'}</Text>
       <Divider style={styles.divider}></Divider>
       <FlatListClasses></FlatListClasses>
       <Divider style={styles.divider}></Divider>
@@ -66,22 +54,22 @@ function Classes({navigation}:any) {
 }
 
 const styles = StyleSheet.create({
-  container:{
+  container: {
     backgroundColor: Globais.corSecundaria,
-    flex:1,
+    flex: 1,
   },
-  
-  text:{
-    fontSize:20,
-    padding:5,
+
+  text: {
+    fontSize: 20,
+    padding: 5,
     color: Globais.corTextoEscuro,
   },
-  divider:{
+  divider: {
     backgroundColor: Globais.corPrimaria,
   },
-  textLoad:{
-    fontSize:24,
-    color:Globais.corTextoClaro,
+  textLoad: {
+    fontSize: 24,
+    color: Globais.corTextoClaro,
   }
 });
 
