@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { SafeAreaView, FlatList, Text, StyleSheet, StatusBar, TouchableOpacity, View } from 'react-native'
-import firestore from '@react-native-firebase/firestore';
 import { Context } from "../data/Provider";
 import Globais from '../data/Globais';
 
@@ -39,26 +38,8 @@ const Item = ({ item, onPress, onLongPress, backgroundColor, textColor }: ItemPr
 );
 
 const FlatListAlunos = () => {
-  const { idPeriodoSelec, idClasseSelec, setNumAlunoSelec, setFlagLongPressClasse,
-    listaAlunos, setListaAlunos, idUsuario, setFlagLongPressAluno,selectedIdAluno,
-    setSelectedIdAluno, setNomeAlunoSelec, setIdAlunoSelec, setAlunoInativo } = useContext(Context)
-
-  let listaAlunosRef = firestore().collection(idUsuario)
-    .doc(idPeriodoSelec).collection('Classes')
-    .doc(idClasseSelec).collection('ListaAlunos')
-
-  useEffect(() => {
-    listaAlunosRef.orderBy('numero').
-      onSnapshot(docSnapshot => {
-        const alunos: any = [];
-        docSnapshot.forEach(item => {
-          alunos.push({ ...item.data() })
-        })
-        setListaAlunos(alunos)
-      }, err => {
-        console.log(`Encountered error: ${err}`);
-      });
-  }, [idPeriodoSelec, idClasseSelec])
+  const { idClasseSelec, setNumAlunoSelec, setFlagLongPressClasse, listaAlunos, setFlagLongPressAluno,
+    selectedIdAluno, setSelectedIdAluno, setNomeAlunoSelec, setIdAlunoSelec, setAlunoInativo } = useContext(Context)
 
   const onPressItem = (item: any) => {
     selectedIdAluno === '' || selectedIdAluno !== item.idAluno ? setSelectedIdAluno(item.idAluno) : setSelectedIdAluno('')
@@ -108,7 +89,6 @@ const FlatListAlunos = () => {
           extraData={selectedIdAluno}
         />
       )
-
     }
   }
 

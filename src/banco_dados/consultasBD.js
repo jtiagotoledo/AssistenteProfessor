@@ -5,7 +5,7 @@ import { Context } from "../data/Provider";
 const consultasBD = () => {
 
   const { idUsuario, setListaPeriodos, setIdPeriodoSelec, setIdClasseSelec,
-    setNomePeriodoSelec, idPeriodoSelec, setListaClasses } = useContext(Context)
+    setNomePeriodoSelec, idPeriodoSelec, setListaClasses, idClasseSelec, setListaAlunos } = useContext(Context)
 
   useEffect(() => {
     console.log('consultaEstadosApp');
@@ -44,7 +44,6 @@ const consultasBD = () => {
     };
   }, []);
 
-
   useEffect(() => {
     console.log('consultaClasses');
     //consulta da lista de classes do DB.
@@ -62,6 +61,26 @@ const consultasBD = () => {
       unsub();
     };
   }, [idPeriodoSelec]);
+
+  useEffect(() => {
+    console.log('consultaAlunos');
+    //consulta da lista de alunos do DB.
+    const unsub = firestore().collection(idUsuario)
+      .doc(idPeriodoSelec).collection('Classes')
+      .doc(idClasseSelec).collection('ListaAlunos')
+      .orderBy('numero').
+      onSnapshot(docSnapshot => {
+        const alunos = [];
+        docSnapshot.forEach(item => {
+          console.log(docSnapshot.size, 'dentro do consultaAlunos');
+          alunos.push(item.data())
+        })
+        setListaAlunos(alunos)
+      });
+    return () => {
+      unsub();
+    };
+  }, [idClasseSelec]);
 }
 
 export default consultasBD
