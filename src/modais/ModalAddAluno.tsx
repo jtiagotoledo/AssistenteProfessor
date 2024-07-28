@@ -1,18 +1,17 @@
 import { Text, View, StyleSheet, Pressable, TextInput, Modal, NativeSyntheticEvent, TextInputChangeEventData, ToastAndroid, TouchableOpacity } from "react-native"
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext } from 'react';
 import firestore from '@react-native-firebase/firestore';
 import { Context } from "../data/Provider";
 import Globais from "../data/Globais";
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
+import FontIstoIcon from 'react-native-vector-icons/Fontisto';
 
 const ModalAddAluno = () => {
 
   const [valueNumero, setValueNumero] = useState<string>('')
   const [valueNome, setValueNome] = useState<string>('')
-  const [flagAlunoNaoExiste, setFlagAlunoNaoExiste] = useState(true)
-  const { idPeriodoSelec, idClasseSelec, modalAddAluno,
-    setModalAddAluno, setRecarregarAlunos, idUsuario,
-    alunoInativo, setAlunoInativo } = useContext(Context)
+  const { idPeriodoSelec, idClasseSelec, modalAddAluno, setModalAddAluno,
+    idUsuario, alunoInativo, setAlunoInativo } = useContext(Context)
 
   const onChangeInputNumero = (event: NativeSyntheticEvent<TextInputChangeEventData>) => {
     setValueNumero(event.nativeEvent.text);
@@ -49,7 +48,7 @@ const ModalAddAluno = () => {
           idAluno: idAluno,
           frequencias: [],
           notas: [],
-      }).then(setRecarregarAlunos(idAluno))
+        })
         setValueNome('')
         setValueNumero('')
         setAlunoInativo(false)
@@ -63,8 +62,8 @@ const ModalAddAluno = () => {
 
   const renderIconCheck = () => {
     return (
-      alunoInativo ? <MaterialIcon name="check" color="white" size={20} /> :
-        <MaterialIcon name="check-box" color="white" size={20} />
+      alunoInativo ? <FontIstoIcon name="checkbox-active" color="white" size={20} /> :
+        <FontIstoIcon name="checkbox-passive" color="white" size={20} />
     )
   }
 

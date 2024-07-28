@@ -4,15 +4,16 @@ import firestore from '@react-native-firebase/firestore';
 import { Context } from "../data/Provider";
 import Globais from "../data/Globais";
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
+import FontIstoIcon from 'react-native-vector-icons/Fontisto';
 
 const ModalEditAluno = () => {
 
   const [valueNomeAluno, setValueNomeAluno] = useState<string>('')
   const [valueNumAluno, setValueNumAluno] = useState<string>('')
-  const { modalEditAluno, setModalEditAluno, idPeriodoSelec,
-    setRecarregarAlunos, idUsuario, idClasseSelec, numAlunoSelec,
-    nomeAlunoSelec, alunoInativo, setAlunoInativo,
-    setFlagLongPressAluno, idAlunoSelec } = useContext(Context)
+  const { modalEditAluno, setModalEditAluno, idPeriodoSelec, idUsuario, idClasseSelec, numAlunoSelec,
+    nomeAlunoSelec, alunoInativo, setAlunoInativo, setFlagLongPressAluno, idAlunoSelec } = useContext(Context)
+
+  
 
   const onChangeInputAlunoNome = (event: NativeSyntheticEvent<TextInputChangeEventData>) => {
     setValueNomeAluno(event.nativeEvent.text);
@@ -22,51 +23,53 @@ const ModalEditAluno = () => {
     setValueNumAluno(event.nativeEvent.text);
   }
 
-  const onPressEditAluno = async () => {
-
-    // consulta para verificar se o número do aluno já existe
-    firestore().collection(idUsuario)
-      .doc(idPeriodoSelec).collection('Classes')
-      .doc(idClasseSelec).collection('ListaAlunos')
-      .where('numero', '==', parseInt(valueNumAluno))
-      .get().then((snapshot) => {
-        snapshot.empty ? editarAluno() :
-          ToastAndroid.show(
-            'O número informado já existe na classe',
-            ToastAndroid.SHORT)
-      }).catch((erro) => {
-        console.error(erro);
-      })
-
-    // edição do aluno no BD
-    const editarAluno = () => {
-      if (valueNomeAluno != '' && valueNumAluno != '') {
-        firestore().collection(idUsuario)
-          .doc(idPeriodoSelec).collection('Classes')
-          .doc(idClasseSelec).collection('ListaAlunos')
-          .doc(idAlunoSelec).update({
-            nome: valueNomeAluno,
-            numero: valueNumAluno,
-            inativo: alunoInativo
-          })
-        setValueNomeAluno('')
-        setValueNumAluno('')
-        setRecarregarAlunos(idUsuario)
-        setAlunoInativo(false)
-        setModalEditAluno(!modalEditAluno)
-      } else {
-        ToastAndroid.show(
-          'Os campos nome do aluno e número do aluno são obrigatórios!',
-          ToastAndroid.SHORT)
-      }
+  // edição do aluno no BD
+  const editarAluno = () => {
+    if (valueNomeAluno != '' && valueNumAluno != '') {
+      firestore().collection(idUsuario)
+        .doc(idPeriodoSelec).collection('Classes')
+        .doc(idClasseSelec).collection('ListaAlunos')
+        .doc(idAlunoSelec).update({
+          nome: valueNomeAluno,
+          numero: valueNumAluno,
+          inativo: alunoInativo
+        })
+      setValueNomeAluno('')
+      setValueNumAluno('')
+      setAlunoInativo(false)
+      setModalEditAluno(!modalEditAluno)
+    } else {
+      ToastAndroid.show(
+        'Os campos nome do aluno e número do aluno são obrigatórios!',
+        ToastAndroid.SHORT)
     }
+  }
 
+  const onPressEditAluno = async () => {
+    //TODO: arrumar o editar aluno    
+    if (parseInt(valueNumAluno) === numAlunoSelec) {
+      editarAluno()
+    } else {
+      // consulta para verificar se o número do aluno já existe
+      firestore().collection(idUsuario)
+        .doc(idPeriodoSelec).collection('Classes')
+        .doc(idClasseSelec).collection('ListaAlunos')
+        .where('numero', '==', parseInt(valueNumAluno))
+        .get().then((snapshot) => {
+          snapshot.empty ? editarAluno() :
+            ToastAndroid.show(
+              'O número informado já existe na classe',
+              ToastAndroid.SHORT)
+        }).catch((erro) => {
+          console.error(erro);
+        })
+    }
   }
 
   const renderIconCheck = () => {
     return (
-      alunoInativo ? <MaterialIcon name="check" color="white" size={20} /> :
-        <MaterialIcon name="check-box" color="white" size={20} />
+      alunoInativo ? <FontIstoIcon name="checkbox-active" color="white" size={20} /> :
+        <FontIstoIcon name="checkbox-passive" color="white" size={20} />
     )
   }
 
@@ -83,7 +86,7 @@ const ModalEditAluno = () => {
           <View style={styles.modalView}>
             <View style={styles.containerIcon}>
               <TouchableOpacity onPress={() => [setModalEditAluno(!modalEditAluno), setAlunoInativo(false), setFlagLongPressAluno(false)]}>
-                <MaterialIcon name="cancel" color="white" size={20}/>
+                <MaterialIcon name="cancel" color="white" size={20} />
               </TouchableOpacity>
             </View>
             <Text style={styles.modalText}>Edite o nome do aluno:</Text>

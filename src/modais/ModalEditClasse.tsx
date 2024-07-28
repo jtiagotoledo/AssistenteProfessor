@@ -9,8 +9,7 @@ import Globais from "../data/Globais";
 const ModalEditClasse = () => {
 
   const [valueClasse, setValueClasse] = useState<string>('')
-  const { modalEditClasse, setModalEditClasse, idPeriodoSelec,
-    setRecarregarClasses, idUsuario, setIdClasseSelec, idClasseSelec,
+  const { modalEditClasse, setModalEditClasse, idPeriodoSelec, idUsuario, setIdClasseSelec, idClasseSelec,
     nomeClasseSelec, setFlagLongPressClasse } = useContext(Context)
 
   const onChangeInputClasse = (event: NativeSyntheticEvent<TextInputChangeEventData>) => {
@@ -24,7 +23,6 @@ const ModalEditClasse = () => {
       .doc(idPeriodoSelec).collection('Classes')
       .where('classe', '==', valueClasse)
       .get().then((snapshot) => {
-
         snapshot.empty ? editarAluno() :
           ToastAndroid.show(
             'A classe informada já existe',
@@ -41,7 +39,6 @@ const ModalEditClasse = () => {
           .doc(idClasseSelec).update({
             classe: valueClasse
           })
-        setRecarregarClasses('recarregar')
         setIdClasseSelec(idClasseSelec);
         setModalEditClasse(!modalEditClasse);
         setFlagLongPressClasse(false)
@@ -86,7 +83,7 @@ const ModalEditClasse = () => {
             </TextInput>
             <Pressable
               style={[styles.button, styles.buttonClose]}
-              onPress={() => [onPressEditClasse(), setRecarregarClasses('recarregarClasses')]}>
+              onPress={() =>onPressEditClasse()}>
               <Text style={styles.textStyle}>Editar</Text>
             </Pressable>
           </View>

@@ -9,7 +9,7 @@ const ModalEditPeriodo = () =>{
 
     const [valuePeriodo,setValuePeriodo] = useState<string>('')
     const {modalEditPeriodo,setModalEditPeriodo,idPeriodoSelec,
-      setRecarregarPeriodo,idUsuario,setIdClasseSelec,nomePeriodoSelec} = useContext(Context)
+      idUsuario,setIdClasseSelec,nomePeriodoSelec} = useContext(Context)
 
     const onChangeInputPeriodo = (event: NativeSyntheticEvent<TextInputChangeEventData>)=>{
         setValuePeriodo(event.nativeEvent.text);
@@ -21,7 +21,6 @@ const ModalEditPeriodo = () =>{
         .doc(idPeriodoSelec).update({
           periodo:valuePeriodo
         })
-        setRecarregarPeriodo('recarregar')
         setIdClasseSelec(valuePeriodo);
         setModalEditPeriodo(!modalEditPeriodo);
       }else{
@@ -35,8 +34,6 @@ const ModalEditPeriodo = () =>{
       doc('EstadosApp').update({
         periodo:valuePeriodo
       })
-      
-      
     }
 
     return(
@@ -64,7 +61,7 @@ const ModalEditPeriodo = () =>{
                         </TextInput>
                         <Pressable
                             style={[styles.button, styles.buttonClose]}
-                            onPress={()=>[onPressEditPeriodo(),setRecarregarPeriodo('recarregarPeriodos')]}>
+                            onPress={()=>onPressEditPeriodo()}>
                             <Text style={styles.textStyle}>Editar</Text>
                         </Pressable>
                     </View>

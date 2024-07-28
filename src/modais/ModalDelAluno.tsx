@@ -7,10 +7,8 @@ import Globais from "../data/Globais";
 
 const ModalDelAluno = () => {
 
-  const { idPeriodoSelec, idClasseSelec, modalDelAluno,
-    setModalDelAluno, idUsuario, setRecarregarAlunos,
-    setFlagLongPressAluno, setNumAlunoSelec, setSelectedIdAluno,
-    idAlunoSelec, setRecarregarFrequencia, setRecarregarNotas } = useContext(Context);
+  const { idPeriodoSelec, idClasseSelec, modalDelAluno, setModalDelAluno, 
+    idUsuario,setFlagLongPressAluno, setNumAlunoSelec, setSelectedIdAluno, idAlunoSelec } = useContext(Context);
 
   const deletarAluno = () => {
     //deletar aluno da lista de alunos
@@ -22,7 +20,6 @@ const ModalDelAluno = () => {
     setFlagLongPressAluno(false)
     setNumAlunoSelec('')
     setSelectedIdAluno('')
-    setRecarregarAlunos(idUsuario)
 
     //deletar aluno da lista de frequencias
     firestore().collection(idUsuario)
@@ -37,7 +34,6 @@ const ModalDelAluno = () => {
             .doc(data).collection('Alunos')
             .doc(idAlunoSelec).delete()
         })
-        setRecarregarFrequencia('recarregar')
       })
 
     //deletar aluno da lista de notas
@@ -53,7 +49,6 @@ const ModalDelAluno = () => {
             .doc(data).collection('Alunos')
             .doc(idAlunoSelec).delete()
         })
-        setRecarregarNotas('recarregar')
       })
   }
 

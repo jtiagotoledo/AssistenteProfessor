@@ -8,8 +8,7 @@ import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 const ModalAddClasse = () => {
 
   const [valueClasse, setValueClasse] = useState<string>('')
-  const { modalAddClasse, setModalAddClasse, idPeriodoSelec,
-    setRecarregarClasses, idUsuario, setIdClasseSelec,
+  const { modalAddClasse, setModalAddClasse, idPeriodoSelec, idUsuario, setIdClasseSelec,
     nomePeriodoSelec, setNomeClasseSelec } = useContext(Context)
 
   const onChangeInputClasse = (event: NativeSyntheticEvent<TextInputChangeEventData>) => {
@@ -41,7 +40,6 @@ const ModalAddClasse = () => {
           idClasse: idClasse
         })
         await setIdClasseSelec(idClasse);
-        setRecarregarClasses('recarregar')
         setModalAddClasse(!modalAddClasse);
 
         //atualizando o estado da classe
@@ -83,7 +81,7 @@ const ModalAddClasse = () => {
             <TextInput placeholder='Nome da classe' onChange={onChangeInputClasse} style={styles.textInput}></TextInput>
             <Pressable
               style={[styles.button, styles.buttonClose]}
-              onPress={() => [onPressAddClasse(), setRecarregarClasses('recarregarClasses')]}>
+              onPress={() =>onPressAddClasse()}>
               <Text style={styles.textStyle}>Criar</Text>
             </Pressable>
           </View>

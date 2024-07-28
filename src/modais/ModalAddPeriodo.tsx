@@ -8,7 +8,7 @@ import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 const ModalAddPeriodo = () => {
 
   const [valuePeriodo, setValuePeriodo] = useState<string>('')
-  const { modalAddPeriodo, setModalAddPeriodo, idUsuario, setNomePeriodoSelec, setRecarregarPeriodo,
+  const { modalAddPeriodo, setModalAddPeriodo, idUsuario, setNomePeriodoSelec,
     setIdPeriodoSelec } = useContext(Context)
 
   const onChangeInputPeriodo = (event: NativeSyntheticEvent<TextInputChangeEventData>) => {
@@ -38,7 +38,6 @@ const ModalAddPeriodo = () => {
           idPeriodo: idPeriodo
         })
         await setIdPeriodoSelec(idPeriodo);
-        setRecarregarPeriodo('recarregar')
         setModalAddPeriodo(!modalAddPeriodo);
 
         //atualizando o estado do período
@@ -58,9 +57,6 @@ const ModalAddPeriodo = () => {
           ToastAndroid.SHORT)
       }
     }
-
-
-
   }
 
   return (
@@ -116,7 +112,6 @@ const styles = StyleSheet.create({
     backgroundColor: Globais.corTerciaria,
     borderRadius: 20,
     padding: 35,
-    // alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
