@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext } from 'react'
 import { SafeAreaView, FlatList, Text, StyleSheet, TouchableOpacity, View } from 'react-native'
 import firestore from '@react-native-firebase/firestore';
 import { Context } from "../data/Provider";
@@ -24,8 +24,7 @@ const Item = ({ item, onPress, onLongPress, backgroundColor, textColor }: ItemPr
 );
 
 const FlatListClasses = () => {
-  const { idPeriodoSelec, idClasseSelec, setIdClasseSelec, recarregarClasses, flagLoadClasses, setflagLoadAlunos, setflagLoadClasses,
-    setFlagLoadFrequencia, listaClasses, setListaClasses, setRecarregarClasses, idUsuario, setFlagLongPressClasse,
+  const { idPeriodoSelec, idClasseSelec, setIdClasseSelec, setflagLoadAlunos,setFlagLoadFrequencia, listaClasses, idUsuario, setFlagLongPressClasse,
     setSelectedIdAluno, setNumAlunoSelec, setFlagLongPressAluno, nomePeriodoSelec, setFlagLongPressDataFreq, setFlagLongPressDataNotas, setNomeClasseSelec } = useContext(Context)
 
   const onPressItem = (item: any) => {

@@ -64,6 +64,7 @@ const consultasBD = () => {
 
   useEffect(() => {
     console.log('consultaAlunos');
+    setListaAlunos([])
     //consulta da lista de alunos do DB.
     const unsub = firestore().collection(idUsuario)
       .doc(idPeriodoSelec).collection('Classes')
