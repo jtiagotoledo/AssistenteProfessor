@@ -46,7 +46,7 @@ const FabClasses = ()=>{
             <FloatingAction
             color={Globais.corPrimaria}
             actions={actions}
-            floatingIcon={<Icon name={'plus'} color={'white'}></Icon>}
+            floatingIcon={<Icon name={'plus'} size={18} color={'white'}></Icon>}
             onPressItem={name => {
                 name=='periodo'?setModalAddPeriodo(true):null
                 if(idPeriodoSelec!=''){
