@@ -46,8 +46,6 @@ const FlatListFrequencia = () => {
     .doc(idClasseSelec).collection('ListaAlunos')
 
   useEffect(() => {
-    console.log('dataSelec', dataSelec);
-
     listaAlunosRef.orderBy('numero').
       get().then(docSnapshot => {
         const alunos: any[] = []
@@ -61,7 +59,6 @@ const FlatListFrequencia = () => {
             }
           }
         });
-        console.log('alunos', alunos);
         setListaFrequencia(alunos)
       })
   }, [idPeriodoSelec, idClasseSelec, dataSelec, recarregarFrequencia])
