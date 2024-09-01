@@ -97,7 +97,6 @@ const CalendarioFrequencia = () => {
 
 
     setRecarregarFrequencia('recarregar');
-    setRecarregarAlunos('recarregar')
   }
 
   const renderCarregamento = () => {

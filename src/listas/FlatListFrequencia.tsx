@@ -49,7 +49,7 @@ const FlatListFrequencia = () => {
     console.log('dataSelec', dataSelec);
 
     listaAlunosRef.orderBy('numero').
-      onSnapshot(docSnapshot => {
+      get().then(docSnapshot => {
         const alunos: any[] = []
         docSnapshot.forEach((docSnapshot) => {
           let frequencias = docSnapshot.data().frequencias
@@ -64,35 +64,8 @@ const FlatListFrequencia = () => {
         console.log('alunos', alunos);
         setListaFrequencia(alunos)
       })
-  }, [idPeriodoSelec, idClasseSelec, dataSelec])
+  }, [idPeriodoSelec, idClasseSelec, dataSelec, recarregarFrequencia])
 
-  /* useEffect(() => {
-    setFlagLoadFrequencia('carregando')
-    listaAlunosRef.orderBy('numero').get().then((snapshot) => {
-      if (snapshot.empty) {
-        setFlagLoadFrequencia('vazio');
-      } else {
-        //consulta ao BD retorna a lista de alunos com nome, num, freq e id
-        snapshot.forEach((docSnapshot, index) => {
-          let frequencias = docSnapshot.data().frequencias
-          if (dataSelec != '') {
-            let idx = frequencias.findIndex((item: any) => item.data == dataSelec)
-            if (idx != -1) {
-              let frequencia = frequencias[idx].freq
-              alunos.push({ ...docSnapshot.data(), frequencia });
-            }
-          }
-          if (snapshot.size - index == 1) {
-            setFlagLoadFrequencia('carregado');
-          }
-        });
-      }
-    }).catch((erro) => {
-      console.error(erro);
-    })
-    setListaFrequencia(alunos)
-  }, [idClasseSelec, dataSelec, recarregarFrequencia]);
- */
   const onPressItemFreq = (item: any) => {
     const idAluno = item.idAluno;
     const index = listaFrequencia.findIndex((el: any) => el.idAluno === idAluno);
