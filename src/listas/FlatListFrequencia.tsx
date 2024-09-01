@@ -46,6 +46,8 @@ const FlatListFrequencia = () => {
     .doc(idClasseSelec).collection('ListaAlunos')
 
   useEffect(() => {
+    console.log('dataSelec', dataSelec);
+
     listaAlunosRef.orderBy('numero').
       onSnapshot(docSnapshot => {
         const alunos: any[] = []
@@ -59,11 +61,10 @@ const FlatListFrequencia = () => {
             }
           }
         });
+        console.log('alunos', alunos);
         setListaFrequencia(alunos)
-      }, err => {
-        console.log(`Encountered error: ${err}`);
-      });
-  }, [idPeriodoSelec, idClasseSelec,dataSelec])
+      })
+  }, [idPeriodoSelec, idClasseSelec, dataSelec])
 
   /* useEffect(() => {
     setFlagLoadFrequencia('carregando')
@@ -117,7 +118,6 @@ const FlatListFrequencia = () => {
       console.error(erro);
     })
 
-    setRecarregarAlunos('recarregar')
   }
 
   const renderItem = ({ item }: { item: ItemData }) => {
@@ -137,46 +137,18 @@ const FlatListFrequencia = () => {
   const renderCarregamento = () => {
     if (idClasseSelec != '') {
       if (dataSelec != '') {
-        switch (flagLoadFrequencia) {
-          case 'vazio':
-            return (
-              <View>
-                <Text style={styles.textLoad}>Adicione os alunos...</Text>
-              </View>
-            )
-          case 'carregando':
-            return (
-              <View>
-                <Text style={styles.textLoad}>Carregando...</Text>
-              </View>
-            )
-          case 'carregado':
-            return (
-              <FlatList
-                data={listaFrequencia}
-                renderItem={renderItem}
-                keyExtractor={item => item.idAluno}
-                contentContainerStyle={{ paddingBottom: 120 }}
-                extraData={selectedId}
-              />
-            )
-        }
-      } else {
         return (
-          <View>
-            <Text style={styles.textLoad}>Selecione uma data...</Text>
-          </View>
+          <FlatList
+            data={listaFrequencia}
+            renderItem={renderItem}
+            keyExtractor={item => item.idAluno}
+            contentContainerStyle={{ paddingBottom: 120 }}
+            extraData={selectedId}
+          />
         )
       }
-    } else {
-      return (
-        <View>
-          <Text style={styles.textLoad}>Selecione uma Classe...</Text>
-        </View>
-      )
     }
   }
-
   return (
     <SafeAreaView style={styles.container}>
       {renderCarregamento()}

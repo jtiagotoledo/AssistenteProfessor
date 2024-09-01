@@ -49,8 +49,6 @@ const Frequencia = () => {
 
     useEffect(() => {
         const data = async () => {
-            console.log('entrounasAtividades');
-            
             //Recuperar atividades da data selecionada no BD.
             datasFrequenciasRef.doc(dataSelec).get().then((snapshot) => {
                 snapshot.exists ?
