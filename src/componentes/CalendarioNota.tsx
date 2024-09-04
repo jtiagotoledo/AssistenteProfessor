@@ -113,7 +113,7 @@ const CalendarioNota = () => {
           return (
             <View style={styles.container}>
               <Calendar
-                onDayPress={day => {
+                onDayPress={(day:any) => {
                   setDataSelec(day.dateString);
                   setFlagLoadNotas('carregando');
                   setRecarregarNotas('recarregarFrequencia');

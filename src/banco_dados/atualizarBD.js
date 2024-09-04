@@ -2,9 +2,15 @@ import { useEffect, useContext } from "react";
 import firestore from '@react-native-firebase/firestore';
 import { Context } from "../data/Provider";
 
-const atualizarFrequencia = (listaFrequencia) =>{
 
-    console.log('listaFrequencia',listaFrequencia);
-   
+export function atualizarFrequencia(listaFreq,idUsuario,idPeriodoSelec,idClasseSelec) {
+
+    let listaAlunosRef = firestore().collection(idUsuario)
+    .doc(idPeriodoSelec).collection('Classes')
+    .doc(idClasseSelec).collection('ListaAlunos')
+
+    console.log('ddd',listaFreq,idUsuario,idPeriodoSelec,idClasseSelec);
+    
+    
 }
-export default atualizarFrequencia;
+

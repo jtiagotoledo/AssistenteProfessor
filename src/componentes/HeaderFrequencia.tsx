@@ -3,7 +3,7 @@ import { StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
 import { Header as HeaderRNE } from '@rneui/themed';
 import { TouchableOpacity } from 'react-native';
 
-import atualizarFrequencia from "../banco_dados/atualizarBD"
+import {atualizarFrequencia} from "../banco_dados/atualizarBD"
 
 import AntIcon from 'react-native-vector-icons/AntDesign';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
@@ -18,14 +18,15 @@ type HeaderComponentProps = {
 
 const HeaderFrequencia: React.FunctionComponent<HeaderComponentProps> = (props) => {
 
-  const { setModalMenu, flagLongPressDataFreq, setModalDelDataFreq, listaFrequencia } = useContext(Context);
+  const { setModalMenu, flagLongPressDataFreq, setModalDelDataFreq, listaFrequencia,
+    idUsuario,idPeriodoSelec,idClasseSelec} = useContext(Context);
 
   const onPressBin = () => {
     flagLongPressDataFreq ? setModalDelDataFreq(true) : null
   }
 
   const onPressSave = () => {
-    atualizarFrequencia(listaFrequencia)
+    atualizarFrequencia(listaFrequencia,idUsuario,idPeriodoSelec,idClasseSelec)
   }
 
   return (
