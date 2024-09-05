@@ -9,8 +9,26 @@ export function atualizarFrequencia(listaFreq,idUsuario,idPeriodoSelec,idClasseS
     .doc(idPeriodoSelec).collection('Classes')
     .doc(idClasseSelec).collection('ListaAlunos')
 
-    console.log('ddd',listaFreq,idUsuario,idPeriodoSelec,idClasseSelec);
+    
+    Object.values(listaFreq).forEach(valor=>{
+        console.log('valor',valor.frequencia);
+        
+    })
     
     
+    /* //consulta ao array de frequencias
+    listaAlunosRef.doc(idAluno).get().then((docSnapshot) => {
+      let datas = docSnapshot.data()?.frequencias
+      //modificando o array
+      datas.map((item: any) => {
+        if (item.data == dataSelec) {
+          item.freq = statusFrequencia
+        }
+      })
+      //atualizando o BD com o novo array
+      listaAlunosRef.doc(idAluno).update({
+        frequencias: datas
+      })
+    }) */
 }
 

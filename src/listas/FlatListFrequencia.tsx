@@ -71,6 +71,7 @@ const FlatListFrequencia = () => {
     setSelectedId(item.idAluno);
     setNumAlunoSelec(item.numero.toString());
 
+    
     /* //consulta ao array de frequencias
     listaAlunosRef.doc(idAluno).get().then((docSnapshot) => {
       let datas = docSnapshot.data()?.frequencias
