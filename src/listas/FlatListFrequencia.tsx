@@ -18,24 +18,10 @@ type ItemProps = {
   textColor: string;
 };
 
-const Item = ({ item, onPress, backgroundColor, textColor }: ItemProps) => (
-  <View style={styles.containerItem}>
-    <View style={[styles.item, styles.nome, { flexDirection: 'row' }]}>
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Text style={[styles.titleNum]}>{item.numero}</Text>
-      </View>
-      <View style={{ flex: 10, justifyContent: 'center' }}>
-        <Text style={[styles.titleNome]}>{item.nome}</Text>
-      </View>
-      <TouchableOpacity onPress={onPress} style={[styles.item]}>
-        <Text style={[styles.titleFrequencia]}>{item.frequencia}</Text>
-      </TouchableOpacity>
-    </View>
-  </View>
 
-);
 
 const FlatListFrequencia = () => {
+  const [statusFreq, setStatusFreq] = useState('');
   const [selectedId, setSelectedId] = useState<string>();
   const { idPeriodoSelec, idClasseSelec, setNumAlunoSelec, recarregarFrequencia,
     dataSelec, flagLoadFrequencia, setFlagLoadFrequencia, setRecarregarFrequencia,
@@ -66,28 +52,29 @@ const FlatListFrequencia = () => {
   const onPressItemFreq = (item: any) => {
     const idAluno = item.idAluno;
     const index = listaFrequencia.findIndex((el: any) => el.idAluno === idAluno);
-    let statusFrequencia = item.frequencia == 'P' ? 'A' : 'P'
-    listaFrequencia[index].frequencia = statusFrequencia
+    setStatusFreq(item.frequencia == 'P' ? 'A' : 'P')
+    let _statusFrequencia = item.frequencia == 'P' ? 'A' : 'P'
+    listaFrequencia[index].frequencia = _statusFrequencia
     setSelectedId(item.idAluno);
     setNumAlunoSelec(item.numero.toString());
-
-    
-    /* //consulta ao array de frequencias
-    listaAlunosRef.doc(idAluno).get().then((docSnapshot) => {
-      let datas = docSnapshot.data()?.frequencias
-      //modificando o array
-      datas.map((item: any) => {
-        if (item.data == dataSelec) {
-          item.freq = statusFrequencia
-        }
-      })
-      //atualizando o BD com o novo array
-      listaAlunosRef.doc(idAluno).update({
-        frequencias: datas
-      })
-    }) */
-
   }
+
+  const Item = ({ item, onPress, backgroundColor, textColor }: ItemProps) => (
+    <View style={styles.containerItem}>
+      <View style={[styles.item, styles.nome, { flexDirection: 'row' }]}>
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <Text style={[styles.titleNum]}>{item.numero}</Text>
+        </View>
+        <View style={{ flex: 10, justifyContent: 'center' }}>
+          <Text style={[styles.titleNome]}>{item.nome}</Text>
+        </View>
+        <TouchableOpacity onPress={onPress} style={[styles.item]}>
+          <Text style={[styles.titleFrequencia]}>{item.frequencia}</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+
+  );
 
   const renderItem = ({ item }: { item: ItemData }) => {
     const backgroundColor = item.numero === selectedId ? Globais.corPrimaria : Globais.corTerciaria;
