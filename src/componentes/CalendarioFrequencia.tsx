@@ -94,8 +94,6 @@ const CalendarioFrequencia = () => {
         classe: nomeClasseSelec,
         data: dataSelec
       })
-
-
     setRecarregarFrequencia('recarregar');
   }
 

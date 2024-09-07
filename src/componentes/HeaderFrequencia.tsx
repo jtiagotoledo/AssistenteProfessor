@@ -36,7 +36,7 @@ const HeaderFrequencia: React.FunctionComponent<HeaderComponentProps> = (props) 
       leftComponent={
         <View style={styles.headerRight}>
           <TouchableOpacity onPress={() => setModalMenu(true)}>
-            <AntIcon name="menufold" color="white" size={20} />
+            <AntIcon name="menufold" color="white" size={24} />
           </TouchableOpacity>
         </View>
       }
@@ -48,7 +48,7 @@ const HeaderFrequencia: React.FunctionComponent<HeaderComponentProps> = (props) 
               selectable={false}
               name="save"
               color={'rgba(255,255,255,1)'}
-              size={20} />
+              size={24} />
           </TouchableWithoutFeedback>
           <TouchableWithoutFeedback onPress={onPressBin}>
             <FontAwesomeIcon
@@ -56,7 +56,7 @@ const HeaderFrequencia: React.FunctionComponent<HeaderComponentProps> = (props) 
               selectable={false}
               name="trash-o"
               color={flagLongPressDataFreq ? 'rgba(255,255,255,1)' : 'rgba(255,255,255,0.6)'}
-              size={20} />
+              size={24} />
           </TouchableWithoutFeedback>
         </View>
       }

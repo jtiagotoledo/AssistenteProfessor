@@ -1,6 +1,5 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { SafeAreaView, FlatList, View, Text, StyleSheet, TouchableOpacity } from 'react-native'
-import firestore from '@react-native-firebase/firestore';
 import { Context } from "../data/Provider";
 import Globais from '../data/Globais';
 
@@ -23,31 +22,7 @@ type ItemProps = {
 const FlatListFrequencia = () => {
   const [statusFreq, setStatusFreq] = useState('');
   const [selectedId, setSelectedId] = useState<string>();
-  const { idPeriodoSelec, idClasseSelec, setNumAlunoSelec, recarregarFrequencia,
-    dataSelec, flagLoadFrequencia, setFlagLoadFrequencia, setRecarregarFrequencia,
-    listaFrequencia, setListaFrequencia, idUsuario, setRecarregarAlunos } = useContext(Context)
-
-  let listaAlunosRef = firestore().collection(idUsuario)
-    .doc(idPeriodoSelec).collection('Classes')
-    .doc(idClasseSelec).collection('ListaAlunos')
-
-  useEffect(() => {
-    listaAlunosRef.orderBy('numero').
-      onSnapshot(docSnapshot => {
-        const alunos: any[] = []
-        docSnapshot.forEach((docSnapshot) => {
-          let frequencias = docSnapshot.data().frequencias
-          if (dataSelec != '') {
-            let idx = frequencias.findIndex((item: any) => item.data == dataSelec)
-            if (idx != -1) {
-              let frequencia = frequencias[idx].freq
-              alunos.push({ ...docSnapshot.data(), frequencia });
-            }
-          }
-        });
-        setListaFrequencia(alunos)
-      })
-  }, [idPeriodoSelec, idClasseSelec, dataSelec, recarregarFrequencia])
+  const { idClasseSelec, setNumAlunoSelec, dataSelec, listaFrequencia } = useContext(Context)
 
   const onPressItemFreq = (item: any) => {
     const idAluno = item.idAluno;

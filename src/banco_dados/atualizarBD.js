@@ -3,7 +3,9 @@ import firestore from '@react-native-firebase/firestore';
 import { Context } from "../data/Provider";
 
 
-export function atualizarFrequencia(listaFreq, idUsuario, idPeriodoSelec, idClasseSelec, dataSelec) {
+export async function atualizarFrequencia(listaFreq, idUsuario, idPeriodoSelec, idClasseSelec, dataSelec) {
+  
+  const batch = firestore().batch()
 
   let listaAlunosRef = firestore().collection(idUsuario)
     .doc(idPeriodoSelec).collection('Classes')
@@ -19,11 +21,19 @@ export function atualizarFrequencia(listaFreq, idUsuario, idPeriodoSelec, idClas
         item.freq = valor.frequencia
       }
     })
+    
     //atualizando o BD com o novo array
-    listaAlunosRef.doc(valor.idAluno).update({
+    batch.update(listaAlunosRef.doc(valor.idAluno),{
       frequencias: datas
-    }).then(console.log('salvo com sucesso'))
-    .catch(console.log('erro ao salvar frequência'))
+    })
   })
+  
+  try {
+    // Commit do batch
+    await batch.commit();
+    console.log('Batch write successfully executed!');
+  } catch (error) {
+    console.error('Error performing batch write: ', error);
+  }
 }
 
