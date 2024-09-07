@@ -32,7 +32,6 @@ const FlatListFrequencia = () => {
     listaFrequencia[index].frequencia = _statusFrequencia
     setSelectedId(item.idAluno);
     setNumAlunoSelec(item.numero.toString());
-    console.log(listaFrequencia);
   }
 
   const Item = ({ item, onPress, backgroundColor, textColor }: ItemProps) => (

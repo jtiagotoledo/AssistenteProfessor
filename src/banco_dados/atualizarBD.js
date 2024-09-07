@@ -2,7 +2,7 @@ import { ToastAndroid } from "react-native";
 import firestore from '@react-native-firebase/firestore';
 
 export async function atualizarFrequencia(listaFreq, idUsuario, idPeriodoSelec, idClasseSelec, dataSelec) {
-  
+
   const batch = firestore().batch()
 
   let listaAlunosRef = firestore().collection(idUsuario)
@@ -13,19 +13,37 @@ export async function atualizarFrequencia(listaFreq, idUsuario, idPeriodoSelec, 
 
     let datas = valor.frequencias
 
-    //modificando o array
+    //modificando o array de frequências
     datas.map((item) => {
       if (item.data == dataSelec) {
         item.freq = valor.frequencia
       }
     })
-    
+
     //atualizando o BD com o novo array
-    batch.update(listaAlunosRef.doc(valor.idAluno),{
+    batch.update(listaAlunosRef.doc(valor.idAluno), {
       frequencias: datas
     })
+
+    //contagem e cálculo da porcentagem de frequência
+    let contFreq = 0, porcFreq 
+    let qntDatas = Object.keys(datas).length
+
+    datas.forEach((item) => {
+      if (item.freq === 'P') contFreq += 1
+    })
+
+    if(qntDatas>0){
+      porcFreq = ((contFreq/qntDatas)*100).toFixed(1).toString()
+    }else{
+      porcFreq = '...'
+    }
+
+    console.log('porcFreq',porcFreq);
+    
+    
   })
-  
+
   try {
     //executa gravação em lote
     await batch.commit();

@@ -47,7 +47,7 @@ const HeaderFrequencia: React.FunctionComponent<HeaderComponentProps> = (props) 
               style={styles.icon}
               selectable={false}
               name="save"
-              color={'rgba(255,255,255,1)'}
+              color={dataSelec !== '' ? 'rgba(255,255,255,1)' : 'rgba(255,255,255,0.6)'}
               size={24} />
           </TouchableWithoutFeedback>
           <TouchableWithoutFeedback onPress={onPressBin}>
