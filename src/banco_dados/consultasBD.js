@@ -6,7 +6,11 @@ const consultasBD = () => {
 
   const { idUsuario, setListaPeriodos, setIdPeriodoSelec, setIdClasseSelec,
     setNomePeriodoSelec, idPeriodoSelec, setListaClasses, idClasseSelec, setListaAlunos,
-    dataSelec, setListaFrequencia } = useContext(Context)
+    dataSelec, setListaFrequencia, setListaNotas } = useContext(Context)
+
+  const listaAlunosRef = firestore().collection(idUsuario)
+    .doc(idPeriodoSelec).collection('Classes')
+    .doc(idClasseSelec).collection('ListaAlunos')
 
   useEffect(() => {
     //recuperar dados dos estados do app
@@ -78,27 +82,47 @@ const consultasBD = () => {
   }, [idClasseSelec]);
 
   useEffect(() => {
-    const unsub = firestore().collection(idUsuario)
-    .doc(idPeriodoSelec).collection('Classes')
-    .doc(idClasseSelec).collection('ListaAlunos')
-    .orderBy('numero').onSnapshot(docSnapshot => {
-        const alunos = []
-        docSnapshot.forEach((docSnapshot) => {
-          let frequencias = docSnapshot.data().frequencias
-          if (dataSelec != '') {
-            let idx = frequencias.findIndex((item) => item.data == dataSelec)
-            if (idx != -1) {
-              let frequencia = frequencias[idx].freq
-              alunos.push({ ...docSnapshot.data(), frequencia });
-            }
+    //consulta ao BD retorna a lista de alunos com nome, num, frequencias e id
+    const unsub = listaAlunosRef.orderBy('numero').onSnapshot(docSnapshot => {
+      const alunos = []
+      docSnapshot.forEach((docSnapshot) => {
+        let frequencias = docSnapshot.data().frequencias
+        if (dataSelec != '') {
+          let idx = frequencias.findIndex((item) => item.data == dataSelec)
+          if (idx != -1) {
+            let frequencia = frequencias[idx].freq
+            alunos.push({ ...docSnapshot.data(), frequencia });
           }
-        });
-        setListaFrequencia(alunos)
-      })
-      return () => {
-        unsub();
-      };
+        }
+      });
+      setListaFrequencia(alunos)
+    })
+    return () => {
+      unsub();
+    };
   }, [idPeriodoSelec, idClasseSelec, dataSelec])
+
+  useEffect(() => {
+    //consulta ao BD retorna a lista de alunos com nome, num, notas e id
+    const unsub = listaAlunosRef.orderBy('numero').onSnapshot(docSnapshot => {
+      const alunos = []
+      docSnapshot.forEach((docSnapshot) => {
+        let notas = docSnapshot.data().notas
+        if (dataSelec != '') {
+          let idx = notas.findIndex((item) => item.data == dataSelec)
+          if (idx != -1) {
+            let nota = notas[idx].nota
+            alunos.push({ ...docSnapshot.data(), nota });
+          }
+        }
+      });
+      console.log('alunos',alunos);
+      setListaNotas(alunos);
+    })
+    return () => {
+      unsub();
+    };
+  }, [idPeriodoSelec,idClasseSelec, dataSelec]);
 }
 
 export default consultasBD

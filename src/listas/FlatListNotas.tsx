@@ -18,9 +18,8 @@ const FlatListNotas = () => {
   const [selection, setSelection] = useState({ start: 0, end: 0 });
   const [textNota, setTextNota] = useState('');
   const [idNota, setIdNota] = useState('');
-  const { idPeriodoSelec, idClasseSelec, dataSelec, flagLoadNotas,
-    setFlagLoadNotas, setRecarregarNotas, listaNotas, setListaNotas,
-    idUsuario, setTecladoAtivo, recarregarNotas, setRecarregarAlunos } = useContext(Context)
+  const { idPeriodoSelec, idClasseSelec, dataSelec, listaNotas, 
+    idUsuario, setTecladoAtivo } = useContext(Context)
 
   let listaAlunosRef = firestore().collection(idUsuario)
     .doc(idPeriodoSelec).collection('Classes')
@@ -28,8 +27,6 @@ const FlatListNotas = () => {
 
   const onChangeNota = (item: ItemData, text: string) => {
     const index = listaNotas.findIndex((el: any) => el.idAluno === item.idAluno);
-    console.log(index);
-    
     listaNotas[index].nota = text
     setTextNota(text)
     setIdNota(item.idAluno)
@@ -54,7 +51,6 @@ const FlatListNotas = () => {
       }).catch((erro) => {
         console.error(erro);
       })
-      setRecarregarAlunos('recarregar')
     }
   }
 
@@ -75,32 +71,7 @@ const FlatListNotas = () => {
     };
   }, []);
 
-  useEffect(() => {
-    setFlagLoadNotas('carregando');
-    listaAlunosRef.orderBy('numero').get().then(snapshot => {
-      if (snapshot.empty) {
-        setFlagLoadNotas('vazio');
-      } else {
-        //consulta ao BD retorna a lista de alunos com nome, num, notas e id
-        snapshot.forEach((docSnapshot, index) => {
-          let notas = docSnapshot.data().notas
-          if (dataSelec != '') {
-            let idx = notas.findIndex((item: any) => item.data == dataSelec)
-            if (idx != -1) {
-              let nota = notas[idx].nota
-              alunos.push({ ...docSnapshot.data(), nota });
-            }
-          }
-          if (snapshot.size - index == 1) {
-            setFlagLoadNotas('carregado');
-          }
-        });
-        setListaNotas(alunos);
-      }
-    }).catch((erro) => {
-      console.error(erro);
-    })
-  }, [idClasseSelec, dataSelec, recarregarNotas]);
+
 
   const renderItem = ({ item }: { item: ItemData }) => {
     const scrollToItem = (itemId: any, itemNumero: any) => {
@@ -112,13 +83,13 @@ const FlatListNotas = () => {
 
     const nextItem = (itemId: any, itemNumero: any, itemNota: any) => {
       const index = listaNotas.findIndex((item: any) => item.idAluno === itemId);
-      const numProxAluno = listaNotas[index+1]?.numero
-      console.log('numAluno',  numProxAluno);
-      
+      const numProxAluno = listaNotas[index + 1]?.numero
+      console.log('numAluno', numProxAluno);
+
       setTimeout(() => {
         if (index !== -1 && flatListRef.current && listaNotas[index + 1] != null) {
           textInputRefs.current[numProxAluno]?.focus()
-          const sizeText = listaNotas[numProxAluno]?.nota.length||0
+          const sizeText = listaNotas[numProxAluno]?.nota.length || 0
           setSelection({ start: sizeText || 0, end: sizeText || 0 })
         }
       }, 300)
@@ -157,31 +128,16 @@ const FlatListNotas = () => {
   const renderCarregamento = () => {
     if (idClasseSelec != '') {
       if (dataSelec != '') {
-        switch (flagLoadNotas) {
-          case 'vazio':
-            return (
-              <View>
-                <Text style={styles.textLoad}>Adicione os alunos...</Text>
-              </View>
-            )
-          case 'carregando':
-            return (
-              <View>
-                <Text style={styles.textLoad}>Carregando...</Text>
-              </View>
-            )
-          case 'carregado':
-            return (
-              <FlatList
-                data={listaNotas}
-                renderItem={renderItem}
-                ref={flatListRef}
-                keyExtractor={item => item.idAluno}
-                contentContainerStyle={{ paddingBottom: 300 }}
-                keyboardShouldPersistTaps='handled'
-              />
-            )
-        }
+        return (
+          <FlatList
+            data={listaNotas}
+            renderItem={renderItem}
+            ref={flatListRef}
+            keyExtractor={item => item.idAluno}
+            contentContainerStyle={{ paddingBottom: 300 }}
+            keyboardShouldPersistTaps='handled'
+          />
+        )
       } else {
         return (
           <View>

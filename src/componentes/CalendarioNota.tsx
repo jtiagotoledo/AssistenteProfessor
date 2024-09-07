@@ -96,7 +96,6 @@ const CalendarioNota = () => {
       })
 
     setRecarregarNotas('recarregarNotas')
-    setRecarregarAlunos('recarregar')
 
   }
 
