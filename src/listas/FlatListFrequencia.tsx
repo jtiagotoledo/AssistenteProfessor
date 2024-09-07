@@ -33,7 +33,7 @@ const FlatListFrequencia = () => {
 
   useEffect(() => {
     listaAlunosRef.orderBy('numero').
-      get().then(docSnapshot => {
+      onSnapshot(docSnapshot => {
         const alunos: any[] = []
         docSnapshot.forEach((docSnapshot) => {
           let frequencias = docSnapshot.data().frequencias
@@ -57,6 +57,7 @@ const FlatListFrequencia = () => {
     listaFrequencia[index].frequencia = _statusFrequencia
     setSelectedId(item.idAluno);
     setNumAlunoSelec(item.numero.toString());
+    console.log(listaFrequencia);
   }
 
   const Item = ({ item, onPress, backgroundColor, textColor }: ItemProps) => (
