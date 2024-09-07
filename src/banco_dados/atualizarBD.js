@@ -39,8 +39,9 @@ export async function atualizarFrequencia(listaFreq, idUsuario, idPeriodoSelec, 
       porcFreq = '...'
     }
 
-    console.log('porcFreq',porcFreq);
-    
+    batch.update(listaAlunosRef.doc(valor.idAluno), {
+      porcFreq
+    })    
     
   })
 

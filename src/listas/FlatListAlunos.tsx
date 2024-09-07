@@ -9,7 +9,7 @@ type ItemData = {
   inativo: string;
   idAluno: string;
   mediaNotas: string;
-  porcentFreq: string;
+  porcFreq: string;
 };
 
 type ItemProps = {
@@ -32,7 +32,7 @@ const Item = ({ item, onPress, onLongPress, backgroundColor, textColor }: ItemPr
     </View>
     <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', paddingTop: 4 }}>
       <Text style={{ fontSize: 12 }}>Média: {item.mediaNotas || ' ...'}</Text>
-      <Text style={{ fontSize: 12 }}>%Freq: {item.porcentFreq || ' ...'}</Text>
+      <Text style={{ fontSize: 12 }}>%Freq: {item.porcFreq || ' ...'}</Text>
     </View>
   </TouchableOpacity>
 );

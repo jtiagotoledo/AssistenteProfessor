@@ -46,6 +46,8 @@ const ModalAddAluno = () => {
           nome: valueNome,
           inativo: alunoInativo,
           idAluno: idAluno,
+          porcFreq:'...',
+          mediaNota:'...',
           frequencias: [],
           notas: [],
         })
