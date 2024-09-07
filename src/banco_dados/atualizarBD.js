@@ -58,3 +58,7 @@ export async function atualizarFrequencia(listaFreq, idUsuario, idPeriodoSelec, 
   }
 }
 
+export async function atualizarNotas() {
+  console.log('atualizarFrequencia');
+}
+

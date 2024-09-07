@@ -5,11 +5,10 @@ import { TouchableOpacity } from 'react-native';
 import { Context } from "../data/Provider";
 import Globais from '../data/Globais';
 
-import { atualizarFrequencia } from "../banco_dados/atualizarBD"
+import { atualizarNotas } from "../banco_dados/atualizarBD"
 
 import AntIcon from 'react-native-vector-icons/AntDesign';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
-
 
 
 type HeaderComponentProps = {
@@ -17,17 +16,16 @@ type HeaderComponentProps = {
   view?: string;
 };
 
-const HeaderFrequencia: React.FunctionComponent<HeaderComponentProps> = (props) => {
+const HeaderNotas: React.FunctionComponent<HeaderComponentProps> = (props) => {
 
-  const { setModalMenu, flagLongPressDataFreq, setModalDelDataFreq, listaFrequencia,
-    idUsuario, idPeriodoSelec, idClasseSelec, dataSelec } = useContext(Context);
+  const { setModalDelDataNotas, setModalMenu, flagLongPressDataNotas, dataSelec } = useContext(Context);
 
   const onPressBin = () => {
-    flagLongPressDataFreq ? setModalDelDataFreq(true) : null
+    flagLongPressDataNotas ? setModalDelDataNotas(true) : null
   }
 
   const onPressSave = () => {
-    atualizarFrequencia(listaFrequencia, idUsuario, idPeriodoSelec, idClasseSelec, dataSelec)
+    atualizarNotas()
   }
 
   return (
@@ -56,14 +54,13 @@ const HeaderFrequencia: React.FunctionComponent<HeaderComponentProps> = (props) 
               style={styles.icon}
               selectable={false}
               name="trash-o"
-              color={flagLongPressDataFreq ? 'rgba(255,255,255,1)' : 'rgba(255,255,255,0.6)'}
+              color={flagLongPressDataNotas ? 'rgba(255,255,255,1)' : 'rgba(255,255,255,0.6)'}
               size={24} />
           </TouchableWithoutFeedback>
         </View>
       }
-      centerComponent={{ text: 'Frequência', style: styles.heading }}
+      centerComponent={{ text: 'Notas', style: styles.heading }}
     />
-
   );
 };
 
@@ -97,4 +94,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default HeaderFrequencia;
+export default HeaderNotas;
