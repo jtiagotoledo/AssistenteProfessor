@@ -1,7 +1,5 @@
-import { useEffect, useContext } from "react";
+import { ToastAndroid } from "react-native";
 import firestore from '@react-native-firebase/firestore';
-import { Context } from "../data/Provider";
-
 
 export async function atualizarFrequencia(listaFreq, idUsuario, idPeriodoSelec, idClasseSelec, dataSelec) {
   
@@ -29,11 +27,15 @@ export async function atualizarFrequencia(listaFreq, idUsuario, idPeriodoSelec, 
   })
   
   try {
-    // Commit do batch
+    //executa gravação em lote
     await batch.commit();
-    console.log('Batch write successfully executed!');
+    ToastAndroid.show(
+      'Frequência salva com sucesso!',
+      ToastAndroid.SHORT)
   } catch (error) {
-    console.error('Error performing batch write: ', error);
+    ToastAndroid.show(
+      'Erro ao salvar frequência:' + error,
+      ToastAndroid.SHORT)
   }
 }
 
