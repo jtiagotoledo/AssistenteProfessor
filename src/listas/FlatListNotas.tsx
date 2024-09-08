@@ -51,18 +51,14 @@ const FlatListNotas = () => {
       }
     };
 
-    const nextItem = (itemId: any, itemNumero: any, itemNota: any) => {
+    const nextItem = (itemId: any) => {
       const index = listaNotas.findIndex((item: any) => item.idAluno === itemId);
       const numProxAluno = listaNotas[index + 1]?.numero
-      console.log('numAluno', numProxAluno);
-
-      setTimeout(() => {
-        if (index !== -1 && flatListRef.current && listaNotas[index + 1] != null) {
-          textInputRefs.current[numProxAluno]?.focus()
-          const sizeText = listaNotas[numProxAluno]?.nota.length || 0
-          setSelection({ start: sizeText || 0, end: sizeText || 0 })
-        }
-      }, 300)
+      const sizeText = listaNotas[numProxAluno - 1]?.nota.length || 0
+      setSelection({ start: sizeText || 0, end: sizeText || 0 })
+      if (index !== -1 && flatListRef.current && listaNotas[index + 1] != null) {
+        textInputRefs.current[numProxAluno]?.focus()
+      }
     };
 
     const onSelectionChange = (event: any) => {
@@ -85,8 +81,7 @@ const FlatListNotas = () => {
             onChangeText={(text) => onChangeNota(item, text)}
             defaultValue={item.nota}
             onFocus={() => [scrollToItem(item.idAluno, item.numero)]}
-            // onBlur={() => [salvarNota(item.idAluno)]}
-            onSubmitEditing={() => [nextItem(item.idAluno, item.numero, item.nota), /* salvarNota(item.idAluno) */]}
+            onSubmitEditing={() => nextItem(item.idAluno)}
             selection={selection}
             onSelectionChange={(syntheticEvent) => onSelectionChange(syntheticEvent)}>
           </TextInput>

@@ -116,7 +116,6 @@ const consultasBD = () => {
           }
         }
       });
-      console.log('alunos',alunos);
       setListaNotas(alunos);
     })
     return () => {
