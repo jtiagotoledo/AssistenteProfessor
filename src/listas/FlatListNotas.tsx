@@ -12,46 +12,18 @@ type ItemData = {
 };
 
 const FlatListNotas = () => {
-  const alunos: any[] = []
   const flatListRef = useRef<FlatList>(null);
   const textInputRefs = useRef<TextInput[]>([]);
   const [selection, setSelection] = useState({ start: 0, end: 0 });
   const [textNota, setTextNota] = useState('');
   const [idNota, setIdNota] = useState('');
-  const { idPeriodoSelec, idClasseSelec, dataSelec, listaNotas, 
-    idUsuario, setTecladoAtivo } = useContext(Context)
-
-  let listaAlunosRef = firestore().collection(idUsuario)
-    .doc(idPeriodoSelec).collection('Classes')
-    .doc(idClasseSelec).collection('ListaAlunos')
+  const { idClasseSelec, dataSelec, listaNotas, setTecladoAtivo } = useContext(Context)
 
   const onChangeNota = (item: ItemData, text: string) => {
     const index = listaNotas.findIndex((el: any) => el.idAluno === item.idAluno);
     listaNotas[index].nota = text
     setTextNota(text)
     setIdNota(item.idAluno)
-  }
-
-  const salvarNota = (idAluno: string) => {
-    if (textNota != '') {
-      //consulta ao array de notas
-      listaAlunosRef.doc(idAluno).get().then((docSnapshot) => {
-        let datas = docSnapshot.data()?.notas
-
-        //modificando o array
-        datas.map((item: any) => {
-          if (item.data == dataSelec) {
-            item.nota = textNota
-          }
-        })
-        //atulaizando o BD com o novo array
-        listaAlunosRef.doc(idAluno).update({
-          notas: datas
-        })
-      }).catch((erro) => {
-        console.error(erro);
-      })
-    }
   }
 
   useEffect(() => {
@@ -70,8 +42,6 @@ const FlatListNotas = () => {
       keyboardDidShowListener.remove();
     };
   }, []);
-
-
 
   const renderItem = ({ item }: { item: ItemData }) => {
     const scrollToItem = (itemId: any, itemNumero: any) => {
@@ -115,8 +85,8 @@ const FlatListNotas = () => {
             onChangeText={(text) => onChangeNota(item, text)}
             defaultValue={item.nota}
             onFocus={() => [scrollToItem(item.idAluno, item.numero)]}
-            onBlur={() => [salvarNota(item.idAluno)]}
-            onSubmitEditing={() => [nextItem(item.idAluno, item.numero, item.nota), salvarNota(item.idAluno)]}
+            // onBlur={() => [salvarNota(item.idAluno)]}
+            onSubmitEditing={() => [nextItem(item.idAluno, item.numero, item.nota), /* salvarNota(item.idAluno) */]}
             selection={selection}
             onSelectionChange={(syntheticEvent) => onSelectionChange(syntheticEvent)}>
           </TextInput>

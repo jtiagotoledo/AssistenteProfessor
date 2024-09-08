@@ -18,14 +18,15 @@ type HeaderComponentProps = {
 
 const HeaderNotas: React.FunctionComponent<HeaderComponentProps> = (props) => {
 
-  const { setModalDelDataNotas, setModalMenu, flagLongPressDataNotas, dataSelec } = useContext(Context);
+  const { setModalDelDataNotas, setModalMenu, flagLongPressDataNotas, dataSelec,
+    listaNotas, idUsuario, idPeriodoSelec, idClasseSelec} = useContext(Context);
 
   const onPressBin = () => {
     flagLongPressDataNotas ? setModalDelDataNotas(true) : null
   }
 
   const onPressSave = () => {
-    atualizarNotas()
+    atualizarNotas(listaNotas, idUsuario, idPeriodoSelec, idClasseSelec, dataSelec)
   }
 
   return (
