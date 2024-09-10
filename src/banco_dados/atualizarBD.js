@@ -62,7 +62,7 @@ export async function atualizarNotas(listaNotas, idUsuario, idPeriodoSelec, idCl
     .doc(idPeriodoSelec).collection('Classes')
     .doc(idClasseSelec).collection('ListaAlunos')
 
-  const batch = firestore().batch()
+    const batch = firestore().batch()
 
   Object.values(listaNotas).forEach(valor => {
     let datas = valor.notas

@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
-import { Keyboard, SafeAreaView, FlatList, View, Text, StyleSheet, StatusBar, TextInput } from 'react-native'
-import firestore from '@react-native-firebase/firestore';
+import { Keyboard, SafeAreaView, FlatList, View, Text, StyleSheet, AppState, TextInput } from 'react-native'
 import { Context } from "../data/Provider";
 import Globais from '../data/Globais';
+import { atualizarNotas } from "../banco_dados/atualizarBD"
 
 type ItemData = {
   nome: string;
@@ -13,18 +13,32 @@ type ItemData = {
 
 const FlatListNotas = () => {
   const flatListRef = useRef<FlatList>(null);
+  const listaNotasRef = useRef({})
   const textInputRefs = useRef<TextInput[]>([]);
   const [selection, setSelection] = useState({ start: 0, end: 0 });
   const [textNota, setTextNota] = useState('');
   const [idNota, setIdNota] = useState('');
-  const { idClasseSelec, dataSelec, listaNotas, setTecladoAtivo } = useContext(Context)
+  const { idClasseSelec, dataSelec, listaNotas, setTecladoAtivo,
+    idUsuario, idPeriodoSelec} = useContext(Context)
 
-  const onChangeNota = (item: ItemData, text: string) => {
-    const index = listaNotas.findIndex((el: any) => el.idAluno === item.idAluno);
-    listaNotas[index].nota = text
-    setTextNota(text)
-    setIdNota(item.idAluno)
-  }
+  useEffect(()=>{
+    //mantem uma cópia da lista de notas para salvar quando o app é fechado
+    listaNotasRef.current = listaNotas
+  },[listaNotas])
+
+  useEffect(() => {
+    //monitoramento do app, se fechado ele chama a função para salvar as notas.
+    const handleAppStateChange = (nextAppState:any) => {
+      if (nextAppState === 'background') {
+        atualizarNotas(listaNotasRef.current, idUsuario, idPeriodoSelec, idClasseSelec, dataSelec)
+      }
+    };
+    const subscription = AppState.addEventListener('change', handleAppStateChange);
+
+    return () => {
+      subscription.remove();
+    };
+  }, []);
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
@@ -42,6 +56,13 @@ const FlatListNotas = () => {
       keyboardDidShowListener.remove();
     };
   }, []);
+  const onChangeNota = (item: ItemData, text: string) => {
+    const index = listaNotas.findIndex((el: any) => el.idAluno === item.idAluno);
+    listaNotas[index].nota = text
+    setTextNota(text)
+    setIdNota(item.idAluno)
+  }
+
 
   const renderItem = ({ item }: { item: ItemData }) => {
     const scrollToItem = (itemId: any, itemNumero: any) => {
