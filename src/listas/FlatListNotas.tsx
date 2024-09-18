@@ -17,14 +17,13 @@ const FlatListNotas = () => {
   const textInputRefs = useRef<TextInput[]>([]);
   const [selection, setSelection] = useState({ start: 0, end: 0 });
   const [textNota, setTextNota] = useState('');
-  const [idNota, setIdNota] = useState('');
   const { idClasseSelec, dataSelec, listaNotas, setTecladoAtivo,
     idUsuario, idPeriodoSelec} = useContext(Context)
 
   useEffect(()=>{
     //mantem uma cópia da lista de notas para salvar quando o app é fechado
     listaNotasRef.current = listaNotas
-  },[listaNotas])
+  },[textNota])
 
   useEffect(() => {
     //monitoramento do app, se fechado ele chama a função para salvar as notas.
@@ -60,7 +59,6 @@ const FlatListNotas = () => {
     const index = listaNotas.findIndex((el: any) => el.idAluno === item.idAluno);
     listaNotas[index].nota = text
     setTextNota(text)
-    setIdNota(item.idAluno)
   }
 
 
