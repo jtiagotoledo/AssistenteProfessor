@@ -28,7 +28,7 @@ const FlatListNotas = () => {
   useEffect(() => {
     //monitoramento do app, se fechado ele chama a função para salvar as notas.
     const handleAppStateChange = (nextAppState:any) => {
-      if (nextAppState === 'background') {
+      if (nextAppState === 'background' && listaNotasRef.current!==undefined) {
         atualizarNotas(listaNotasRef.current, idUsuario, idPeriodoSelec, idClasseSelec, dataSelec)
       }
     };

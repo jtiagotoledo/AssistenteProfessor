@@ -9,14 +9,13 @@ import Provider from "../data/Provider";
 import Globais from '../data/Globais';
 import firestore from '@react-native-firebase/firestore';
 import { Context } from "../data/Provider";
-import { atualizarNotas } from "../banco_dados/atualizarBD"
 
 const Tab = createBottomTabNavigator();
 
 const App = ({ navigation }: any) => {
 
   const { idUsuario, idClasseSelec, idPeriodoSelec, setIdPeriodoSelec, setDataSelec,
-    setIdClasseSelec, listaNotas, dataSelec } = useContext(Context);
+    setIdClasseSelec} = useContext(Context);
 
   const estadosAppRef = firestore().collection(idUsuario).doc('EstadosApp')
 
@@ -33,14 +32,6 @@ const App = ({ navigation }: any) => {
     estadosAppRef.onSnapshot(snapShot => {
       navigation.navigate('App', { screen: snapShot.data()?.aba })
     })
-  }, [])
-
-  useEffect(() => {
-    //continuar
-    //monitoramento para salvar frequência e nota
-    // atualizarNotas(listaNotas, idUsuario, idPeriodoSelec, idClasseSelec, dataSelec)
-    console.log(idClasseSelec,idClasseSelec);
-    
   }, [])
 
   const cliqueClasses = () => {

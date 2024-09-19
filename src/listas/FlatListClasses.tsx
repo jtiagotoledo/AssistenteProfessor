@@ -1,8 +1,10 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { SafeAreaView, FlatList, Text, StyleSheet, TouchableOpacity, View } from 'react-native'
 import firestore from '@react-native-firebase/firestore';
 import { Context } from "../data/Provider";
 import Globais from '../data/Globais';
+import { atualizarNotas } from "../banco_dados/atualizarBD"
+
 
 type ItemData = {
   classe: string;
@@ -24,8 +26,19 @@ const Item = ({ item, onPress, onLongPress, backgroundColor, textColor }: ItemPr
 );
 
 const FlatListClasses = () => {
-  const { idPeriodoSelec, idClasseSelec, setIdClasseSelec, listaClasses, idUsuario, setFlagLongPressClasse,
+  const { idPeriodoSelec, idClasseSelec, setIdClasseSelec, listaClasses, idUsuario, setFlagLongPressClasse, listaNotas, dataSelec,
     setSelectedIdAluno, setNumAlunoSelec, setFlagLongPressAluno, nomePeriodoSelec, setFlagLongPressDataFreq, setFlagLongPressDataNotas, setNomeClasseSelec } = useContext(Context)
+
+  useEffect(() => {
+    //continuar
+    //monitoramento para salvar frequência e nota
+    if(listaNotas!==undefined){
+      atualizarNotas(listaNotas, idUsuario, idPeriodoSelec, idClasseSelec, dataSelec)
+    }
+    console.log('idClasseSelec',idClasseSelec);
+    console.log('listaNotas',listaNotas);
+
+  }, [idClasseSelec])
 
   const onPressItem = (item: any) => {
     setIdClasseSelec(item.idClasse)
