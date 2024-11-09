@@ -21,6 +21,7 @@ export default function Provider ({children}){
     const[modalDelDataNotas,setModalDelDataNotas]=useState(false);
     const[modalCalendarioFreq,setModalCalendarioFreq]=useState(false);
     const[modalCalendarioNota,setModalCalendarioNota]=useState(false);
+    const[modalSalvarDados,setModalSalvarDados]=useState(false);
     const[modalMenu,setModalMenu]=useState(false);
     const[tecladoAtivo,setTecladoAtivo]=useState('');
     const[flagLoadClasses,setflagLoadClasses]=useState('');
@@ -79,6 +80,7 @@ export default function Provider ({children}){
             modalDelDataNotas,setModalDelDataNotas,
             modalCalendarioFreq,setModalCalendarioFreq,
             modalCalendarioNota,setModalCalendarioNota,
+            modalSalvarDados,setModalSalvarDados,
             modalMenu,setModalMenu,
             tecladoAtivo,setTecladoAtivo,
             flagLoadClasses,setflagLoadClasses,

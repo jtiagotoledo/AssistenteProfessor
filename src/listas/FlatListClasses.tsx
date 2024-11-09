@@ -27,7 +27,8 @@ const Item = ({ item, onPress, onLongPress, backgroundColor, textColor }: ItemPr
 
 const FlatListClasses = () => {
   const { idPeriodoSelec, idClasseSelec, setIdClasseSelec, listaClasses, idUsuario, setFlagLongPressClasse, listaNotas, dataSelec,
-    setSelectedIdAluno, setNumAlunoSelec, setFlagLongPressAluno, nomePeriodoSelec, setFlagLongPressDataFreq, setFlagLongPressDataNotas, setNomeClasseSelec } = useContext(Context)
+    setSelectedIdAluno, setNumAlunoSelec, setFlagLongPressAluno, nomePeriodoSelec, setFlagLongPressDataFreq, setFlagLongPressDataNotas, 
+    setNomeClasseSelec, setModalSalvarDados} = useContext(Context)
 
   useEffect(() => {
     //continuar
@@ -41,6 +42,7 @@ const FlatListClasses = () => {
   }, [idClasseSelec])
 
   const onPressItem = (item: any) => {
+    setModalSalvarDados(true)
     setIdClasseSelec(item.idClasse)
     setNomeClasseSelec(item.classe)
     setFlagLongPressClasse(false)

@@ -5,6 +5,7 @@ import { Divider } from "react-native-paper";
 
 import ModalCalendarioNota from "../modais/ModalCalendarioNota";
 import ModalDelDataNotas from "../modais/ModalDelDataNotas";
+import ModalSalvarDados from "../modais/ModalSalvarDados";
 import Globais from "../data/Globais";
 import FlatListClasses from "../listas/FlatListClasses";
 import firestore from '@react-native-firebase/firestore';
@@ -97,6 +98,7 @@ const Notas = () => {
             <FlatListNotas></FlatListNotas>
             <ModalCalendarioNota></ModalCalendarioNota>
             <ModalDelDataNotas></ModalDelDataNotas>
+            <ModalSalvarDados></ModalSalvarDados>
             <View style={{ display: tecladoAtivo }}>
                 <FabNotas></FabNotas>
             </View>

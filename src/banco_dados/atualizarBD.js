@@ -62,6 +62,9 @@ export async function atualizarNotas(listaNotas, idUsuario, idPeriodoSelec, idCl
     .doc(idPeriodoSelec).collection('Classes')
     .doc(idClasseSelec).collection('ListaAlunos')
 
+    console.log('salvarNotas');
+    
+
     const batch = firestore().batch()
 
   Object.values(listaNotas).forEach(valor => {
@@ -110,6 +113,7 @@ export async function atualizarNotas(listaNotas, idUsuario, idPeriodoSelec, idCl
     ToastAndroid.show(
       'Erro ao salvar notas:' + error,
       ToastAndroid.SHORT)
+      console.log('error',error);
   }
 }
 
