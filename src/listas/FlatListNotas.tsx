@@ -55,10 +55,15 @@ const FlatListNotas = () => {
       keyboardDidShowListener.remove();
     };
   }, []);
-  const onChangeNota = (item: ItemData, text: string) => {
+
+  const onChangeNota = (item: ItemData, nota: string) => {
     const index = listaNotas.findIndex((el: any) => el.idAluno === item.idAluno);
-    listaNotas[index].nota = text
-    setTextNota(text)
+    listaNotas[index].nota = nota
+    setTextNota(nota)
+  }
+
+  const salvarNota = () =>{
+    atualizarNotas(listaNotas, idUsuario, idPeriodoSelec, idClasseSelec, dataSelec)
   }
 
 
@@ -99,6 +104,7 @@ const FlatListNotas = () => {
             inputMode='numeric'
             onChangeText={(text) => onChangeNota(item, text)}
             defaultValue={item.nota}
+            onBlur={()=> salvarNota()}
             onFocus={() => [scrollToItem(item.idAluno, item.numero)]}
             onSubmitEditing={() => nextItem(item.idAluno)}
             selection={selection}

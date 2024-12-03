@@ -103,13 +103,8 @@ export async function atualizarNotas(listaNotas, idUsuario, idPeriodoSelec, idCl
   try {
     //executa gravação em lote
     await batch.commit();
-    ToastAndroid.show(
-      'Notas salvas com sucesso!',
-      ToastAndroid.SHORT)
   } catch (error) {
-    ToastAndroid.show(
-      'Erro ao salvar notas:' + error,
-      ToastAndroid.SHORT)
+    console.log('Erro ao salvar notas:' + error,);
   }
 }
 
