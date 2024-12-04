@@ -26,9 +26,9 @@ const HeaderFrequencia: React.FunctionComponent<HeaderComponentProps> = (props) 
     flagLongPressDataFreq ? setModalDelDataFreq(true) : null
   }
 
-  const onPressSave = () => {
+  /* const onPressSave = () => {
     atualizarFrequencia(listaFrequencia, idUsuario, idPeriodoSelec, idClasseSelec, dataSelec)
-  }
+  } */
 
   return (
     <HeaderRNE
@@ -43,14 +43,14 @@ const HeaderFrequencia: React.FunctionComponent<HeaderComponentProps> = (props) 
       }
       rightComponent={
         <View style={styles.headerRight}>
-          <TouchableWithoutFeedback onPress={onPressSave}>
+          {/* <TouchableWithoutFeedback onPress={onPressSave}>
             <FontAwesomeIcon
               style={styles.icon}
               selectable={false}
               name="save"
               color={dataSelec !== '' ? 'rgba(255,255,255,1)' : 'rgba(255,255,255,0.6)'}
               size={24} />
-          </TouchableWithoutFeedback>
+          </TouchableWithoutFeedback> */}
           <TouchableWithoutFeedback onPress={onPressBin}>
             <FontAwesomeIcon
               style={styles.icon}
