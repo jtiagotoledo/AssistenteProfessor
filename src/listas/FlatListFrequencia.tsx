@@ -2,6 +2,7 @@ import React, { useContext, useState } from 'react'
 import { SafeAreaView, FlatList, View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import { Context } from "../data/Provider";
 import Globais from '../data/Globais';
+import { atualizarFrequencia } from "../banco_dados/atualizarBD"
 
 type ItemData = {
   nome: string;
@@ -22,7 +23,8 @@ type ItemProps = {
 const FlatListFrequencia = () => {
   const [statusFreq, setStatusFreq] = useState('');
   const [selectedId, setSelectedId] = useState<string>();
-  const { idClasseSelec, setNumAlunoSelec, dataSelec, listaFrequencia } = useContext(Context)
+  const { idClasseSelec, setNumAlunoSelec, dataSelec, listaFrequencia,
+    idUsuario, idPeriodoSelec} = useContext(Context)
 
   const onPressItemFreq = (item: any) => {
     const idAluno = item.idAluno;
@@ -32,6 +34,7 @@ const FlatListFrequencia = () => {
     listaFrequencia[index].frequencia = _statusFrequencia
     setSelectedId(item.idAluno);
     setNumAlunoSelec(item.numero.toString());
+    atualizarFrequencia(listaFrequencia, idUsuario, idPeriodoSelec, idClasseSelec, dataSelec)
   }
 
   const Item = ({ item, onPress, backgroundColor, textColor }: ItemProps) => (

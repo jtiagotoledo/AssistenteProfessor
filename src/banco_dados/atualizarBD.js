@@ -47,13 +47,8 @@ export async function atualizarFrequencia(listaFreq, idUsuario, idPeriodoSelec, 
   try {
     //executa gravação em lote
     await batch.commit();
-    ToastAndroid.show(
-      'Frequência salva com sucesso!',
-      ToastAndroid.SHORT)
   } catch (error) {
-    ToastAndroid.show(
-      'Erro ao salvar frequência:' + error,
-      ToastAndroid.SHORT)
+    console.log('Erro ao salvar frequência:' + error);
   }
 }
 
