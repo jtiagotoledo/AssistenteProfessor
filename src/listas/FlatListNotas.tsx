@@ -63,11 +63,13 @@ const FlatListNotas = () => {
   }
 
   const salvarNota = () =>{
+    //ao desfocar o campo de notas, salva a nota
     atualizarNotas(listaNotas, idUsuario, idPeriodoSelec, idClasseSelec, dataSelec)
   }
 
 
   const renderItem = ({ item }: { item: ItemData }) => {
+
     const scrollToItem = (itemId: any, itemNumero: any) => {
       const index = listaNotas.findIndex((item: any) => item.idAluno === itemId);
       if (index !== -1 && flatListRef.current) {

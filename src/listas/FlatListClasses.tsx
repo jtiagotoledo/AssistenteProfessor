@@ -29,14 +29,7 @@ const FlatListClasses = () => {
   const { idPeriodoSelec, idClasseSelec, setIdClasseSelec, listaClasses, idUsuario, setFlagLongPressClasse, listaNotas, dataSelec,
     setSelectedIdAluno, setNumAlunoSelec, setFlagLongPressAluno, nomePeriodoSelec, setFlagLongPressDataFreq, setFlagLongPressDataNotas, setNomeClasseSelec } = useContext(Context)
 
-  /* useEffect(() => {
-    //continuar
-    //monitoramento para salvar frequência e nota
-    if(listaNotas!==undefined){
-      atualizarNotas(listaNotas, idUsuario, idPeriodoSelec, idClasseSelec, dataSelec)
-    }
-    
-  }, [idClasseSelec]) */
+  
 
   const onPressItem = (item: any) => {
     setIdClasseSelec(item.idClasse)

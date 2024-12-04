@@ -31,7 +31,7 @@ const ModalEditAluno = () => {
         .doc(idClasseSelec).collection('ListaAlunos')
         .doc(idAlunoSelec).update({
           nome: valueNomeAluno,
-          numero: valueNumAluno,
+          numero: parseInt(valueNumAluno),
           inativo: alunoInativo
         })
       setValueNomeAluno('')
@@ -46,8 +46,7 @@ const ModalEditAluno = () => {
   }
 
   const onPressEditAluno = async () => {
-    //TODO: arrumar o editar aluno    
-    if (parseInt(valueNumAluno) === numAlunoSelec) {
+    if (valueNumAluno === numAlunoSelec) {
       editarAluno()
     } else {
       // consulta para verificar se o número do aluno já existe
