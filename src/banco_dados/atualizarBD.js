@@ -48,7 +48,6 @@ export async function atualizarFrequencia(listaFreq, idUsuario, idPeriodoSelec, 
     //executa gravação em lote
     await batch.commit();
   } catch (error) {
-    console.log('Erro ao salvar frequência:' + error);
   }
 }
 
@@ -99,7 +98,6 @@ export async function atualizarNotas(listaNotas, idUsuario, idPeriodoSelec, idCl
     //executa gravação em lote
     await batch.commit();
   } catch (error) {
-    console.log('Erro ao salvar notas:' + error,);
   }
 }
 
