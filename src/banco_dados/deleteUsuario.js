@@ -1,29 +1,107 @@
 import auth from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
-import { getFirestore, collection, getDocs, deleteDoc, doc } from "firebase/firestore";
+import firestore, { collection } from '@react-native-firebase/firestore';
 
 import { Alert } from 'react-native';
 
 export const deleteUser = async (navigation, idUsuario) => {
   const user = auth().currentUser;
-  const db = getFirestore();
 
-  const deleteDadosUsuario = async () =>{
+  const deleteDadosUsuario = async () => {
     try {
-        const collectionRef = collection(db, idUsuario);
-    
-        const querySnapshot = await getDocs(collectionRef);
-    
-        const deletePromises = querySnapshot.docs.map((document) =>
-          deleteDoc(doc(db, idUsuario, document.id))
-        );
-    
-        await Promise.all(deletePromises);
-        console.log('Coleção deletada com sucesso!');
-      } catch (error) {
-        console.error('Erro ao deletar a coleção:', error);
+      const periodosSnapshot = await firestore().collection(idUsuario).get();
+  
+      for (const periodoDoc of periodosSnapshot.docs) {
+        const classesSnapshot = await firestore()
+          .collection(idUsuario)
+          .doc(periodoDoc.id)
+          .collection('Classes')
+          .get();
+  
+        for (const classeDoc of classesSnapshot.docs) {
+          // Excluindo subcoleção 'ListaAlunos'
+          const alunosSnapshot = await firestore()
+            .collection(idUsuario)
+            .doc(periodoDoc.id)
+            .collection('Classes')
+            .doc(classeDoc.id)
+            .collection('ListaAlunos')
+            .get();
+  
+          for (const alunoDoc of alunosSnapshot.docs) {
+            console.log('Deletando aluno:', alunoDoc.id);
+            await firestore()
+              .collection(idUsuario)
+              .doc(periodoDoc.id)
+              .collection('Classes')
+              .doc(classeDoc.id)
+              .collection('ListaAlunos')
+              .doc(alunoDoc.id)
+              .delete();
+          }
+  
+          // Excluindo subcoleção 'DatasNotas'
+          const notasSnapshot = await firestore()
+            .collection(idUsuario)
+            .doc(periodoDoc.id)
+            .collection('Classes')
+            .doc(classeDoc.id)
+            .collection('DatasNotas')
+            .get();
+  
+          for (const notaDoc of notasSnapshot.docs) {
+            console.log('Deletando nota:', notaDoc.id);
+            await firestore()
+              .collection(idUsuario)
+              .doc(periodoDoc.id)
+              .collection('Classes')
+              .doc(classeDoc.id)
+              .collection('DatasNotas')
+              .doc(notaDoc.id)
+              .delete();
+          }
+  
+          // Excluindo subcoleção 'DatasFrequencias'
+          const frequenciasSnapshot = await firestore()
+            .collection(idUsuario)
+            .doc(periodoDoc.id)
+            .collection('Classes')
+            .doc(classeDoc.id)
+            .collection('DatasFrequencias')
+            .get();
+  
+          for (const frequenciaDoc of frequenciasSnapshot.docs) {
+            console.log('Deletando frequência:', frequenciaDoc.id);
+            await firestore()
+              .collection(idUsuario)
+              .doc(periodoDoc.id)
+              .collection('Classes')
+              .doc(classeDoc.id)
+              .collection('DatasFrequencias')
+              .doc(frequenciaDoc.id)
+              .delete();
+          }
+  
+          // Excluindo documento da classe
+          console.log('Deletando classe:', classeDoc.id);
+          await firestore()
+            .collection(idUsuario)
+            .doc(periodoDoc.id)
+            .collection('Classes')
+            .doc(classeDoc.id)
+            .delete();
+        }
+  
+        // Excluindo documento do período
+        console.log('Deletando período:', periodoDoc.id);
+        await firestore().collection(idUsuario).doc(periodoDoc.id).delete();
       }
-  }
+  
+      console.log('Todos os dados do usuário foram deletados com sucesso.');
+    } catch (error) {
+      console.error('Erro ao deletar dados do usuário:', error);
+    }
+  };
+  
 
   if (user) {
     Alert.alert(
