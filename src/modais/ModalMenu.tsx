@@ -5,10 +5,11 @@ import {Context} from "../data/Provider";
 import Globais from "../data/Globais";
 import HeaderMenu from '../componentes/HeaderMenu'
 import DropDown from "../listas/DropDownPeriodo";
+import { deleteUser } from "../banco_dados/deleteUsuario";
 
 const ModalMenu = ({navigation}:any) =>{
 
-    const {modalMenu,setModalMenu,setIdUsuario} = useContext(Context)
+    const {modalMenu,setModalMenu,setIdUsuario, idUsuario} = useContext(Context)
 
     const funcSair = () =>{
       //logout
@@ -21,6 +22,7 @@ const ModalMenu = ({navigation}:any) =>{
         })
     }
 
+    
     return(
         <View style={styles.container}>
             <Modal
@@ -48,10 +50,17 @@ const ModalMenu = ({navigation}:any) =>{
                     </View>
                     <View style={styles.dropDownContainer}>
                       <DropDown ></DropDown>
+                    <View style={styles.containerButton}>
+                      <View style={styles.button}>
+                        <Button color={Globais.corPrimaria} title='SAIR' onPress={funcSair}></Button>
+                      </View>
+                      <View style={styles.button}>
+                        <Button color={Globais.corPrimaria} title='Excluir Conta' onPress={()=>deleteUser(navigation, idUsuario)}></Button>
+                      </View>
                     </View>
-                    <Button color={Globais.corPrimaria} title='SAIR' onPress={funcSair}></Button>
                   </View>
                 </View>
+              </View>
             </Modal>
         </View>
     )
@@ -106,12 +115,17 @@ const styles = StyleSheet.create({
     justifyContent:"center"
   },
   dropDownContainer:{
-    marginBottom:16
+    marginBottom:40
   },
   authContainer:{
     marginBottom:16
   },
-  
+  containerButton:{
+    marginTop:36
+  },
+  button:{
+    marginBottom:16,
+  }
 });
 
 export default ModalMenu
