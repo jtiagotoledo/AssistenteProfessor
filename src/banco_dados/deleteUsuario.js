@@ -95,7 +95,8 @@ export const deleteUser = async (navigation, idUsuario) => {
         console.log('Deletando período:', periodoDoc.id);
         await firestore().collection(idUsuario).doc(periodoDoc.id).delete();
       }
-  
+      
+      navigation.replace('Login')
       console.log('Todos os dados do usuário foram deletados com sucesso.');
     } catch (error) {
       console.error('Erro ao deletar dados do usuário:', error);
@@ -114,12 +115,11 @@ export const deleteUser = async (navigation, idUsuario) => {
           style: 'destructive',
           onPress: async () => {
             try {
-              await deleteDadosUsuario()
               await user.delete();
+              await deleteDadosUsuario()
               Alert.alert('Conta Excluída', 'Sua conta foi excluída com sucesso.', [
                 {
                   text: 'OK',
-                  onPress: () => navigation.replace('Login'), // Redirecionar para a tela de login
                 },
               ]);
             } catch (error) {

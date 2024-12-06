@@ -17,7 +17,7 @@ const App = ({ navigation }: any) => {
   const { idUsuario, idClasseSelec, idPeriodoSelec, setIdPeriodoSelec, setDataSelec,
     setIdClasseSelec} = useContext(Context);
 
-  const estadosAppRef = firestore().collection(idUsuario).doc('EstadosApp')
+  const estadosAppRef = firestore().collection(idUsuario||"").doc('EstadosApp')
 
   let datasFrequenciasRef = firestore().collection(idUsuario)
     .doc(idPeriodoSelec).collection('Classes')
