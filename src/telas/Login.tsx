@@ -1,24 +1,29 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { TextInput, View, Text, StyleSheet, ToastAndroid, NativeSyntheticEvent, TextInputChangeEventData, Image, TouchableOpacity } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import { Context } from "../data/Provider";
 import Globais from "../data/Globais";
+import Ionicons from 'react-native-vector-icons/Ionicons';
+
 
 const Login = ({ navigation }: any) => {
+    const [senhaVisivel, setSenhaVisivel] = useState(false);
     const { email, setEmail, senha, setSenha } = useContext(Context);
 
     const entrarConta = () => {
-        auth()
-            .signInWithEmailAndPassword(email, senha)
-            .then(() => {
-                navigation.reset({ index: 0, routes: [{ name: "App" }] })
-            }).catch(error => {
-                console.log('error',error);
-                
-                if (error.code === 'auth/invalid-credential') {
-                    ToastAndroid.show('Este e-mail não está cadastrado ou senha incorreta', ToastAndroid.SHORT)
-                }
-            });
+        if(email && senha){
+            auth()
+                .signInWithEmailAndPassword(email, senha)
+                .then(() => {
+                    navigation.reset({ index: 0, routes: [{ name: "App" }] })
+                }).catch(error => {
+                    if (error.code === 'auth/invalid-credential') {
+                        ToastAndroid.show('Este e-mail não está cadastrado ou senha incorreta', ToastAndroid.SHORT)
+                    }
+                });
+        }else{
+            ToastAndroid.show('Email e senha devem ser preenchidos', ToastAndroid.SHORT)
+        }
     }
 
     const funcSenha = () => {
@@ -45,6 +50,11 @@ const Login = ({ navigation }: any) => {
     const onChangeInputSenha = (event: NativeSyntheticEvent<TextInputChangeEventData>) => {
         setSenha(event.nativeEvent.text);
     }
+
+    const alternarVisibilidadeSenha = () => {
+        setSenhaVisivel(!senhaVisivel);
+    };
+
     return (
         <View style={styles.container}>
             <View style={styles.logoContainer}>
@@ -59,12 +69,25 @@ const Login = ({ navigation }: any) => {
                 autoCapitalize='none'
                 autoCorrect={false}
                 placeholder='Email'></TextInput>
-            <TextInput style={styles.textInput}
-                onChange={onChangeInputSenha}
-                autoCapitalize='none'
-                secureTextEntry={true}
-                autoCorrect={false}
-                placeholder='Senha'></TextInput>
+            <View style={styles.containerSenha}>
+                <TextInput style={styles.textInputSenha}
+                    onChange={onChangeInputSenha}
+                    autoCapitalize='none'
+                    secureTextEntry={!senhaVisivel}
+                    autoCorrect={false}
+                    placeholder='Senha'>
+                </TextInput>
+                <TouchableOpacity
+                    style={styles.iconContainer}
+                    onPress={alternarVisibilidadeSenha}
+                >
+                    <Ionicons
+                    name={senhaVisivel ? 'eye' : 'eye-off'}
+                    size={24}
+                    color="gray"
+                    />
+                </TouchableOpacity>
+            </View>
             <TouchableOpacity
                 style={styles.button}
                 onPress={entrarConta}>
@@ -99,7 +122,7 @@ const styles = StyleSheet.create({
     textInput: {
         backgroundColor: Globais.corSecundaria,
         marginBottom: 8,
-        borderRadius: 10
+        borderRadius: 5
     },
     text: {
         color: Globais.corPrimaria,
@@ -120,12 +143,29 @@ const styles = StyleSheet.create({
     button: {
         backgroundColor: Globais.corPrimaria,
         padding: 10,
-        borderRadius: 10,
+        borderRadius: 5,
     },
     buttonText: {
         color: 'white',
         textAlign: 'center',
     },
+    containerSenha: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 5,
+        paddingHorizontal: 10,
+        marginBottom:30,
+        backgroundColor: Globais.corSecundaria,
+    },
+    iconContainer: {
+        marginLeft: 10,
+    },
+    textInputSenha: {
+        flex:1,
+        backgroundColor: Globais.corSecundaria,
+    }
 });
 
 export default Login;
