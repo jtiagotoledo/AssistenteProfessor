@@ -28,7 +28,6 @@ export const deleteUser = async (navigation, idUsuario) => {
             .get();
   
           for (const alunoDoc of alunosSnapshot.docs) {
-            console.log('Deletando aluno:', alunoDoc.id);
             await firestore()
               .collection(idUsuario)
               .doc(periodoDoc.id)
@@ -49,7 +48,6 @@ export const deleteUser = async (navigation, idUsuario) => {
             .get();
   
           for (const notaDoc of notasSnapshot.docs) {
-            console.log('Deletando nota:', notaDoc.id);
             await firestore()
               .collection(idUsuario)
               .doc(periodoDoc.id)
@@ -70,7 +68,6 @@ export const deleteUser = async (navigation, idUsuario) => {
             .get();
   
           for (const frequenciaDoc of frequenciasSnapshot.docs) {
-            console.log('Deletando frequência:', frequenciaDoc.id);
             await firestore()
               .collection(idUsuario)
               .doc(periodoDoc.id)
@@ -82,7 +79,6 @@ export const deleteUser = async (navigation, idUsuario) => {
           }
   
           // Excluindo documento da classe
-          console.log('Deletando classe:', classeDoc.id);
           await firestore()
             .collection(idUsuario)
             .doc(periodoDoc.id)
@@ -92,12 +88,10 @@ export const deleteUser = async (navigation, idUsuario) => {
         }
   
         // Excluindo documento do período
-        console.log('Deletando período:', periodoDoc.id);
         await firestore().collection(idUsuario).doc(periodoDoc.id).delete();
       }
       
       navigation.replace('Login')
-      console.log('Todos os dados do usuário foram deletados com sucesso.');
     } catch (error) {
       console.error('Erro ao deletar dados do usuário:', error);
     }

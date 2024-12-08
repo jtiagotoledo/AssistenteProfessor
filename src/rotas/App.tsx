@@ -19,11 +19,11 @@ const App = ({ navigation }: any) => {
 
   const estadosAppRef = firestore().collection(idUsuario?idUsuario:' ').doc('EstadosApp')
 
-  let datasFrequenciasRef = firestore().collection(idUsuario)
+  let datasFrequenciasRef = firestore().collection(idUsuario?idUsuario:' ')
     .doc(idPeriodoSelec).collection('Classes')
     .doc(idClasseSelec).collection('DatasFrequencias')
 
-  let datasNotasRef = firestore().collection(idUsuario)
+  let datasNotasRef = firestore().collection(idUsuario?idUsuario:' ')
     .doc(idPeriodoSelec).collection('Classes')
     .doc(idClasseSelec).collection('DatasNotas')
 
