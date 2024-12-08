@@ -13,7 +13,9 @@ const Login = ({ navigation }: any) => {
             .then(() => {
                 navigation.reset({ index: 0, routes: [{ name: "App" }] })
             }).catch(error => {
-                if (error.code === 'auth/invalid-login') {
+                console.log('error',error);
+                
+                if (error.code === 'auth/invalid-credential') {
                     ToastAndroid.show('Este e-mail não está cadastrado ou senha incorreta', ToastAndroid.SHORT)
                 }
             });
