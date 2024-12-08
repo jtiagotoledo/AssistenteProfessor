@@ -1,5 +1,5 @@
 import { Text, View, StyleSheet, Pressable, TextInput, Modal, NativeSyntheticEvent, TextInputChangeEventData, ToastAndroid, TouchableOpacity } from "react-native"
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import firestore from '@react-native-firebase/firestore';
 import { Context } from "../data/Provider";
 import Globais from "../data/Globais";
@@ -8,11 +8,15 @@ import FontIstoIcon from 'react-native-vector-icons/Fontisto';
 
 const ModalEditAluno = () => {
 
-  const [valueNomeAluno, setValueNomeAluno] = useState<string>('')
-  const [valueNumAluno, setValueNumAluno] = useState<string>('')
   const { modalEditAluno, setModalEditAluno, idPeriodoSelec, idUsuario, idClasseSelec, numAlunoSelec,
     nomeAlunoSelec, alunoInativo, setAlunoInativo, setFlagLongPressAluno, idAlunoSelec } = useContext(Context)
-
+    const [valueNomeAluno, setValueNomeAluno] = useState<string>('')
+    const [valueNumAluno, setValueNumAluno] = useState<string>('')
+   
+  useEffect(()=>{
+    setValueNomeAluno(nomeAlunoSelec)
+    setValueNumAluno(numAlunoSelec)
+  },[nomeAlunoSelec,numAlunoSelec])
   
 
   const onChangeInputAlunoNome = (event: NativeSyntheticEvent<TextInputChangeEventData>) => {
@@ -25,6 +29,8 @@ const ModalEditAluno = () => {
 
   // edição do aluno no BD
   const editarAluno = () => {
+    console.log(valueNomeAluno,valueNumAluno);
+    
     if (valueNomeAluno != '' && valueNumAluno != '') {
       firestore().collection(idUsuario)
         .doc(idPeriodoSelec).collection('Classes')
