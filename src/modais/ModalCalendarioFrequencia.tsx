@@ -13,7 +13,7 @@ const ModalCalendarioFrequencia = () => {
 
   let dataAno = '', dataMes = '', dataDia = '', data = ''
 
-  if (dataSelec != '') {
+  if (dataSelec) {
     dataAno = dataSelec.slice(0, 4);
     dataMes = dataSelec.slice(5, 7);
     dataDia = dataSelec.slice(8, 10);

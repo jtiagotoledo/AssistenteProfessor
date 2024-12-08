@@ -8,7 +8,7 @@ const consultasBD = () => {
     setNomePeriodoSelec, idPeriodoSelec, setListaClasses, idClasseSelec, setListaAlunos,
     dataSelec, setListaFrequencia, setListaNotas } = useContext(Context)
 
-  const listaAlunosRef = firestore().collection(idUsuario)
+  const listaAlunosRef = firestore().collection(idUsuario?idUsuario:' ')
     .doc(idPeriodoSelec).collection('Classes')
     .doc(idClasseSelec).collection('ListaAlunos')
 

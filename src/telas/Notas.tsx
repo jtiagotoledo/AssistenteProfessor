@@ -27,7 +27,7 @@ const Notas = () => {
         .doc(idPeriodoSelec).collection('Classes')
         .doc(idClasseSelec).collection('DatasNotas')
 
-    if (dataSelec != '') {
+    if (dataSelec) {
         dataAno = dataSelec.slice(0, 4);
         dataMes = dataSelec.slice(5, 7);
         dataDia = dataSelec.slice(8, 10);
