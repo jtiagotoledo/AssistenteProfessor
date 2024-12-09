@@ -4,6 +4,7 @@ import firestore from '@react-native-firebase/firestore';
 import {Context} from "../data/Provider";
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import Globais from "../data/Globais";
+import { deleteClasse } from "../banco_dados/deletarBD";
 
 const ModalDelClasse = () =>{
 
@@ -11,9 +12,9 @@ const ModalDelClasse = () =>{
       setFlagLongPressClasse,setIdClasseSelec} = useContext(Context);
 
     const deletarClasse = ()=> {
-      firestore().collection(idUsuario)
-      .doc(idPeriodoSelec).collection('Classes')
-      .doc(idClasseSelec).delete()
+      
+      deleteClasse(idUsuario, idPeriodoSelec, idClasseSelec)
+     
       setModalDelClasse(!modalDelClasse)
       setFlagLongPressClasse(false)
       setIdClasseSelec('')

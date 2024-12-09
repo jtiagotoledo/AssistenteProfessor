@@ -5,7 +5,7 @@ import {Context} from "../data/Provider";
 import Globais from "../data/Globais";
 import HeaderMenu from '../componentes/HeaderMenu'
 import DropDown from "../listas/DropDownPeriodo";
-import { deleteUser } from "../banco_dados/deleteUsuario";
+import { deleteUser } from "../banco_dados/deletarBD";
 
 const ModalMenu = ({navigation}:any) =>{
 

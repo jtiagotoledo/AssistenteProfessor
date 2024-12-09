@@ -139,3 +139,38 @@ export const deleteUser = async (navigation, idUsuario) => {
     Alert.alert('Erro', 'Nenhum usuário autenticado encontrado.');
   }
 };
+
+export const deleteClasse = async (idUsuario, idPeriodoSelec, idClasseSelec) => {
+  try {
+    const firestoreInstance = firestore();
+
+    // Função para excluir todos os documentos de uma subcoleção
+    const deleteSubcollection = async (collectionPath) => {
+      const snapshot = await firestoreInstance.collection(collectionPath).get();
+      const batch = firestoreInstance.batch();
+
+      snapshot.docs.forEach((doc) => {
+        batch.delete(doc.ref);
+      });
+
+      await batch.commit();
+    };
+
+    // Caminho base da classe
+    const classPath = `${idUsuario}/${idPeriodoSelec}/Classes/${idClasseSelec}`;
+
+    // Excluir subcoleções
+    await deleteSubcollection(`${classPath}/ListaAlunos`);
+    await deleteSubcollection(`${classPath}/DatasNotas`);
+    await deleteSubcollection(`${classPath}/DatasFrequencias`);
+
+    // Excluir documento da classe
+    await firestoreInstance.collection(`${idUsuario}/${idPeriodoSelec}/Classes`).doc(idClasseSelec).delete();
+
+    console.log('Sucesso ao deletar Classe');
+  } catch (error) {
+    console.error('Erro ao deletar classe:', error);
+  }
+};
+
+

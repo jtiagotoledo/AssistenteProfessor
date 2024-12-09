@@ -1,4 +1,3 @@
-import React, { useContext, useEffect } from 'react'
 import App from './App';
 import Login from '../telas/Login';
 import NovaConta from '../telas/NovaConta';
