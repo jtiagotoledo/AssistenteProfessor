@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -12,149 +12,99 @@ import { Context } from "../data/Provider";
 
 const Tab = createBottomTabNavigator();
 
+type RouteNames = 'Classes' | 'Frequencia' | 'Notas';
+
 const App = ({ navigation }: any) => {
+  const { idUsuario, setIdPeriodoSelec, setIdClasseSelec, setDataSelec } = useContext(Context);
+  const [currentTab, setCurrentTab] = useState<RouteNames>('Classes');
 
-  const { idUsuario, idClasseSelec, idPeriodoSelec, setIdPeriodoSelec, setDataSelec,
-    setIdClasseSelec} = useContext(Context);
-
-  const estadosAppRef = firestore().collection(idUsuario?idUsuario:' ').doc('EstadosApp')
-
-  let datasFrequenciasRef = firestore().collection(idUsuario?idUsuario:' ')
-    .doc(idPeriodoSelec).collection('Classes')
-    .doc(idClasseSelec).collection('DatasFrequencias')
-
-  let datasNotasRef = firestore().collection(idUsuario?idUsuario:' ')
-    .doc(idPeriodoSelec).collection('Classes')
-    .doc(idClasseSelec).collection('DatasNotas')
+  const estadosAppRef = firestore().collection(idUsuario ? idUsuario : ' ').doc('EstadosApp');
 
   useEffect(() => {
-    //recuperar a última aba selecionada
-    estadosAppRef.onSnapshot(snapShot => {
-      navigation.navigate('App', { screen: snapShot.data()?.aba })
-    })
-  }, [])
+    const unsubscribe = estadosAppRef.onSnapshot(snapshot => {
+      const tab = snapshot.data()?.aba as RouteNames;
+      if (tab) setCurrentTab(tab);
+    });
+    return () => unsubscribe();
+  }, []);
 
-  const cliqueClasses = () => {
-    //setar o nome da aba selecionada
-    estadosAppRef.update({
-      aba: 'Classes'
-    })
-  }
-
-  const cliqueFrequencia = () => {
-    //setar o nome da aba selecionada
-    estadosAppRef.update({
-      aba: 'Frequencia'
-    })
-
-    //recuperar dados dos estados do app
-    estadosAppRef.get().then(snapShot => {
-      setIdPeriodoSelec(snapShot.data()?.idPeriodo)
-      setIdClasseSelec(snapShot.data()?.idClasse)
-
-      //verificação se a data já existe no DB
-      let datasFreq: any[] = [];
-
-      datasFrequenciasRef.get().then(snapshot => {
-        snapshot.forEach((documentSnapshot) => {
-          datasFreq.push(documentSnapshot.id);
-        });
-        if (datasFreq.includes(snapShot.data()?.data)) {
-          setDataSelec(snapShot.data()?.data)
-        } else {
-          setDataSelec('')
-
-          firestore().collection(idUsuario).
-            doc('EstadosApp').update({
-              data: ''
-            })
-        }
-      }).catch((erro) => {
-        console.error(erro);
-      })
-    }).catch((erro) => {
-      console.error(erro);
-    })
-  }
-
-  const cliqueNotas = () => {
-    //setar o nome da aba selecionada
-    estadosAppRef.update({
-      aba: 'Notas'
-    })
-
-
-    //recuperar dados dos estados do app
-    estadosAppRef.get().then(snapShot => {
-      setIdPeriodoSelec(snapShot.data()?.idPeriodo)
-      setIdClasseSelec(snapShot.data()?.idClasse)
-
-      //verificação se a data já existe no DB
-      let datasNotas: any[] = [];
-      datasNotasRef.get().then(snapshot => {
-        snapshot.forEach((documentSnapshot) => {
-          datasNotas.push(documentSnapshot.id);
-        });
-        if (datasNotas.includes(snapShot.data()?.data)) {
-          setDataSelec(snapShot.data()?.data)
-        } else {
-          setDataSelec('')
-          firestore().collection(idUsuario).
-            doc('EstadosApp').update({
-              data: ''
-            })
-        }
-      }).catch((erro) => {
-        console.error(erro);
-      })
-    }).catch((erro) => {
-      console.error(erro);
-    })
-  }
+  const atualizarAba = (aba: RouteNames): void => {
+    estadosAppRef.update({ aba }).catch((erro) => console.error(erro));
+  };
 
   return (
     <Provider>
       <Tab.Navigator
-        screenOptions={( {route} ) => ({
-          headerShown: false,
-          tabBarIcon: ({color,size}) => {
-            let iconName = 'user';
-            if (route.name === 'Classes') {
-              iconName = 'book'
-            } else if (route.name === 'Frequencia') {
-              iconName = 'calendar'
-            } else if (route.name === 'Notas') {
-              iconName = 'pencil'
-            }
-            return <Icon name={iconName} color={color} size={size}/>;
-          },
-          tabBarActiveTintColor: Globais.corPrimaria,
-          tabBarInactiveTintColor: 'gray',
-        })}>
-        <Tab.Screen options={{
-          tabBarButton: (props) => (
-            <TouchableOpacity {...props} onPress={() => [cliqueClasses()]} />
-          )
-        }} name="Classes" component={Classes}></Tab.Screen>
-        <Tab.Screen options={{
-          tabBarButton: (props) => (
-            <TouchableOpacity {...props} onPress={() => [cliqueFrequencia()]} />
-          )
-        }} name="Frequencia" component={Frequencia} />
-        <Tab.Screen options={{
-          tabBarButton: (props) => (
-            <TouchableOpacity {...props} onPress={() => [cliqueNotas()]} />
-          )
-        }} name="Notas" component={Notas} />
+        initialRouteName={currentTab}
+        screenOptions={({ route }) => {
+
+          const icons: Record<RouteNames, string> = {
+            Classes: 'book',
+            Frequencia: 'calendar',
+            Notas: 'pencil',
+          };
+
+          return {
+            headerShown: false,
+            tabBarIcon: ({ color, size }) => {
+              const iconName = icons[route.name as RouteNames];
+              return <Icon name={iconName} color={color} size={size} />;
+            },
+            tabBarActiveTintColor: Globais.corPrimaria,
+            tabBarInactiveTintColor: 'gray',
+          };
+        }}
+      >
+        <Tab.Screen
+          name="Classes"
+          component={Classes}
+          options={{
+            tabBarButton: (props) => (
+              <TouchableOpacity
+                {...props}
+                onPress={(e) => {
+                  atualizarAba('Classes'); 
+                  if (props.onPress) props.onPress(e); 
+                }}
+              />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="Frequencia"
+          component={Frequencia}
+          options={{
+            tabBarButton: (props) => (
+              <TouchableOpacity
+                {...props}
+                onPress={(e) => {
+                  atualizarAba('Frequencia'); // Atualiza Firestore
+                  if (props.onPress) props.onPress(e); // Chama comportamento padrão
+                }}
+              />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="Notas"
+          component={Notas}
+          options={{
+            tabBarButton: (props) => (
+              <TouchableOpacity
+                {...props}
+                onPress={(e) => {
+                  atualizarAba('Notas'); // Atualiza Firestore
+                  if (props.onPress) props.onPress(e); // Chama comportamento padrão
+                }}
+              />
+            ),
+          }}
+        />
       </Tab.Navigator>
     </Provider>
   );
 };
 
-const styles = StyleSheet.create({
-  iconDelete: {
-    paddingRight: 16
-  }
-});
+const styles = StyleSheet.create({});
 
 export default App;
