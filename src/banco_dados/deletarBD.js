@@ -96,7 +96,6 @@ export const deleteUser = async (navigation, idUsuario) => {
       console.error('Erro ao deletar dados do usuário:', error);
     }
   };
-  
 
   if (user) {
     Alert.alert(
@@ -170,6 +169,49 @@ export const deleteClasse = async (idUsuario, idPeriodoSelec, idClasseSelec) => 
     console.log('Sucesso ao deletar Classe');
   } catch (error) {
     console.error('Erro ao deletar classe:', error);
+  }
+};
+
+export const deletePeriodo = async (idUsuario, idPeriodoSelec) => {
+  try {
+    const firestoreInstance = firestore();
+
+    // Função para excluir todos os documentos de uma subcoleção
+    const deleteSubcollection = async (collectionPath) => {
+      const snapshot = await firestoreInstance.collection(collectionPath).get();
+      const batch = firestoreInstance.batch();
+
+      snapshot.docs.forEach((doc) => {
+        batch.delete(doc.ref);
+      });
+
+      await batch.commit();
+    };
+
+    // Obter todas as classes do período
+    const classesSnapshot = await firestoreInstance
+      .collection(`${idUsuario}/${idPeriodoSelec}/Classes`)
+      .get();
+
+    // Iterar por cada classe e excluir suas subcoleções
+    for (const classeDoc of classesSnapshot.docs) {
+      const classPath = `${idUsuario}/${idPeriodoSelec}/Classes/${classeDoc.id}`;
+
+      // Excluir subcoleções da classe
+      await deleteSubcollection(`${classPath}/ListaAlunos`);
+      await deleteSubcollection(`${classPath}/DatasNotas`);
+      await deleteSubcollection(`${classPath}/DatasFrequencias`);
+
+      // Excluir documento da classe
+      await firestoreInstance.doc(classPath).delete();
+    }
+
+    // Excluir o documento do período
+    await firestoreInstance.collection(idUsuario).doc(idPeriodoSelec).delete();
+
+    console.log('Sucesso ao deletar o período');
+  } catch (error) {
+    console.error('Erro ao deletar o período:', error);
   }
 };
 
