@@ -4,14 +4,16 @@ import firestore from '@react-native-firebase/firestore';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import {Context} from "../data/Provider";
 import Globais from "../data/Globais";
+import { deletePeriodo } from "../banco_dados/deletarBD";
 
 const ModalDelPeriodo = () =>{
 
     const { modalDelPeriodo, setModalDelPeriodo, idUsuario, setIdPeriodoSelec,idPeriodoSelec} = useContext(Context);
 
     const deletarClasse = ()=> {
-      firestore().collection(idUsuario)
-      .doc(idPeriodoSelec).delete()
+
+      deletePeriodo(idUsuario,idPeriodoSelec)
+      
       setModalDelPeriodo(!modalDelPeriodo)
       setIdPeriodoSelec('')
 
