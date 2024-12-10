@@ -29,11 +29,16 @@ const NovaConta = ({ navigation }: any) => {
                 setIdUsuario(email)
                 criarCaminhoSalvarEstados()
             }).catch(error => {
+                console.log('error',error);
+                
                 if (error.code === 'auth/email-already-in-use') {
                     ToastAndroid.show('Este Email já está em uso', ToastAndroid.SHORT)
                 }
                 if (error.code === 'auth/invalid-email') {
                     ToastAndroid.show('Email inválido', ToastAndroid.SHORT)
+                }
+                if (error.code === 'auth/weak-password') {
+                    ToastAndroid.show('A senha deve conter ao menos 6 caracteres', ToastAndroid.SHORT)
                 }
             });
     }
