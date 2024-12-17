@@ -1,11 +1,11 @@
 import React, { useContext, useEffect } from 'react';
-import { Pressable, StyleSheet, Text, View, Dimensions, ScrollView } from 'react-native';
+import { ScrollView, Pressable, StyleSheet, Text, View, Dimensions } from 'react-native';
 import { Calendar, LocaleConfig } from 'react-native-calendars';
 import { Context } from "../data/Provider";
 import Globais from '../data/Globais';
 import firestore from '@react-native-firebase/firestore';
 
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window'); // Captura a largura e altura da tela
 
 LocaleConfig.locales.br = {
   monthNames: ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"],
@@ -17,25 +17,30 @@ LocaleConfig.locales.br = {
 LocaleConfig.defaultLocale = "br";
 
 const CalendarioNota = () => {
-  let datasMarcadas: any = {};
+
+  let datasMarcadas: any = {}
   const datas: any[] = [];
 
-  const { idPeriodoSelec, idClasseSelec, dataSelec, setDataSelec, modalCalendarioNota, setModalCalendarioNota } = useContext(Context);
-  const { flagLoadCalendarioNotas, setflagLoadCalendarioNotas, setFlagLoadNotas, listaDatasNotas, setListaDatasNotas, setRecarregarNotas, recarregarCalendarioNotas, setRecarregarCalendarioNotas, listaDatasMarcadasNotas, setListaDatasMarcadasNotas, idUsuario, nomePeriodoSelec, nomeClasseSelec } = useContext(Context);
+  const { idPeriodoSelec, idClasseSelec, dataSelec,
+    setDataSelec, modalCalendarioNota, setModalCalendarioNota,
+    flagLoadCalendarioNotas, setflagLoadCalendarioNotas, setFlagLoadNotas,
+    listaDatasNotas, setListaDatasNotas, setRecarregarNotas, recarregarCalendarioNotas,
+    setRecarregarCalendarioNotas, listaDatasMarcadasNotas, setListaDatasMarcadasNotas,
+    idUsuario, nomePeriodoSelec, nomeClasseSelec } = useContext(Context)
 
   let listaAlunosRef = firestore().collection(idUsuario)
     .doc(idPeriodoSelec).collection('Classes')
-    .doc(idClasseSelec).collection('ListaAlunos');
+    .doc(idClasseSelec).collection('ListaAlunos')
 
   let datasNotasRef = firestore().collection(idUsuario)
     .doc(idPeriodoSelec).collection('Classes')
-    .doc(idClasseSelec).collection('DatasNotas');
+    .doc(idClasseSelec).collection('DatasNotas')
 
   useEffect(() => {
     const data = async () => {
       setflagLoadCalendarioNotas('carregando');
       setListaDatasNotas('');
-      setListaDatasMarcadasNotas({});
+      setListaDatasMarcadasNotas({})
       setRecarregarCalendarioNotas('');
 
       datasNotasRef.get().then(snapshot => {
@@ -44,24 +49,29 @@ const CalendarioNota = () => {
         }
         snapshot.forEach((documentSnapshot, index) => {
           datas.push(documentSnapshot.id);
-          datasMarcadas[documentSnapshot.id] = { selected: true };
-          if (snapshot.size - index === 1) {
-            setflagLoadCalendarioNotas('carregado');
+          datasMarcadas[documentSnapshot.id] = { selected: true }
+          if (snapshot.size - index == 1) {
+            setflagLoadCalendarioNotas('carregado')
           }
         });
       }).catch((erro) => {
         console.error(erro);
-      });
+      })
       setListaDatasNotas(datas);
-      setListaDatasMarcadasNotas(datasMarcadas);
-    };
-    data();
+      setListaDatasMarcadasNotas(datasMarcadas)
+    }
+    data()
   }, [idClasseSelec, recarregarCalendarioNotas]);
 
   const onPressAddData = async () => {
-    setModalCalendarioNota(!modalCalendarioNota);
 
-    datasNotasRef.doc(dataSelec).set({});
+    setModalCalendarioNota(!modalCalendarioNota);
+    setflagLoadCalendarioNotas('inicio')
+
+    //adiciona data na lista de notas
+    datasNotasRef.doc(dataSelec).set({})
+
+    //adiciona notas na lista de alunos
     listaAlunosRef.get().then((snapshot) => {
       snapshot.forEach((docSnapshot) => {
         listaAlunosRef.doc(docSnapshot.data().idAluno).update({
@@ -69,106 +79,107 @@ const CalendarioNota = () => {
             data: dataSelec,
             nota: ''
           })
-        });
-      });
-    }).catch((erro) => {
+        })
+      })
+    }).catch((erro)=>{
       console.error(erro);
-    });
+    })
 
-    firestore().collection(idUsuario).doc('EstadosApp').update({
-      idPeriodo: idPeriodoSelec,
-      periodo: nomePeriodoSelec,
-      idClasse: idClasseSelec,
-      classe: nomeClasseSelec,
-      data: dataSelec
-    });
-
+    //atualizando o estado da data
+    firestore().collection(idUsuario).
+      doc('EstadosApp').update({
+        idPeriodo: idPeriodoSelec,
+        periodo: nomePeriodoSelec,
+        idClasse: idClasseSelec,
+        classe: nomeClasseSelec,
+        data: dataSelec
+      })
     setRecarregarNotas('recarregarNotas');
-  };
+  }
 
   const renderCarregamento = () => {
-    if (idClasseSelec !== '') {
+    if (idClasseSelec != '') {
       switch (flagLoadCalendarioNotas) {
         case 'carregando':
           return (
-            <View style={styles.centeredContainer}>
+            <View>
               <Text style={styles.textLoad}>Carregando...</Text>
             </View>
-          );
+          )
         case 'carregado':
           return (
             <ScrollView contentContainerStyle={styles.scrollContainer}>
-              <Calendar
-                style={styles.calendar}
-                onDayPress={(day: any) => {
-                  setDataSelec(day.dateString);
-                  setFlagLoadNotas('carregando');
-                  setRecarregarNotas('recarregarNotas');
-                  if (listaDatasNotas.includes(day.dateString)) {
-                    setModalCalendarioNota(!modalCalendarioNota);
+              <View style={styles.container}>
+                <Calendar
+                  style={styles.calendar} // Estilo ajustado para responsividade
+                  onDayPress={(day:any) => {
+                    setDataSelec(day.dateString);
+                    setFlagLoadNotas('carregando');
+                    setRecarregarNotas('recarregarNotas');
+                    if (listaDatasNotas.includes(day.dateString)) {
+                      setModalCalendarioNota(!modalCalendarioNota)
 
-                    firestore().collection(idUsuario).doc('EstadosApp').update({
-                      idPeriodo: idPeriodoSelec,
-                      periodo: nomePeriodoSelec,
-                      idClasse: idClasseSelec,
-                      classe: nomeClasseSelec,
-                      data: day.dateString,
-                    });
-                  }
-                }}
-                markedDates={listaDatasMarcadasNotas}
-              />
-              <View style={styles.buttonWrapper}>
+                      //atualizando o estado da data
+                      firestore().collection(idUsuario).
+                        doc('EstadosApp').update({
+                          idPeriodo: idPeriodoSelec,
+                          periodo: nomePeriodoSelec,
+                          idClasse: idClasseSelec,
+                          classe: nomeClasseSelec,
+                          data: day.dateString
+                        })
+                    }
+                  }}
+                  markedDates={listaDatasMarcadasNotas}
+                />
                 <Pressable
                   style={[styles.button, styles.buttonClose]}
-                  onPress={() => [onPressAddData(), setflagLoadCalendarioNotas('carregando')]}
-                >
+                  onPress={() => [onPressAddData(), setflagLoadCalendarioNotas('carregando')]}>
                   <Text style={styles.textStyle}>Criar data</Text>
                 </Pressable>
               </View>
             </ScrollView>
-          );
+          )
       }
     }
-  };
+  }
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.mainScroll} contentContainerStyle={styles.mainContainer}>
       {renderCarregamento()}
-    </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  mainScroll: {
     flex: 1,
-    backgroundColor: '#fff',
   },
-  centeredContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+  mainContainer: {
+    paddingVertical: 20,
   },
   scrollContainer: {
-    paddingBottom: 24,
-    paddingHorizontal: width * 0.05,
+    paddingBottom: 20,
+  },
+  container: {
+    marginBottom: 24,
+    paddingHorizontal: width * 0.05, // Margem responsiva
   },
   calendar: {
     width: '100%',
     alignSelf: 'center',
   },
-  buttonWrapper: {
-    marginTop: 20,
-    alignItems: 'center',
-  },
   button: {
     borderRadius: 20,
     padding: 10,
     elevation: 2,
-    width: '80%',
+  },
+  buttonOpen: {
+    backgroundColor: '#F194FF',
   },
   buttonClose: {
     backgroundColor: Globais.corPrimaria,
+    marginTop: 24,
   },
   textStyle: {
     color: 'white',
@@ -179,7 +190,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     color: Globais.corTextoClaro,
     textAlign: 'center',
-  },
+  }
 });
 
 export default CalendarioNota;

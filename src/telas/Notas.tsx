@@ -76,7 +76,7 @@ const Notas = () => {
 
     return (
         <View style={styles.container}>
-            <HeaderNotas title="Frequência"></HeaderNotas>
+            <HeaderNotas title="Notas"></HeaderNotas>
             <Text style={styles.textLoad}>{nomePeriodoSelec != undefined ? 'Período: ' + nomePeriodoSelec : 'Selecione um período'}</Text>
             <Divider style={styles.divider}></Divider>
             <FlatListClasses></FlatListClasses>

@@ -36,7 +36,7 @@ const ModalMenu = ({navigation}:any) =>{
                 </TouchableWithoutFeedback>
                 <View style={styles.modalView}>
                   <View>
-                    <HeaderMenu title="Configurações"></HeaderMenu>
+                    <HeaderMenu title="Menu"></HeaderMenu>
                   </View>
                   <View style={styles.modalComponentes}>
                     <View style={styles.logoContainer}>

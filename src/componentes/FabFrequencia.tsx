@@ -1,17 +1,18 @@
-import { FloatingAction } from "react-native-floating-action";
 import React, { useContext } from 'react';
-import { View, ToastAndroid, Dimensions, StyleSheet } from "react-native";
-import { Context } from "../data/Provider";
-import Globais from "../data/Globais";
+import { View, ToastAndroid, StyleSheet, Dimensions } from 'react-native';
+import { FloatingAction } from 'react-native-floating-action';
 import FontIAwesomeIcon from 'react-native-vector-icons/FontAwesome';
+import { Context } from '../data/Provider';
+import Globais from '../data/Globais';
 
-const FabFrequencia = () => {
-  const { setModalCalendarioFreq, flagLoadAlunos, idClasseSelec } = useContext(Context);
-  
-  // Função para abrir o calendário
-  const abrirCalendário = () => {
+const { width, height } = Dimensions.get('window'); // Captura as dimensões da tela
+
+const FabNotas = () => {
+  const { setModalCalendarioNota, flagLoadAlunos, idClasseSelec } = useContext(Context);
+
+  const abrirCalendario = () => {
     if (idClasseSelec !== '' && flagLoadAlunos !== 'vazio') {
-      setModalCalendarioFreq(true);
+      setModalCalendarioNota(true);
     } else if (idClasseSelec === '') {
       ToastAndroid.show('Selecione uma classe primeiro...', ToastAndroid.SHORT);
     }
@@ -20,21 +21,16 @@ const FabFrequencia = () => {
     }
   };
 
-  // Ações do FloatingAction
   const actions = [
     {
-      text: "Adicionar data",
+      text: 'Adicionar data',
       textBackground: Globais.corPrimaria,
       color: Globais.corPrimaria,
-      icon: <FontIAwesomeIcon name={'calendar-plus-o'} size={24} color={'white'} />,
-      name: "data",
-      position: 1
-    }
+      icon: <FontIAwesomeIcon name={'calendar-plus-o'} size={width * 0.06} color="white" />,
+      name: 'data',
+      position: 1,
+    },
   ];
-
-  // Responsividade com base na largura da tela
-  const { width, height } = Dimensions.get('window');
-  const actionPosition = width < 350 ? 'right' : 'left'; // Ajusta a posição com base na largura da tela
 
   return (
     <View style={styles.container}>
@@ -42,8 +38,7 @@ const FabFrequencia = () => {
         color={Globais.corPrimaria}
         overrideWithAction={true}
         actions={actions}
-        onPressItem={abrirCalendário}
-        position={actionPosition} // Definindo a posição como string ('left' ou 'right')
+        onPressItem={abrirCalendario}
       />
     </View>
   );
@@ -51,12 +46,11 @@ const FabFrequencia = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1, 
-    justifyContent: 'flex-end', 
-    alignItems: 'flex-end',
-    marginBottom: 20,
-    marginRight: 20,
+    flex: 1,
+    justifyContent: 'flex-end',
+    alignItems: 'center', // Centraliza o FAB horizontalmente
+    paddingBottom: height * 0.05, // Define espaçamento responsivo na parte inferior
   },
 });
 
-export default FabFrequencia;
+export default FabNotas;
