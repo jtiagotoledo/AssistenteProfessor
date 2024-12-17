@@ -1,9 +1,11 @@
 import React, { useContext, useEffect } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, Pressable, StyleSheet, Text, View, Dimensions } from 'react-native';
 import { Calendar, LocaleConfig } from 'react-native-calendars';
 import { Context } from "../data/Provider";
 import Globais from '../data/Globais';
 import firestore from '@react-native-firebase/firestore';
+
+const { width, height } = Dimensions.get('window'); // Captura a largura e altura da tela
 
 LocaleConfig.locales.br = {
   monthNames: ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"],
@@ -108,49 +110,66 @@ const CalendarioFrequencia = () => {
           )
         case 'carregado':
           return (
-            <View style={styles.container}>
-              <Calendar
-                onDayPress={(day:any) => {
-                  setDataSelec(day.dateString);
-                  setFlagLoadFrequencia('carregando');
-                  setRecarregarFrequencia('recarregarFrequencia');
-                  if (listaDatasFreq.includes(day.dateString)) {
-                    setModalCalendarioFreq(!modalCalendarioFreq)
+            <ScrollView contentContainerStyle={styles.scrollContainer}>
+              <View style={styles.container}>
+                <Calendar
+                  style={styles.calendar} // Estilo ajustado para responsividade
+                  onDayPress={(day:any) => {
+                    setDataSelec(day.dateString);
+                    setFlagLoadFrequencia('carregando');
+                    setRecarregarFrequencia('recarregarFrequencia');
+                    if (listaDatasFreq.includes(day.dateString)) {
+                      setModalCalendarioFreq(!modalCalendarioFreq)
 
-                    //atualizando o estado da data
-                    firestore().collection(idUsuario).
-                      doc('EstadosApp').update({
-                        idPeriodo: idPeriodoSelec,
-                        periodo: nomePeriodoSelec,
-                        idClasse: idClasseSelec,
-                        classe: nomeClasseSelec,
-                        data: day.dateString
-                      })
-                  }
-                }}
-                markedDates={listaDatasMarcadasFreq}
-              />
-              <Pressable
-                style={[styles.button, styles.buttonClose]}
-                onPress={() => [onPressAddData(), setflagLoadCalendarioFreq('carregando')]}>
-                <Text style={styles.textStyle}>Criar data</Text>
-              </Pressable>
-            </View>
+                      //atualizando o estado da data
+                      firestore().collection(idUsuario).
+                        doc('EstadosApp').update({
+                          idPeriodo: idPeriodoSelec,
+                          periodo: nomePeriodoSelec,
+                          idClasse: idClasseSelec,
+                          classe: nomeClasseSelec,
+                          data: day.dateString
+                        })
+                    }
+                  }}
+                  markedDates={listaDatasMarcadasFreq}
+                />
+                <Pressable
+                  style={[styles.button, styles.buttonClose]}
+                  onPress={() => [onPressAddData(), setflagLoadCalendarioFreq('carregando')]}>
+                  <Text style={styles.textStyle}>Criar data</Text>
+                </Pressable>
+              </View>
+            </ScrollView>
           )
       }
     }
   }
 
   return (
-    <View>
+    <ScrollView style={styles.mainScroll} contentContainerStyle={styles.mainContainer}>
       {renderCarregamento()}
-    </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
+  mainScroll: {
+    flex: 1,
+  },
+  mainContainer: {
+    paddingVertical: 20,
+  },
+  scrollContainer: {
+    paddingBottom: 20,
+  },
   container: {
-    marginBottom: 24
+    marginBottom: 24,
+    paddingHorizontal: width * 0.05, // Margem responsiva
+  },
+  calendar: {
+    width: '100%',
+    alignSelf: 'center',
   },
   button: {
     borderRadius: 20,
@@ -172,6 +191,7 @@ const styles = StyleSheet.create({
   textLoad: {
     fontSize: 24,
     color: Globais.corTextoClaro,
+    textAlign: 'center',
   }
 });
 
