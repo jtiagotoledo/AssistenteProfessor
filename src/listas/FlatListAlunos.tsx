@@ -1,5 +1,5 @@
-import React, { useContext } from 'react'
-import { SafeAreaView, FlatList, Text, StyleSheet, StatusBar, TouchableOpacity, View } from 'react-native'
+import React, { useContext } from 'react';
+import { SafeAreaView, FlatList, Text, StyleSheet, StatusBar, TouchableOpacity, View, Dimensions } from 'react-native';
 import { Context } from "../data/Provider";
 import Globais from '../data/Globais';
 
@@ -22,50 +22,45 @@ type ItemProps = {
 
 const Item = ({ item, onPress, onLongPress, backgroundColor, textColor }: ItemProps) => (
   <TouchableOpacity onPress={onPress} onLongPress={onLongPress} style={[styles.item, { backgroundColor }]}>
-    <View style={{ flexDirection: 'row' }}>
-      <View style={{ flex: 1 }}>
-        <Text style={[styles.title, { color: textColor }]}>{item.numero}      </Text>
-      </View>
-      <View style={{ flex: 10 }}>
-        <Text style={[styles.title, { color: textColor }]}>{item.nome}</Text>
-      </View>
+    <View style={styles.itemHeader}>
+      <Text style={[styles.title, { color: textColor }]}>{item.numero}</Text>
+      <Text style={[styles.title, { color: textColor, flex: 1 }]}>{item.nome}</Text>
     </View>
-    <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', paddingTop: 4 }}>
-      <Text style={{ fontSize: 12 }}>Média: {item.mediaNotas || ' ...'}</Text>
-      <Text style={{ fontSize: 12 }}>%Freq: {item.porcFreq || ' ...'}</Text>
+    <View style={styles.itemFooter}>
+      <Text style={styles.smallText}>Média: {item.mediaNotas || '...'}</Text>
+      <Text style={styles.smallText}>%Freq: {item.porcFreq || '...'}</Text>
     </View>
   </TouchableOpacity>
 );
 
 const FlatListAlunos = () => {
   const { idClasseSelec, setNumAlunoSelec, setFlagLongPressClasse, listaAlunos, setFlagLongPressAluno,
-    selectedIdAluno, setSelectedIdAluno, setNomeAlunoSelec, setIdAlunoSelec, setAlunoInativo } = useContext(Context)
+    selectedIdAluno, setSelectedIdAluno, setNomeAlunoSelec, setIdAlunoSelec, setAlunoInativo } = useContext(Context);
 
   const onPressItem = (item: any) => {
-    selectedIdAluno === '' || selectedIdAluno !== item.idAluno ? setSelectedIdAluno(item.idAluno) : setSelectedIdAluno('')
-    setIdAlunoSelec(item.idAluno)
-    setNomeAlunoSelec(item.nome)
-    setNumAlunoSelec(item.numero.toString())
-    setFlagLongPressAluno(false)
-  }
+    selectedIdAluno === '' || selectedIdAluno !== item.idAluno ? setSelectedIdAluno(item.idAluno) : setSelectedIdAluno('');
+    setIdAlunoSelec(item.idAluno);
+    setNomeAlunoSelec(item.nome);
+    setNumAlunoSelec(item.numero.toString());
+    setFlagLongPressAluno(false);
+  };
 
   const onLongPressItem = (item: any) => {
-    setSelectedIdAluno(item.idAluno)
-    setIdAlunoSelec(item.idAluno)
-    setNomeAlunoSelec(item.nome)
-    setNumAlunoSelec(item.numero.toString())
-    setAlunoInativo(item.inativo)
-    setFlagLongPressAluno(true)
-    setFlagLongPressClasse(false)
-  }
+    setSelectedIdAluno(item.idAluno);
+    setIdAlunoSelec(item.idAluno);
+    setNomeAlunoSelec(item.nome);
+    setNumAlunoSelec(item.numero.toString());
+    setAlunoInativo(item.inativo);
+    setFlagLongPressAluno(true);
+    setFlagLongPressClasse(false);
+  };
 
   const renderItem = ({ item }: { item: ItemData }) => {
-    let backgroundColor = ''
-    if (item.inativo) {
-      backgroundColor = Globais.corAlunoInativo
-    } else {
-      backgroundColor = item.idAluno === selectedIdAluno ? Globais.corPrimaria : Globais.corTerciaria;
-    }
+    const backgroundColor = item.inativo
+      ? Globais.corAlunoInativo
+      : item.idAluno === selectedIdAluno
+        ? Globais.corPrimaria
+        : Globais.corTerciaria;
     const color = item.idAluno === selectedIdAluno ? Globais.corTextoClaro : Globais.corTextoEscuro;
 
     return (
@@ -79,22 +74,16 @@ const FlatListAlunos = () => {
     );
   };
 
-  const renderCarregamento = () => {
-    if (idClasseSelec != '') {
-      return (
+  return (
+    <SafeAreaView style={styles.container}>
+      {idClasseSelec !== '' && (
         <FlatList
           data={listaAlunos}
           renderItem={renderItem}
           keyExtractor={item => item.idAluno}
           extraData={selectedIdAluno}
         />
-      )
-    }
-  }
-
-  return (
-    <SafeAreaView style={styles.container}>
-      {renderCarregamento()}
+      )}
     </SafeAreaView>
   );
 };
@@ -104,20 +93,29 @@ export default FlatListAlunos;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: 'row'
+    paddingTop: StatusBar.currentHeight || 0,
+    backgroundColor: Globais.corSecundaria,
   },
   item: {
-    padding: 8,
-    marginVertical: 2,
-    marginHorizontal: 8,
+    padding: Dimensions.get('window').width * 0.03, // Proporcional à largura da tela
+    marginVertical: 4,
+    marginHorizontal: '2%',
     borderRadius: 5,
   },
-  title: {
-    fontSize: 20,
+  itemHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
-  textLoad: {
-    fontSize: 24,
-    color: Globais.corTextoClaro,
-  }
+  itemFooter: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    marginTop: 4,
+  },
+  title: {
+    fontSize: Dimensions.get('window').width * 0.045, // Proporcional à largura da tela
+  },
+  smallText: {
+    fontSize: Dimensions.get('window').width * 0.035,
+  },
 });
-

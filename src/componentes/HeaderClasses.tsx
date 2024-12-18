@@ -17,15 +17,18 @@ type HeaderComponentProps = {
 
 const HeaderClasses: React.FunctionComponent<HeaderComponentProps> = ({ title }) => {
   const {
-    setModalMenu,
-    flagLongPressDataFreq,
-    setModalDelDataFreq,
+    setModalMenu, flagLongPressAluno, setModalDelClasse, setModalDelAluno,
+    flagLongPressClasse, setModalEditClasse, setModalEditAluno
   } = useContext(Context);
 
-  const handlePressBin = () => {
-    if (flagLongPressDataFreq) {
-      setModalDelDataFreq(true);
-    }
+  const onPressBin = () => {
+    if (flagLongPressClasse) setModalDelClasse(true);
+    if (flagLongPressAluno) setModalDelAluno(true);
+  };
+
+  const onPressEdit = () => {
+    if (flagLongPressClasse) setModalEditClasse(true);
+    if (flagLongPressAluno) setModalEditAluno(true);
   };
 
   return (
@@ -45,10 +48,21 @@ const HeaderClasses: React.FunctionComponent<HeaderComponentProps> = ({ title })
       }}
       rightComponent={
         <View style={styles.headerRight}>
-          <TouchableWithoutFeedback onPress={handlePressBin}>
+          <TouchableWithoutFeedback onPress={onPressEdit}>
+            <FontAwesomeIcon
+              name="edit"
+              selectable={false}
+              style={styles.iconSpacing}
+              color={flagLongPressClasse || flagLongPressAluno ? 'rgba(255,255,255,1)' : 'rgba(255,255,255,0.6)'}
+              size={24}
+            />
+          </TouchableWithoutFeedback>
+          <TouchableWithoutFeedback onPress={onPressBin}>
             <FontAwesomeIcon
               name="trash-o"
-              color={flagLongPressDataFreq ? 'rgba(255,255,255,1)' : 'rgba(255,255,255,0.6)'}
+              selectable={false}
+              style={styles.iconSpacing}
+              color={flagLongPressClasse || flagLongPressAluno ? 'rgba(255,255,255,1)' : 'rgba(255,255,255,0.6)'}
               size={24}
             />
           </TouchableWithoutFeedback>
@@ -82,6 +96,10 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  iconSpacing: {
+    marginHorizontal: 10, // Espaçamento entre os ícones
   },
 });
 
