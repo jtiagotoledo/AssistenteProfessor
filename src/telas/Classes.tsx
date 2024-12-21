@@ -45,8 +45,8 @@ function Classes({ navigation }: any) {
       <HeaderClasses title="Classes" />
       <FlatListAlunos
         ListHeaderComponent={renderHeader}
-        data={[]} // Substitua pelos seus dados
-        renderItem={() => null} // Substitua pela lógica de renderização dos itens
+        data={[]} 
+        renderItem={() => null} 
         contentContainerStyle={styles.listContent}
       />
       <ModalAddPeriodo />

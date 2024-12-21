@@ -96,7 +96,7 @@ const FlatListNotas = (props:any) => {
     return (
       <View style={styles.containerItem}>
         <View style={[styles.item, styles.nome]}>
-          <Text style={[styles.title]}>{item.numero} {item.nome}</Text>
+        <Text style={[styles.title]}>{item.numero+'  '} {item.nome}</Text>
         </View>
         <View>
           <TextInput
@@ -157,32 +157,33 @@ const FlatListNotas = (props:any) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 16
+    marginTop: 8
   },
   containerItem: {
     flexDirection: 'row',
   },
   item: {
-    padding: 10,
-    marginVertical: 8,
-    marginHorizontal: 16,
+    padding: 2,
+    marginVertical: 2,
+    marginHorizontal: 4,
     backgroundColor: Globais.corTerciaria,
   },
   itemNota: {
     width: 80,
-    marginVertical: 8,
-    marginHorizontal: 16,
+    marginVertical: 2,
+    marginHorizontal: 8,
     backgroundColor: Globais.corTerciaria,
   },
   title: {
     fontSize: 24,
+    color:Globais.corTextoEscuro
   },
   titleFrequencia: {
     fontSize: 24,
     textAlign: 'center',
   },
   nome: {
-    flex: 3
+    flex: 3,
   },
   frequencia: {
     flex: 1

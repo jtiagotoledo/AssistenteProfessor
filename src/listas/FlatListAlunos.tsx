@@ -23,7 +23,7 @@ type ItemProps = {
 const Item = ({ item, onPress, onLongPress, backgroundColor, textColor }: ItemProps) => (
   <TouchableOpacity onPress={onPress} onLongPress={onLongPress} style={[styles.item, { backgroundColor }]}>
     <View style={styles.itemHeader}>
-      <Text style={[styles.title, { color: textColor }]}>{item.numero}</Text>
+      <Text style={[styles.title, { color: textColor }]}>{item.numero+'  '}</Text>
       <Text style={[styles.title, { color: textColor, flex: 1 }]}>{item.nome}</Text>
     </View>
     <View style={styles.itemFooter}>
@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   title: {
-    fontSize: Dimensions.get('window').width * 0.045, // Proporcional à largura da tela
+    fontSize: Dimensions.get('window').width * 0.045, 
   },
   smallText: {
     fontSize: Dimensions.get('window').width * 0.035,

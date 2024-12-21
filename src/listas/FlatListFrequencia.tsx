@@ -103,15 +103,17 @@ const styles = StyleSheet.create({
     padding: 2,
     marginVertical: 2,
     marginHorizontal: 8,
-    paddingLeft: 16,
+    paddingLeft: 8,
     backgroundColor: Globais.corTerciaria,
   },
   titleNum: {
     fontSize: 20,
+    color:Globais.corTextoEscuro,
   },
   titleNome: {
     fontSize: 20,
-    paddingLeft: 16
+    paddingLeft: 8,
+    color:Globais.corTextoEscuro,
   },
   titleFrequencia: {
     padding: 8,
