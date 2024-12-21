@@ -75,7 +75,7 @@ const HeaderClasses: React.FunctionComponent<HeaderComponentProps> = ({ title })
 const styles = StyleSheet.create({
   headerContainer: {
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 2,
     width: '100%',
     paddingVertical: 15,
     flexDirection: 'row',

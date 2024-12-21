@@ -93,7 +93,6 @@ export default FlatListAlunos;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: StatusBar.currentHeight || 0,
     backgroundColor: Globais.corSecundaria,
   },
   item: {
