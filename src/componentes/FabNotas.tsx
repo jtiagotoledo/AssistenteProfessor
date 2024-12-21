@@ -26,7 +26,7 @@ const FabNotas = ()=>{
       text: "Adicionar data",
       textBackground: Globais.corPrimaria,
       color: Globais.corPrimaria,
-      icon: <FontIAwesomeIcon name={'plus'} color={'white'}/>,
+      icon: <FontIAwesomeIcon name={'calendar-plus-o'} size={24} color={'white'}></FontIAwesomeIcon>,
       name: "data",
       position: 1
     }

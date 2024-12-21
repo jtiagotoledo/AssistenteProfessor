@@ -1,118 +1,80 @@
-import React, { useContext, useEffect } from "react";
-import { StyleSheet, Text, TouchableOpacity, View, TextInput, ToastAndroid } from "react-native"
-import { Context } from "../data/Provider";
+import React, { useContext } from "react";
+import { StyleSheet, Text, View, TextInput } from "react-native";
 import { Divider } from "react-native-paper";
 
+import { Context } from "../data/Provider";
 import ModalCalendarioFrequencia from "../modais/ModalCalendarioFrequencia";
 import ModalDelDataFreq from "../modais/ModalDelDataFreq";
 import Globais from "../data/Globais";
 import HeaderFrequencia from "../componentes/HeaderFrequencia";
 import FlatListFrequencia from "../listas/FlatListFrequencia";
 import FlatListClasses from "../listas/FlatListClasses";
-import firestore from '@react-native-firebase/firestore';
 import FabFrequencia from "../componentes/FabFrequencia";
 
 const Frequencia = () => {
+    const { dataSelec, setModalCalendarioFreq, valueAtividade, setValueAtividade, nomePeriodoSelec } = useContext(Context);
 
-    const { dataSelec, setModalCalendarioFreq, idClasseSelec,
-        idPeriodoSelec, valueAtividade, setValueAtividade,
-        idUsuario, setIdPeriodoSelec, setDataSelec, setIdClasseSelec,
-        setFlagLongPressDataFreq, nomePeriodoSelec, abaSelec, flagLoadAbas } = useContext(Context);
-
-    let dataAno = '', dataMes = '', dataDia = '', data = ''
-
-    let datasFrequenciasRef = firestore().collection(idUsuario)
-        .doc(idPeriodoSelec).collection('Classes')
-        .doc(idClasseSelec).collection('DatasFrequencias')
-
-    if (dataSelec) {
-        dataAno = dataSelec.slice(0, 4);
-        dataMes = dataSelec.slice(5, 7);
-        dataDia = dataSelec.slice(8, 10);
-        data = dataDia + '/' + dataMes + '/' + dataAno
-    }
-
-    const onChangeInputAtividades = (text: String) => {
-        datasFrequenciasRef.doc(dataSelec).set({ atividade: text })
-        setValueAtividade({ atividade: text })
-    }
-
-    useEffect(() => {
-        //recuperar dados dos estados do app
-        firestore().collection(idUsuario)
-            .doc('EstadosApp').onSnapshot(snapShot => {
-                setIdPeriodoSelec(snapShot.data()?.idPeriodo)
-                setIdClasseSelec(snapShot.data()?.idClasse)
-                setDataSelec(snapShot.data()?.data)
-            })
-    }, [])
-
-    useEffect(() => {
-        const data = async () => {
-            //Recuperar atividades da data selecionada no BD.
-            datasFrequenciasRef.doc(dataSelec).get().then((snapshot) => {
-                snapshot.exists ?
-                    setValueAtividade(snapshot.data()) : setValueAtividade('')
-            }).catch((erro) => {
-                console.error(erro);
-            })
-        }
-        data()
-    }, [dataSelec]);
-
-    const renderData = () => {
-        if (data != '') {
-            return (
-                <TouchableOpacity
-                    onPress={() => [setModalCalendarioFreq(true), setFlagLongPressDataFreq(false)]}
-                    onLongPress={() => setFlagLongPressDataFreq(true)}>
-                    <Text style={styles.text}>{data}</Text>
-                </TouchableOpacity>
-            )
-        }
-    }
-
-    return (
-        <View style={styles.container}>
-            <HeaderFrequencia title="Frequência"></HeaderFrequencia>
-            <Text style={styles.textLoad}>{nomePeriodoSelec != undefined ? 'Período: ' + nomePeriodoSelec : 'Selecione um período'}</Text>
-            <FlatListClasses></FlatListClasses>
-            <Divider style={styles.divider}></Divider>
+    const renderHeader = () => (
+        <>
+            <Text style={styles.textLoad}>
+                {nomePeriodoSelec != undefined ? 'Período: ' + nomePeriodoSelec : 'Selecione um período'}
+            </Text>
+            <FlatListClasses />
+            <Divider style={styles.divider} />
             <View style={styles.containerText}>
-                {renderData()}
+                <Text
+                    style={styles.text}
+                    onPress={() => setModalCalendarioFreq(true)}>
+                    {dataSelec || 'Selecione uma data'}
+                </Text>
             </View>
-            <Divider style={styles.divider}></Divider>
-            <View style={styles.containerInput}>
-                {dataSelec != '' ?
+            <Divider style={styles.divider} />
+            {dataSelec && (
+                <View style={styles.containerInput}>
                     <TextInput
                         multiline
                         placeholder="Descreva as atividades realizadas..."
-                        onChangeText={onChangeInputAtividades}
                         value={valueAtividade.atividade}
-                        style={styles.textInput}></TextInput> : null}
-            </View>
-            <FlatListFrequencia></FlatListFrequencia>
-            <ModalCalendarioFrequencia></ModalCalendarioFrequencia>
-            <ModalDelDataFreq></ModalDelDataFreq>
-            <FabFrequencia></FabFrequencia>
+                        onChangeText={(text) => setValueAtividade({ atividade: text })}
+                        style={styles.textInput}
+                    />
+                </View>
+            )}
+        </>
+    );
+
+    return (
+        <View style={styles.container}>
+            <HeaderFrequencia title="Frequência" />
+            <FlatListFrequencia
+                ListHeaderComponent={renderHeader}
+                // Defina os dados e o renderItem da FlatListFrequencia
+                data={[]} // Substitua pelos seus dados
+                renderItem={() => null} // Substitua pela sua lógica de renderização
+                contentContainerStyle={styles.listContent}
+            />
+            {/* Modais e FAB */}
+            <ModalCalendarioFrequencia />
+            <ModalDelDataFreq />
+            <FabFrequencia />
         </View>
-    )
-}
+    );
+};
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: Globais.corSecundaria,
         flex: 1,
+        backgroundColor: Globais.corSecundaria,
+    },
+    listContent: {
+        flexGrow: 1,
     },
     containerText: {
         flexDirection: 'row',
         justifyContent: 'center',
-        marginTop: 16,
-        marginBottom: 16,
+        marginVertical: 16,
     },
     text: {
-        alignContent: 'center',
-        alignItems: 'center',
         fontSize: 20,
         padding: 5,
         color: Globais.corTextoEscuro,
@@ -122,18 +84,19 @@ const styles = StyleSheet.create({
     },
     textInput: {
         width: '90%',
-        backgroundColor: Globais.corTextoClaro
+        backgroundColor: Globais.corTextoClaro,
+        padding: 8,
     },
     containerInput: {
-        marginTop: 16,
-
+        marginVertical: 16,
         flexDirection: 'row',
         justifyContent: 'center',
     },
     textLoad: {
         fontSize: 24,
         color: Globais.corTextoClaro,
-    }
+        textAlign: 'center',
+    },
 });
 
 export default Frequencia;

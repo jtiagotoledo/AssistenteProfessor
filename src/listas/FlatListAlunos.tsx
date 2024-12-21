@@ -33,7 +33,7 @@ const Item = ({ item, onPress, onLongPress, backgroundColor, textColor }: ItemPr
   </TouchableOpacity>
 );
 
-const FlatListAlunos = () => {
+const FlatListAlunos = (props:any) => {
   const { idClasseSelec, setNumAlunoSelec, setFlagLongPressClasse, listaAlunos, setFlagLongPressAluno,
     selectedIdAluno, setSelectedIdAluno, setNomeAlunoSelec, setIdAlunoSelec, setAlunoInativo } = useContext(Context);
 
@@ -78,6 +78,7 @@ const FlatListAlunos = () => {
     <SafeAreaView style={styles.container}>
       {idClasseSelec !== '' && (
         <FlatList
+          {...props}
           data={listaAlunos}
           renderItem={renderItem}
           keyExtractor={item => item.idAluno}

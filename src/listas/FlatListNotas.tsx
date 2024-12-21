@@ -11,7 +11,7 @@ type ItemData = {
   idAluno: string;
 };
 
-const FlatListNotas = () => {
+const FlatListNotas = (props:any) => {
   const flatListRef = useRef<FlatList>(null);
   const listaNotasRef = useRef({})
   const textInputRefs = useRef<TextInput[]>([]);
@@ -122,6 +122,7 @@ const FlatListNotas = () => {
       if (dataSelec != '') {
         return (
           <FlatList
+            {...props}
             data={listaNotas}
             renderItem={renderItem}
             ref={flatListRef}

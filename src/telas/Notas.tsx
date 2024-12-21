@@ -1,123 +1,86 @@
 import React, { useContext, useEffect } from "react";
-import { StyleSheet, Text, TouchableOpacity, View, TextInput, ToastAndroid, NativeSyntheticEvent, TextInputChangeEventData } from "react-native"
-import { Context } from "../data/Provider";
+import { StyleSheet, Text, View, TextInput, TouchableOpacity } from "react-native";
 import { Divider } from "react-native-paper";
 
+import { Context } from "../data/Provider";
 import ModalCalendarioNota from "../modais/ModalCalendarioNota";
 import ModalDelDataNotas from "../modais/ModalDelDataNotas";
 import Globais from "../data/Globais";
-import FlatListClasses from "../listas/FlatListClasses";
-import firestore from '@react-native-firebase/firestore';
-import HeaderNotas from "../componentes/HeaderNotas";
 import FlatListNotas from "../listas/FlatListNotas";
+import FlatListClasses from "../listas/FlatListClasses";
 import FabNotas from "../componentes/FabNotas";
+import HeaderNotas from "../componentes/HeaderNotas";
 
 const Notas = () => {
+    const {
+        dataSelec,
+        setModalCalendarioNota,
+        valueAtividade,
+        setValueAtividade,
+        nomePeriodoSelec,
+        tecladoAtivo,
+    } = useContext(Context);
 
-    let datas: any[] = [];
-
-    const { dataSelec, setModalCalendarioNota, idClasseSelec,
-        idPeriodoSelec, idUsuario, setIdPeriodoSelec, setDataSelec,
-        setIdClasseSelec, setValueAtividade, valueAtividade,
-        setFlagLongPressDataNotas, nomePeriodoSelec, tecladoAtivo } = useContext(Context);
-
-    let dataAno = '', dataMes = '', dataDia = '', data = ''
-
-    let datasNotasRef = firestore().collection(idUsuario)
-        .doc(idPeriodoSelec).collection('Classes')
-        .doc(idClasseSelec).collection('DatasNotas')
-
-    if (dataSelec) {
-        dataAno = dataSelec.slice(0, 4);
-        dataMes = dataSelec.slice(5, 7);
-        dataDia = dataSelec.slice(8, 10);
-        data = dataDia + '/' + dataMes + '/' + dataAno
-    }
-
-    const onChangeInputAtividades = (text: String) => {
-        datasNotasRef.doc(dataSelec).set({ avaliacao: text })
-        setValueAtividade({ avaliacao: text })
-    }
-
-    useEffect(() => {
-        //recuperar dados dos estados do app
-        firestore().collection(idUsuario)
-            .doc('EstadosApp').onSnapshot(snapShot => {
-                setIdPeriodoSelec(snapShot.data()?.idPeriodo)
-                setIdClasseSelec(snapShot.data()?.idClasse)
-                setDataSelec(snapShot.data()?.data)
-            })
-    }, [])
-
-    useEffect(() => {
-        const data = async () => {
-            //Recuperar o título das avaliações da data selecionada no BD.
-            datasNotasRef.doc(dataSelec).get().then((snapshot) => {
-                snapshot.exists ?
-                    setValueAtividade(snapshot.data()) : setValueAtividade('')
-            }).catch((erro) => {
-                console.error(erro);
-            })
-        }
-        data()
-    }, [dataSelec]);
-
-    const renderData = () => {
-        if (data != '') {
-            return (
-                <TouchableOpacity
-                    onPress={() => [setModalCalendarioNota(true), setFlagLongPressDataNotas(false)]}
-                    onLongPress={() => setFlagLongPressDataNotas(true)}>
-                    <Text style={styles.text}>{data}</Text>
-                </TouchableOpacity>
-            )
-        }
-    }
-
-    return (
-        <View style={styles.container}>
-            <HeaderNotas title="Notas"></HeaderNotas>
-            <Text style={styles.textLoad}>{nomePeriodoSelec != undefined ? 'Período: ' + nomePeriodoSelec : 'Selecione um período'}</Text>
-            <Divider style={styles.divider}></Divider>
-            <FlatListClasses></FlatListClasses>
-            <Divider style={styles.divider}></Divider>
+    const renderHeader = () => (
+        <>
+            <Text style={styles.textLoad}>
+                {nomePeriodoSelec ? `Período: ${nomePeriodoSelec}` : "Selecione um período"}
+            </Text>
+            <FlatListClasses />
+            <Divider style={styles.divider} />
             <View style={styles.containerText}>
-                {renderData()}
+                {dataSelec && (
+                    <TouchableOpacity
+                        onPress={() => setModalCalendarioNota(true)}>
+                        <Text style={styles.text}>{dataSelec}</Text>
+                    </TouchableOpacity>
+                )}
             </View>
-            <Divider style={styles.divider}></Divider>
-            <View style={styles.containerInput}>
-                {dataSelec != '' ?
+            <Divider style={styles.divider} />
+            {dataSelec && (
+                <View style={styles.containerInput}>
                     <TextInput
                         multiline
                         placeholder="Título da avaliação..."
-                        onChangeText={onChangeInputAtividades}
                         value={valueAtividade.avaliacao}
-                        style={styles.textInput}></TextInput> : null}
-            </View>
-            <FlatListNotas></FlatListNotas>
-            <ModalCalendarioNota></ModalCalendarioNota>
-            <ModalDelDataNotas></ModalDelDataNotas>
-            <View style={{ display: tecladoAtivo }}>
-                <FabNotas></FabNotas>
-            </View>
+                        onChangeText={(text) => setValueAtividade({ avaliacao: text })}
+                        style={styles.textInput}
+                    />
+                </View>
+            )}
+        </>
+    );
+
+    return (
+        <View style={styles.container}>
+            <HeaderNotas title="Notas" />
+            <FlatListNotas
+                ListHeaderComponent={renderHeader}
+                data={[]} // Substitua pelos seus dados
+                renderItem={() => null} // Substitua pela lógica de renderização dos itens
+                contentContainerStyle={styles.listContent}
+            />
+            <ModalCalendarioNota />
+            <ModalDelDataNotas />
+            <FabNotas />
         </View>
-    )
-}
+    );
+};
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: Globais.corSecundaria,
         flex: 1,
+        backgroundColor: Globais.corSecundaria,
+    },
+    listContent: {
+        flexGrow: 1,
     },
     containerText: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        marginTop: 16,
-        marginBottom: 16,
+        flexDirection: "row",
+        justifyContent: "center",
+        marginVertical: 16,
     },
     text: {
-        alignContent: 'center',
-        alignItems: 'center',
         fontSize: 20,
         padding: 5,
         color: Globais.corTextoEscuro,
@@ -126,18 +89,20 @@ const styles = StyleSheet.create({
         backgroundColor: Globais.corPrimaria,
     },
     textInput: {
-        width: '90%',
-        backgroundColor: Globais.corTextoClaro
+        width: "90%",
+        backgroundColor: Globais.corTextoClaro,
+        padding: 8,
     },
     containerInput: {
-        marginTop: 16,
-        flexDirection: 'row',
-        justifyContent: 'center',
+        marginVertical: 16,
+        flexDirection: "row",
+        justifyContent: "center",
     },
     textLoad: {
         fontSize: 24,
         color: Globais.corTextoClaro,
-    }
+        textAlign: "center",
+    },
 });
 
 export default Notas;

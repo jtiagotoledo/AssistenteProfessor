@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
   headerContainer: {
     backgroundColor: Globais.corPrimaria, // Garantia de aplicação da cor do tema
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 2,
     width: '100%',
     paddingVertical: 15,
     flexDirection: 'row',

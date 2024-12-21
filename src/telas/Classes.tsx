@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { View, StyleSheet, Text } from "react-native"
+import { View, StyleSheet, Text } from "react-native";
 import { Divider } from "react-native-paper";
 
 import FabClasses from "../componentes/FabClasses";
@@ -8,7 +8,7 @@ import FlatListClasses from "../listas/FlatListClasses";
 import HeaderClasses from "../componentes/HeaderClasses";
 import ConexaoInternet from "../componentes/ConexaoInternet";
 import Globais from "../data/Globais";
-import consultasBD from "../banco_dados/consultasBD"
+import consultasBD from "../banco_dados/consultasBD";
 
 import ModalAddPeriodo from "../modais/ModalAddPeriodo";
 import ModalAddClasse from "../modais/ModalAddClasse";
@@ -22,33 +22,44 @@ import ModalDelAluno from "../modais/ModalDelAluno";
 import ModalMenu from "../modais/ModalMenu";
 
 import { Context } from "../data/Provider";
-
+import React from "react";
 
 function Classes({ navigation }: any) {
-  const { nomePeriodoSelec } = useContext(Context)
+  const { nomePeriodoSelec } = useContext(Context);
 
-  consultasBD()
+  consultasBD();
+
+  const renderHeader = () => (
+    <>
+      <ConexaoInternet />
+      <Text style={styles.textLoad}>
+        {nomePeriodoSelec ? `Período: ${nomePeriodoSelec}` : "Adicione um período"}
+      </Text>
+      <FlatListClasses />
+      <Divider style={styles.divider} />
+    </>
+  );
 
   return (
     <View style={styles.container}>
-      <HeaderClasses title="Classes"></HeaderClasses>
-      <ConexaoInternet></ConexaoInternet>
-      <Text style={styles.textLoad}>{nomePeriodoSelec ? 'Período: ' + nomePeriodoSelec : 'Adicione um período'}</Text>
-      <Divider style={styles.divider}></Divider>
-      <FlatListClasses></FlatListClasses>
-      <Divider style={styles.divider}></Divider>
-      <FlatListAlunos></FlatListAlunos>
-      <ModalAddPeriodo></ModalAddPeriodo>
-      <ModalAddClasse></ModalAddClasse>
-      <ModalAddAluno></ModalAddAluno>
-      <ModalEditPeriodo></ModalEditPeriodo>
-      <ModalEditClasse></ModalEditClasse>
-      <ModalEditAluno></ModalEditAluno>
-      <ModalDelPeriodo></ModalDelPeriodo>
-      <ModalDelClasse></ModalDelClasse>
-      <ModalDelAluno></ModalDelAluno>
-      <ModalMenu navigation={navigation}></ModalMenu>
-      <FabClasses></FabClasses>
+      <HeaderClasses title="Classes" />
+      <FlatListAlunos
+        ListHeaderComponent={renderHeader}
+        data={[]} // Substitua pelos seus dados
+        renderItem={() => null} // Substitua pela lógica de renderização dos itens
+        contentContainerStyle={styles.listContent}
+      />
+      <ModalAddPeriodo />
+      <ModalAddClasse />
+      <ModalAddAluno />
+      <ModalEditPeriodo />
+      <ModalEditClasse />
+      <ModalEditAluno />
+      <ModalDelPeriodo />
+      <ModalDelClasse />
+      <ModalDelAluno />
+      <ModalMenu navigation={navigation} />
+      <FabClasses />
     </View>
   );
 }
@@ -58,7 +69,9 @@ const styles = StyleSheet.create({
     backgroundColor: Globais.corSecundaria,
     flex: 1,
   },
-
+  listContent: {
+    flexGrow: 1,
+  },
   text: {
     fontSize: 20,
     padding: 5,
@@ -70,7 +83,8 @@ const styles = StyleSheet.create({
   textLoad: {
     fontSize: 24,
     color: Globais.corTextoClaro,
-  }
+    textAlign: "center",
+  },
 });
 
 export default Classes;

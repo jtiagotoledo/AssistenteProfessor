@@ -20,7 +20,7 @@ type ItemProps = {
 
 
 
-const FlatListFrequencia = () => {
+const FlatListFrequencia = (props:any) => {
   const [statusFreq, setStatusFreq] = useState('');
   const [selectedId, setSelectedId] = useState<string>();
   const { idClasseSelec, setNumAlunoSelec, dataSelec, listaFrequencia,
@@ -73,6 +73,7 @@ const FlatListFrequencia = () => {
       if (dataSelec != '') {
         return (
           <FlatList
+            {...props}
             data={listaFrequencia}
             renderItem={renderItem}
             keyExtractor={item => item.idAluno}
