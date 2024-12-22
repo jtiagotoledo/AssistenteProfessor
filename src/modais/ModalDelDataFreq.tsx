@@ -4,6 +4,7 @@ import firestore from '@react-native-firebase/firestore';
 import {Context} from "../data/Provider";
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import Globais from "../data/Globais";
+import { deleteDataFreq } from "../banco_dados/deletarBD";
 
 const ModalDelDataFreq = () =>{
 
@@ -12,14 +13,12 @@ const ModalDelDataFreq = () =>{
       setModalDelDataFreq,setFlagLongPressDataFreq,setDataSelec} = useContext(Context);
 
     const deletarData = ()=> {
-      firestore().collection(idUsuario)
-      .doc(idPeriodoSelec).collection('Classes')
-      .doc(idClasseSelec).collection('Frequencia')
-      .doc(dataSelec).delete()
+      deleteDataFreq(idUsuario, idPeriodoSelec, idClasseSelec, dataSelec)
+
       setModalDelDataFreq(!modalDelDataFreq)
       setFlagLongPressDataFreq(false)
       setDataSelec('')
-      setRecarregarFrequencia('recarregar')
+      setRecarregarFrequencia('recarregar') 
 
       //deletando o estado da data
       firestore().collection(idUsuario).

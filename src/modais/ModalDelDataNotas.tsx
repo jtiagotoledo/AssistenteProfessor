@@ -4,6 +4,8 @@ import firestore from '@react-native-firebase/firestore';
 import {Context} from "../data/Provider";
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import Globais from "../data/Globais";
+import { deleteDataNotas } from "../banco_dados/deletarBD";
+
 
 const ModalDelDataNotas = () =>{
 
@@ -12,10 +14,8 @@ const ModalDelDataNotas = () =>{
       setModalDelDataNotas,setFlagLongPressDataNotas,setDataSelec} = useContext(Context);
 
     const deletarData = ()=> {
-      firestore().collection(idUsuario)
-      .doc(idPeriodoSelec).collection('Classes')
-      .doc(idClasseSelec).collection('Notas')
-      .doc(dataSelec).delete()
+      deleteDataNotas(idUsuario, idPeriodoSelec, idClasseSelec, dataSelec)
+
       setModalDelDataNotas(!modalDelDataNotas)
       setFlagLongPressDataNotas(false)
       setDataSelec('')

@@ -19,12 +19,12 @@ const HeaderFrequencia: React.FunctionComponent<HeaderComponentProps> = (props) 
   const {
     setModalMenu,
     flagLongPressDataNotas,
-    setModalDelDataFreq,
+    setModalDelDataNotas,
   } = useContext(Context);
 
   const onPressBin = () => {
     if (flagLongPressDataNotas) {
-      setModalDelDataFreq(true);
+      setModalDelDataNotas(true);
     }
   };
 

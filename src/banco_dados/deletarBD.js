@@ -215,4 +215,112 @@ export const deletePeriodo = async (idUsuario, idPeriodoSelec) => {
   }
 };
 
+export const deleteDataFreq = async (idUsuario, idPeriodoSelec, idClasseSelec, dataSelec) => {
+  try {
+    const firestoreInstance = firestore();
+
+    // Caminho base da classe
+    const classPath = `${idUsuario}/${idPeriodoSelec}/Classes/${idClasseSelec}`;
+
+    // Deletar a data da subcoleção `DatasFrequencias`
+    const datasFrequenciasPath = `${classPath}/DatasFrequencias`;
+    const datasSnapshot = await firestoreInstance.collection(datasFrequenciasPath).where('data', '==', dataSelec).get();
+
+    if (!datasSnapshot.empty) {
+      const batch = firestoreInstance.batch();
+      datasSnapshot.docs.forEach((doc) => {
+        batch.delete(doc.ref);
+      });
+      await batch.commit();
+      console.log(`Data ${dataSelec} deletada de DatasFrequencias`);
+    }
+
+    // Deletar a data de cada aluno na subcoleção `ListaAlunos`
+    const listaAlunosPath = `${classPath}/ListaAlunos`;
+    const alunosSnapshot = await firestoreInstance.collection(listaAlunosPath).get();
+
+    if (!alunosSnapshot.empty) {
+      const batch = firestoreInstance.batch();
+
+      for (const alunoDoc of alunosSnapshot.docs) {
+        const alunoRef = alunoDoc.ref;
+        const alunoData = alunoDoc.data();
+
+        // Atualizar o array de frequências removendo a data
+        const frequenciasAtualizadas = (alunoData.frequencias || []).filter(
+          (frequencia) => frequencia.data !== dataSelec
+        );
+
+        // Atualizar apenas se houve mudança
+        if (frequenciasAtualizadas.length !== alunoData.frequencias.length) {
+          batch.update(alunoRef, { frequencias: frequenciasAtualizadas });
+        }
+      }
+
+      await batch.commit();
+      console.log(`Data ${dataSelec} removida das frequências dos alunos em ListaAlunos`);
+    }
+
+    console.log(`Sucesso ao deletar data ${dataSelec}`);
+  } catch (error) {
+    console.error('Erro ao deletar data:', error);
+  }
+};
+
+export const deleteDataNotas = async (idUsuario, idPeriodoSelec, idClasseSelec, dataSelec) => {
+  try {
+    const firestoreInstance = firestore();
+
+    console.log('verificação',idUsuario, idPeriodoSelec, idClasseSelec, dataSelec)
+
+    // Caminho base da classe
+    const classPath = `${idUsuario}/${idPeriodoSelec}/Classes/${idClasseSelec}`;
+
+    // Deletar a data da subcoleção `DatasFrequencias`
+    const datasFrequenciasPath = `${classPath}/DatasFrequencias`;
+    const datasSnapshot = await firestoreInstance.collection(datasFrequenciasPath).where('data', '==', dataSelec).get();
+
+    if (!datasSnapshot.empty) {
+      const batch = firestoreInstance.batch();
+      datasSnapshot.docs.forEach((doc) => {
+        batch.delete(doc.ref);
+      });
+      await batch.commit();
+      console.log(`Data ${dataSelec} deletada de DatasFrequencias`);
+    }
+
+    // Deletar a data de cada aluno na subcoleção `ListaAlunos`
+    const listaAlunosPath = `${classPath}/ListaAlunos`;
+    const alunosSnapshot = await firestoreInstance.collection(listaAlunosPath).get();
+
+    if (!alunosSnapshot.empty) {
+      const batch = firestoreInstance.batch();
+
+      for (const alunoDoc of alunosSnapshot.docs) {
+        const alunoRef = alunoDoc.ref;
+        const alunoData = alunoDoc.data();
+
+        // Atualizar o array de notas removendo a data
+        const notasAtualizadas = (alunoData.notas || []).filter(
+          (nota) => nota.data !== dataSelec
+        );
+
+        // Atualizar apenas se houve mudança
+        if (notasAtualizadas.length !== alunoData.notas.length) {
+          batch.update(alunoRef, { notas: notasAtualizadas });
+        }
+      }
+
+      await batch.commit();
+      console.log(`Data ${dataSelec} removida das notas dos alunos em ListaAlunos`);
+    }
+
+    console.log(`Sucesso ao deletar data ${dataSelec}`);
+  } catch (error) {
+    console.error('Erro ao deletar data:', error);
+  }
+};
+
+
+
 
