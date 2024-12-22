@@ -1,10 +1,9 @@
 import React, { useContext, useState } from 'react';
-import { TextInput, View, Text, StyleSheet, ToastAndroid, NativeSyntheticEvent, TextInputChangeEventData, Image, TouchableOpacity } from 'react-native';
+import { TextInput, View, Text, StyleSheet, ToastAndroid, NativeSyntheticEvent, TextInputChangeEventData, Image, TouchableOpacity, ScrollView } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import { Context } from "../data/Provider";
 import Globais from "../data/Globais";
 import Ionicons from 'react-native-vector-icons/Ionicons';
-
 
 const Login = ({ navigation }: any) => {
     const [senhaVisivel, setSenhaVisivel] = useState(false);
@@ -17,7 +16,7 @@ const Login = ({ navigation }: any) => {
                 .then(() => {
                     navigation.reset({ index: 0, routes: [{ name: "App" }] })
                 }).catch(error => {
-                    console.log('error',error);
+                    console.log('error', error);
                     
                     if (error.code === 'auth/invalid-credential') {
                         ToastAndroid.show('Este e-mail não está cadastrado ou senha incorreta', ToastAndroid.SHORT)
@@ -29,9 +28,6 @@ const Login = ({ navigation }: any) => {
     }
 
     const funcSenha = () => {
-        console.log('entroufuncSenha');
-        
-        //redefinir senha com link no email
         if (email != '') {
             auth().sendPasswordResetEmail(email)
                 .then(() => {
@@ -44,7 +40,6 @@ const Login = ({ navigation }: any) => {
         } else {
             ToastAndroid.show('Digite o email no campo acima!', ToastAndroid.SHORT)
         }
-
     }
 
     const onChangeInputEmail = (event: NativeSyntheticEvent<TextInputChangeEventData>) => {
@@ -60,56 +55,58 @@ const Login = ({ navigation }: any) => {
     };
 
     return (
-        <View style={styles.container}>
-            <View style={styles.logoContainer}>
-                <Image
-                    source={require('../assets/logo.png')}
-                    style={styles.logo}
-                />
-            </View>
-            <TextInput style={styles.textInput}
-                onChange={onChangeInputEmail}
-                keyboardType='email-address'
-                autoCapitalize='none'
-                autoCorrect={false}
-                placeholder='Email'></TextInput>
-            <View style={styles.containerSenha}>
-                <TextInput style={styles.textInputSenha}
-                    onChange={onChangeInputSenha}
-                    autoCapitalize='none'
-                    secureTextEntry={!senhaVisivel}
-                    autoCorrect={false}
-                    placeholder='Senha'>
-                </TextInput>
-                <TouchableOpacity
-                    style={styles.iconContainer}
-                    onPress={alternarVisibilidadeSenha}
-                >
-                    <Ionicons
-                    name={senhaVisivel ? 'eye' : 'eye-off'}
-                    size={24}
-                    color="gray"
+        <ScrollView contentContainerStyle={styles.scrollContent}>
+            <View style={styles.container}>
+                <View style={styles.logoContainer}>
+                    <Image
+                        source={require('../assets/logo.png')}
+                        style={styles.logo}
                     />
+                </View>
+                <TextInput style={styles.textInput}
+                    onChange={onChangeInputEmail}
+                    keyboardType='email-address'
+                    autoCapitalize='none'
+                    autoCorrect={false}
+                    placeholder='Email'></TextInput>
+                <View style={styles.containerSenha}>
+                    <TextInput style={styles.textInputSenha}
+                        onChange={onChangeInputSenha}
+                        autoCapitalize='none'
+                        secureTextEntry={!senhaVisivel}
+                        autoCorrect={false}
+                        placeholder='Senha'>
+                    </TextInput>
+                    <TouchableOpacity
+                        style={styles.iconContainer}
+                        onPress={alternarVisibilidadeSenha}
+                    >
+                        <Ionicons
+                        name={senhaVisivel ? 'eye' : 'eye-off'}
+                        size={24}
+                        color="gray"
+                        />
+                    </TouchableOpacity>
+                </View>
+                <TouchableOpacity
+                    style={styles.button}
+                    onPress={entrarConta}>
+                    <Text style={styles.buttonText}>Entrar</Text>
                 </TouchableOpacity>
+                <View style={styles.containerText}>
+                    <Text style={styles.text} onPress={() => navigation.reset({
+                        index: 0,
+                        routes: [{ name: "NovaConta" }]
+                    })}>Criar uma conta
+                    </Text>
+                </View>
+                <View style={styles.containerText}>
+                    <Text style={styles.text}
+                        onPress={() => funcSenha()}>Esqueci minha senha
+                    </Text>
+                </View>
             </View>
-            <TouchableOpacity
-                style={styles.button}
-                onPress={entrarConta}>
-                <Text style={styles.buttonText}>Entrar</Text>
-            </TouchableOpacity>
-            <View style={styles.containerText}>
-                <Text style={styles.text} onPress={() => navigation.reset({
-                    index: 0,
-                    routes: [{ name: "NovaConta" }]
-                })}>Criar uma conta
-                </Text>
-            </View>
-            <View style={styles.containerText}>
-                <Text style={styles.text}
-                    onPress={() => funcSenha()}>Esqueci minha senha
-                </Text>
-            </View>
-        </View>
+        </ScrollView>
     )
 }
 
@@ -119,6 +116,10 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         marginLeft: 24,
         marginRight: 24,
+    },
+    scrollContent: {
+        flexGrow: 1,
+        justifyContent: 'center',
     },
     containerText: {
         alignItems: 'center'
@@ -132,13 +133,14 @@ const styles = StyleSheet.create({
         color: Globais.corPrimaria,
         alignContent: 'center',
         alignItems: 'center',
-        marginTop: 16
+        marginBottom: 24
     },
     logo: {
         width: 150,
         height: 150,
         resizeMode: "contain",
         marginBottom: 16,
+        marginTop: 16
     },
     logoContainer: {
         flexDirection: "row",
@@ -148,6 +150,8 @@ const styles = StyleSheet.create({
         backgroundColor: Globais.corPrimaria,
         padding: 10,
         borderRadius: 5,
+        marginBottom: 24
+
     },
     buttonText: {
         color: 'white',

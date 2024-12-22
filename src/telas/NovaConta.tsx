@@ -1,5 +1,6 @@
-import React, { useContext } from 'react';
-import { TextInput, View, Text, StyleSheet, ToastAndroid, NativeSyntheticEvent, TextInputChangeEventData, Image, TouchableOpacity } from 'react-native';
+import React, { useContext, useState } from 'react';
+import { TextInput, View, Text, StyleSheet, ToastAndroid, NativeSyntheticEvent, TextInputChangeEventData, Image, TouchableOpacity, ScrollView } from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import auth from '@react-native-firebase/auth';
 import { Context } from "../data/Provider";
 import firestore from '@react-native-firebase/firestore';
@@ -7,6 +8,7 @@ import Globais from '../data/Globais';
 
 const NovaConta = ({ navigation }: any) => {
     const { email, setEmail, senha, setSenha, setIdUsuario } = useContext(Context);
+    const [senhaVisivel, setSenhaVisivel] = useState(false); // Estado para alternar a visibilidade da senha
 
     const criarCaminhoSalvarEstados = () => {
         firestore().collection(email)
@@ -29,8 +31,8 @@ const NovaConta = ({ navigation }: any) => {
                 setIdUsuario(email)
                 criarCaminhoSalvarEstados()
             }).catch(error => {
-                console.log('error',error);
-                
+                console.log('error', error);
+
                 if (error.code === 'auth/email-already-in-use') {
                     ToastAndroid.show('Este Email já está em uso', ToastAndroid.SHORT)
                 }
@@ -52,25 +54,38 @@ const NovaConta = ({ navigation }: any) => {
     }
 
     return (
-        <View style={styles.container}>
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
             <View style={styles.logoContainer}>
                 <Image
                     source={require('../assets/logo.png')}
                     style={styles.logo}
                 />
             </View>
-            <TextInput style={styles.textInput}
+            <TextInput
+                style={styles.textInput}
                 onChange={onChangeInputEmail}
                 keyboardType='email-address'
                 autoCapitalize='none'
                 autoCorrect={false}
-                placeholder='Digite um Email válido'></TextInput>
-            <TextInput style={styles.textInput}
-                onChange={onChangeInputSenha}
-                autoCapitalize='none'
-                secureTextEntry={true}
-                autoCorrect={false}
-                placeholder='Crie uma senha'></TextInput>
+                placeholder='Digite um Email válido'
+            />
+            <View style={styles.passwordContainer}>
+                <TextInput
+                    style={styles.textInputPassword}
+                    onChange={onChangeInputSenha}
+                    autoCapitalize='none'
+                    secureTextEntry={!senhaVisivel}
+                    autoCorrect={false}
+                    placeholder='Crie uma senha'
+                />
+                <TouchableOpacity onPress={() => setSenhaVisivel(!senhaVisivel)}>
+                    <Icon
+                        name={senhaVisivel ? "eye-off" : "eye"}
+                        size={24}
+                        color={Globais.corPrimaria}
+                    />
+                </TouchableOpacity>
+            </View>
             <TouchableOpacity
                 style={styles.button}
                 onPress={criarConta}>
@@ -82,13 +97,13 @@ const NovaConta = ({ navigation }: any) => {
                     routes: [{ name: "Login" }]
                 })}>Já possui uma conta?</Text>
             </View>
-        </View>
+        </ScrollView>
     )
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
+    scrollContainer: {
+        flexGrow: 1,
         justifyContent: 'center',
         marginLeft: 24,
         marginRight: 24,
@@ -99,7 +114,20 @@ const styles = StyleSheet.create({
     textInput: {
         backgroundColor: Globais.corSecundaria,
         marginBottom: 8,
-        borderRadius: 10
+        borderRadius: 10,
+        padding: 10,
+    },
+    passwordContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: Globais.corSecundaria,
+        borderRadius: 10,
+        marginBottom: 8,
+        paddingHorizontal: 10,
+    },
+    textInputPassword: {
+        flex: 1,
+        paddingVertical: 10,
     },
     text: {
         color: Globais.corPrimaria,
