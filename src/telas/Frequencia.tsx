@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { StyleSheet, Text, View, TextInput } from "react-native";
+import { StyleSheet, Text, View, TextInput, TouchableOpacity } from "react-native";
 import { Divider } from "react-native-paper";
 
 import { Context } from "../data/Provider";
@@ -12,21 +12,30 @@ import FlatListClasses from "../listas/FlatListClasses";
 import FabFrequencia from "../componentes/FabFrequencia";
 
 const Frequencia = () => {
-    const { dataSelec, setModalCalendarioFreq, valueAtividade, setValueAtividade, nomePeriodoSelec } = useContext(Context);
+    const { dataSelec, setModalCalendarioFreq, valueAtividade, setValueAtividade,
+        nomePeriodoSelec, setFlagLongPressDataFreq } = useContext(Context);
+
+    function formatarData(data:String) {
+        const [ano, mes, dia] = data.split("-");
+        return `${dia}/${mes}/${ano}`;
+    }
 
     const renderHeader = () => (
-        <>
+        <TouchableOpacity onPress={() => setFlagLongPressDataFreq(false)}  activeOpacity={1}>
             <Text style={styles.textLoad}>
                 {nomePeriodoSelec != undefined ? 'Período: ' + nomePeriodoSelec : 'Selecione um período'}
             </Text>
             <FlatListClasses />
             <Divider style={styles.divider} />
             <View style={styles.containerText}>
-                <Text
-                    style={styles.text}
-                    onPress={() => setModalCalendarioFreq(true)}>
-                    {dataSelec || 'Selecione uma data'}
-                </Text>
+                <TouchableOpacity
+                    activeOpacity={1}
+                    onPress={() => setModalCalendarioFreq(true)}
+                    onLongPress={() => setFlagLongPressDataFreq(true)}>
+                    <Text style={styles.text} >
+                        {formatarData(dataSelec) || 'Selecione uma data'}
+                    </Text>
+                </TouchableOpacity>
             </View>
             <Divider style={styles.divider} />
             {dataSelec && (
@@ -40,7 +49,7 @@ const Frequencia = () => {
                     />
                 </View>
             )}
-        </>
+        </TouchableOpacity>
     );
 
     return (
@@ -48,12 +57,10 @@ const Frequencia = () => {
             <HeaderFrequencia title="Frequência" />
             <FlatListFrequencia
                 ListHeaderComponent={renderHeader}
-                // Defina os dados e o renderItem da FlatListFrequencia
-                data={[]} // Substitua pelos seus dados
-                renderItem={() => null} // Substitua pela sua lógica de renderização
+                data={[]} 
+                renderItem={() => null} 
                 contentContainerStyle={styles.listContent}
             />
-            {/* Modais e FAB */}
             <ModalCalendarioFrequencia />
             <ModalDelDataFreq />
             <FabFrequencia />
@@ -75,9 +82,9 @@ const styles = StyleSheet.create({
         marginVertical: 16,
     },
     text: {
-        fontSize: 20,
+        fontSize: 24,
         padding: 5,
-        color: Globais.corTextoEscuro,
+        color: Globais.corTextoClaro,
     },
     divider: {
         backgroundColor: Globais.corPrimaria,

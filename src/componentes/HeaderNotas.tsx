@@ -18,12 +18,12 @@ type HeaderComponentProps = {
 const HeaderFrequencia: React.FunctionComponent<HeaderComponentProps> = (props) => {
   const {
     setModalMenu,
-    flagLongPressDataFreq,
+    flagLongPressDataNotas,
     setModalDelDataFreq,
   } = useContext(Context);
 
   const onPressBin = () => {
-    if (flagLongPressDataFreq) {
+    if (flagLongPressDataNotas) {
       setModalDelDataFreq(true);
     }
   };
@@ -45,7 +45,7 @@ const HeaderFrequencia: React.FunctionComponent<HeaderComponentProps> = (props) 
             <FontAwesomeIcon
               style={styles.icon}
               name="trash-o"
-              color={flagLongPressDataFreq ? 'rgba(255,255,255,1)' : 'rgba(255,255,255,0.6)'}
+              color={flagLongPressDataNotas ? 'rgba(255,255,255,1)' : 'rgba(255,255,255,0.6)'}
               size={24}
             />
           </TouchableWithoutFeedback>

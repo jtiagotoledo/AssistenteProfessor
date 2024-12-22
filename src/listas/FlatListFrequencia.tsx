@@ -23,8 +23,8 @@ type ItemProps = {
 const FlatListFrequencia = (props:any) => {
   const [statusFreq, setStatusFreq] = useState('');
   const [selectedId, setSelectedId] = useState<string>();
-  const { idClasseSelec, setNumAlunoSelec, dataSelec, listaFrequencia,
-    idUsuario, idPeriodoSelec} = useContext(Context)
+  const { idClasseSelec, setNumAlunoSelec, dataSelec, 
+    listaFrequencia,idUsuario, idPeriodoSelec, setFlagLongPressDataFreq} = useContext(Context)
 
   const onPressItemFreq = (item: any) => {
     const idAluno = item.idAluno;
@@ -34,6 +34,7 @@ const FlatListFrequencia = (props:any) => {
     listaFrequencia[index].frequencia = _statusFrequencia
     setSelectedId(item.idAluno);
     setNumAlunoSelec(item.numero.toString());
+    setFlagLongPressDataFreq(false)
     atualizarFrequencia(listaFrequencia, idUsuario, idPeriodoSelec, idClasseSelec, dataSelec)
   }
 

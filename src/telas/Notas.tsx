@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from "react";
-import { StyleSheet, Text, View, TextInput, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, TouchableWithoutFeedback } from "react-native";
 import { Divider } from "react-native-paper";
 
 import { Context } from "../data/Provider";
@@ -13,28 +13,31 @@ import HeaderNotas from "../componentes/HeaderNotas";
 
 const Notas = () => {
     const {
-        dataSelec,
-        setModalCalendarioNota,
-        valueAtividade,
-        setValueAtividade,
-        nomePeriodoSelec,
-        tecladoAtivo,
+        dataSelec, setModalCalendarioNota, valueAtividade,
+        setValueAtividade, nomePeriodoSelec, setFlagLongPressDataNotas,
     } = useContext(Context);
 
+    function formatarData(data:String) {
+        const [ano, mes, dia] = data.split("-");
+        return `${dia}/${mes}/${ano}`;
+    }
+
     const renderHeader = () => (
-        <>
+        <TouchableOpacity onPress={() => setFlagLongPressDataNotas(false)}  activeOpacity={1}>
             <Text style={styles.textLoad}>
                 {nomePeriodoSelec ? `Período: ${nomePeriodoSelec}` : "Selecione um período"}
             </Text>
             <FlatListClasses />
             <Divider style={styles.divider} />
             <View style={styles.containerText}>
-                {dataSelec && (
-                    <TouchableOpacity
-                        onPress={() => setModalCalendarioNota(true)}>
-                        <Text style={styles.text}>{dataSelec}</Text>
-                    </TouchableOpacity>
-                )}
+                <TouchableOpacity
+                    activeOpacity={1}
+                    onPress={() => setModalCalendarioNota(true)}
+                    onLongPress={()=>setFlagLongPressDataNotas(true)}>
+                    <Text style={styles.text}>
+                        {formatarData(dataSelec)|| 'Selecione uma data'}
+                    </Text>
+                </TouchableOpacity>
             </View>
             <Divider style={styles.divider} />
             {dataSelec && (
@@ -48,7 +51,7 @@ const Notas = () => {
                     />
                 </View>
             )}
-        </>
+        </TouchableOpacity>
     );
 
     return (
@@ -56,8 +59,8 @@ const Notas = () => {
             <HeaderNotas title="Notas" />
             <FlatListNotas
                 ListHeaderComponent={renderHeader}
-                data={[]} // Substitua pelos seus dados
-                renderItem={() => null} // Substitua pela lógica de renderização dos itens
+                data={[]}
+                renderItem={() => null} 
                 contentContainerStyle={styles.listContent}
             />
             <ModalCalendarioNota />
@@ -81,9 +84,9 @@ const styles = StyleSheet.create({
         marginVertical: 16,
     },
     text: {
-        fontSize: 20,
+        fontSize: 24,
         padding: 5,
-        color: Globais.corTextoEscuro,
+        color: Globais.corTextoClaro,
     },
     divider: {
         backgroundColor: Globais.corPrimaria,
