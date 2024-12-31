@@ -221,19 +221,13 @@ export const deleteDataFreq = async (idUsuario, idPeriodoSelec, idClasseSelec, d
 
     // Caminho base da classe
     const classPath = `${idUsuario}/${idPeriodoSelec}/Classes/${idClasseSelec}`;
-
-    // Deletar a data da subcoleção `DatasFrequencias`
     const datasFrequenciasPath = `${classPath}/DatasFrequencias`;
-    const datasSnapshot = await firestoreInstance.collection(datasFrequenciasPath).where('data', '==', dataSelec).get();
 
-    if (!datasSnapshot.empty) {
-      const batch = firestoreInstance.batch();
-      datasSnapshot.docs.forEach((doc) => {
-        batch.delete(doc.ref);
-      });
-      await batch.commit();
-      console.log(`Data ${dataSelec} deletada de DatasFrequencias`);
-    }
+    // Deletar o documento com ID correspondente à data
+    const docRef = firestoreInstance.collection(datasFrequenciasPath).doc(dataSelec);
+    await docRef.delete();
+
+    console.log(`Data ${dataSelec} deletada de DatasFrequencias`);
 
     // Deletar a data de cada aluno na subcoleção `ListaAlunos`
     const listaAlunosPath = `${classPath}/ListaAlunos`;
@@ -271,24 +265,16 @@ export const deleteDataNotas = async (idUsuario, idPeriodoSelec, idClasseSelec, 
   try {
     const firestoreInstance = firestore();
 
-    console.log('verificação',idUsuario, idPeriodoSelec, idClasseSelec, dataSelec)
-
     // Caminho base da classe
     const classPath = `${idUsuario}/${idPeriodoSelec}/Classes/${idClasseSelec}`;
+    const datasNotasPath = `${classPath}/DatasNotas`;
 
-    // Deletar a data da subcoleção `DatasFrequencias`
-    const datasFrequenciasPath = `${classPath}/DatasFrequencias`;
-    const datasSnapshot = await firestoreInstance.collection(datasFrequenciasPath).where('data', '==', dataSelec).get();
+    // Deletar o documento com ID correspondente à data
+    const docRef = firestoreInstance.collection(datasNotasPath).doc(dataSelec);
+    await docRef.delete();
 
-    if (!datasSnapshot.empty) {
-      const batch = firestoreInstance.batch();
-      datasSnapshot.docs.forEach((doc) => {
-        batch.delete(doc.ref);
-      });
-      await batch.commit();
-      console.log(`Data ${dataSelec} deletada de DatasFrequencias`);
-    }
-
+    console.log(`Data ${dataSelec} deletada de DatasNotas`);
+    
     // Deletar a data de cada aluno na subcoleção `ListaAlunos`
     const listaAlunosPath = `${classPath}/ListaAlunos`;
     const alunosSnapshot = await firestoreInstance.collection(listaAlunosPath).get();
