@@ -10,6 +10,7 @@ import HeaderFrequencia from "../componentes/HeaderFrequencia";
 import FlatListFrequencia from "../listas/FlatListFrequencia";
 import FlatListClasses from "../listas/FlatListClasses";
 import FabFrequencia from "../componentes/FabFrequencia";
+import ConexaoInternet from "../componentes/ConexaoInternet";
 
 const Frequencia = () => {
     const { dataSelec, setModalCalendarioFreq, valueAtividade, setValueAtividade,
@@ -55,6 +56,7 @@ const Frequencia = () => {
     return (
         <View style={styles.container}>
             <HeaderFrequencia title="Frequência" />
+            <ConexaoInternet />
             <FlatListFrequencia
                 ListHeaderComponent={renderHeader}
                 data={[]} 

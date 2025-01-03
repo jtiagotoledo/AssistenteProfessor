@@ -31,7 +31,6 @@ function Classes({ navigation }: any) {
 
   const renderHeader = () => (
     <>
-      <ConexaoInternet />
       <Text style={styles.textLoad}>
         {nomePeriodoSelec ? `Período: ${nomePeriodoSelec}` : "Adicione um período"}
       </Text>
@@ -42,6 +41,7 @@ function Classes({ navigation }: any) {
 
   return (
     <View style={styles.container}>
+      <ConexaoInternet />
       <HeaderClasses title="Classes" />
       <FlatListAlunos
         ListHeaderComponent={renderHeader}

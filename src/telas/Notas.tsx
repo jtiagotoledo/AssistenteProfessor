@@ -10,6 +10,7 @@ import FlatListNotas from "../listas/FlatListNotas";
 import FlatListClasses from "../listas/FlatListClasses";
 import FabNotas from "../componentes/FabNotas";
 import HeaderNotas from "../componentes/HeaderNotas";
+import ConexaoInternet from "../componentes/ConexaoInternet";
 
 const Notas = () => {
     const {
@@ -57,6 +58,7 @@ const Notas = () => {
     return (
         <View style={styles.container}>
             <HeaderNotas title="Notas" />
+            <ConexaoInternet/>
             <FlatListNotas
                 ListHeaderComponent={renderHeader}
                 data={[]}
