@@ -20,11 +20,11 @@ type ItemProps = {
 
 
 
-const FlatListFrequencia = (props:any) => {
+const FlatListFrequencia = (props: any) => {
   const [statusFreq, setStatusFreq] = useState('');
   const [selectedId, setSelectedId] = useState<string>();
-  const { idClasseSelec, setNumAlunoSelec, dataSelec, 
-    listaFrequencia,idUsuario, idPeriodoSelec, setFlagLongPressDataFreq} = useContext(Context)
+  const { idClasseSelec, setNumAlunoSelec, dataSelec,
+    listaFrequencia, idUsuario, idPeriodoSelec, setFlagLongPressDataFreq } = useContext(Context)
 
   const onPressItemFreq = (item: any) => {
     const idAluno = item.idAluno;
@@ -82,7 +82,19 @@ const FlatListFrequencia = (props:any) => {
             extraData={selectedId}
           />
         )
+      } else {
+        return (
+          <View>
+            <Text style={styles.textLoad}>Selecione uma data...</Text>
+          </View>
+        )
       }
+    } else {
+      return (
+        <View>
+          <Text style={styles.textLoad}>Selecione uma Classe...</Text>
+        </View>
+      )
     }
   }
   return (
@@ -109,12 +121,12 @@ const styles = StyleSheet.create({
   },
   titleNum: {
     fontSize: 20,
-    color:Globais.corTextoEscuro,
+    color: Globais.corTextoEscuro,
   },
   titleNome: {
     fontSize: 20,
     paddingLeft: 8,
-    color:Globais.corTextoEscuro,
+    color: Globais.corTextoEscuro,
   },
   titleFrequencia: {
     padding: 8,

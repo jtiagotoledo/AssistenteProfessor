@@ -23,10 +23,6 @@ const Frequencia = () => {
 
     const renderHeader = () => (
         <TouchableOpacity onPress={() => setFlagLongPressDataFreq(false)}  activeOpacity={1}>
-            <Text style={styles.textLoad}>
-                {nomePeriodoSelec != undefined ? 'Período: ' + nomePeriodoSelec : 'Selecione um período'}
-            </Text>
-            <FlatListClasses />
             <Divider style={styles.divider} />
             <View style={styles.containerText}>
                 <TouchableOpacity
@@ -34,11 +30,10 @@ const Frequencia = () => {
                     onPress={() => setModalCalendarioFreq(true)}
                     onLongPress={() => setFlagLongPressDataFreq(true)}>
                     <Text style={styles.text} >
-                        {formatarData(dataSelec) || 'Selecione uma data'}
+                        {formatarData(dataSelec)}
                     </Text>
                 </TouchableOpacity>
             </View>
-            <Divider style={styles.divider} />
             {dataSelec && (
                 <View style={styles.containerInput}>
                     <TextInput
@@ -57,6 +52,10 @@ const Frequencia = () => {
         <View style={styles.container}>
             <HeaderFrequencia title="Frequência" />
             <ConexaoInternet />
+            <Text style={styles.textLoad}>
+                {nomePeriodoSelec != undefined ? 'Período: ' + nomePeriodoSelec : 'Selecione um período'}
+            </Text>
+            <FlatListClasses />
             <FlatListFrequencia
                 ListHeaderComponent={renderHeader}
                 data={[]} 

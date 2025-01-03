@@ -26,10 +26,8 @@ const Item = ({ item, onPress, onLongPress, backgroundColor, textColor }: ItemPr
 );
 
 const FlatListClasses = () => {
-  const { idPeriodoSelec, idClasseSelec, setIdClasseSelec, listaClasses, idUsuario, setFlagLongPressClasse, listaNotas, dataSelec,
+  const { idPeriodoSelec, idClasseSelec, setIdClasseSelec, listaClasses, idUsuario, setFlagLongPressClasse, listaNotas, setDataSelec,
     setSelectedIdAluno, setNumAlunoSelec, setFlagLongPressAluno, nomePeriodoSelec, setFlagLongPressDataFreq, setFlagLongPressDataNotas, setNomeClasseSelec } = useContext(Context)
-
-  
 
   const onPressItem = (item: any) => {
     setIdClasseSelec(item.idClasse)
@@ -40,6 +38,7 @@ const FlatListClasses = () => {
     setFlagLongPressDataNotas(false)
     setSelectedIdAluno('')
     setNumAlunoSelec('')
+    setDataSelec('')
 
     //salvando estado da classe
     firestore().collection(idUsuario).

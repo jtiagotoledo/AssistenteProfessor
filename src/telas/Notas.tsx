@@ -25,10 +25,6 @@ const Notas = () => {
 
     const renderHeader = () => (
         <TouchableOpacity onPress={() => setFlagLongPressDataNotas(false)}  activeOpacity={1}>
-            <Text style={styles.textLoad}>
-                {nomePeriodoSelec ? `Período: ${nomePeriodoSelec}` : "Selecione um período"}
-            </Text>
-            <FlatListClasses />
             <Divider style={styles.divider} />
             <View style={styles.containerText}>
                 <TouchableOpacity
@@ -36,11 +32,10 @@ const Notas = () => {
                     onPress={() => setModalCalendarioNota(true)}
                     onLongPress={()=>setFlagLongPressDataNotas(true)}>
                     <Text style={styles.text}>
-                        {formatarData(dataSelec)|| 'Selecione uma data'}
+                        {formatarData(dataSelec)}
                     </Text>
                 </TouchableOpacity>
             </View>
-            <Divider style={styles.divider} />
             {dataSelec && (
                 <View style={styles.containerInput}>
                     <TextInput
@@ -59,6 +54,10 @@ const Notas = () => {
         <View style={styles.container}>
             <HeaderNotas title="Notas" />
             <ConexaoInternet/>
+            <Text style={styles.textLoad}>
+                {nomePeriodoSelec ? `Período: ${nomePeriodoSelec}` : "Selecione um período"}
+            </Text>
+            <FlatListClasses />
             <FlatListNotas
                 ListHeaderComponent={renderHeader}
                 data={[]}
