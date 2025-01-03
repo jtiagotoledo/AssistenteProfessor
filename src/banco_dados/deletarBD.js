@@ -166,9 +166,7 @@ export const deleteClasse = async (idUsuario, idPeriodoSelec, idClasseSelec) => 
     // Excluir documento da classe
     await firestoreInstance.collection(`${idUsuario}/${idPeriodoSelec}/Classes`).doc(idClasseSelec).delete();
 
-    console.log('Sucesso ao deletar Classe');
   } catch (error) {
-    console.error('Erro ao deletar classe:', error);
   }
 };
 
@@ -209,9 +207,7 @@ export const deletePeriodo = async (idUsuario, idPeriodoSelec) => {
     // Excluir o documento do período
     await firestoreInstance.collection(idUsuario).doc(idPeriodoSelec).delete();
 
-    console.log('Sucesso ao deletar o período');
   } catch (error) {
-    console.error('Erro ao deletar o período:', error);
   }
 };
 
@@ -227,7 +223,6 @@ export const deleteDataFreq = async (idUsuario, idPeriodoSelec, idClasseSelec, d
     const docRef = firestoreInstance.collection(datasFrequenciasPath).doc(dataSelec);
     await docRef.delete();
 
-    console.log(`Data ${dataSelec} deletada de DatasFrequencias`);
 
     // Deletar a data de cada aluno na subcoleção `ListaAlunos`
     const listaAlunosPath = `${classPath}/ListaAlunos`;
@@ -252,12 +247,9 @@ export const deleteDataFreq = async (idUsuario, idPeriodoSelec, idClasseSelec, d
       }
 
       await batch.commit();
-      console.log(`Data ${dataSelec} removida das frequências dos alunos em ListaAlunos`);
     }
 
-    console.log(`Sucesso ao deletar data ${dataSelec}`);
   } catch (error) {
-    console.error('Erro ao deletar data:', error);
   }
 };
 
@@ -273,7 +265,6 @@ export const deleteDataNotas = async (idUsuario, idPeriodoSelec, idClasseSelec, 
     const docRef = firestoreInstance.collection(datasNotasPath).doc(dataSelec);
     await docRef.delete();
 
-    console.log(`Data ${dataSelec} deletada de DatasNotas`);
     
     // Deletar a data de cada aluno na subcoleção `ListaAlunos`
     const listaAlunosPath = `${classPath}/ListaAlunos`;
@@ -298,12 +289,9 @@ export const deleteDataNotas = async (idUsuario, idPeriodoSelec, idClasseSelec, 
       }
 
       await batch.commit();
-      console.log(`Data ${dataSelec} removida das notas dos alunos em ListaAlunos`);
     }
 
-    console.log(`Sucesso ao deletar data ${dataSelec}`);
   } catch (error) {
-    console.error('Erro ao deletar data:', error);
   }
 };
 

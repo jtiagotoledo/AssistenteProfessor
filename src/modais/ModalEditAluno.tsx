@@ -29,7 +29,6 @@ const ModalEditAluno = () => {
 
   // edição do aluno no BD
   const editarAluno = () => {
-    console.log(valueNomeAluno,valueNumAluno);
     
     if (valueNomeAluno != '' && valueNumAluno != '') {
       firestore().collection(idUsuario)

@@ -31,7 +31,6 @@ const NovaConta = ({ navigation }: any) => {
                 setIdUsuario(email)
                 criarCaminhoSalvarEstados()
             }).catch(error => {
-                console.log('error', error);
 
                 if (error.code === 'auth/email-already-in-use') {
                     ToastAndroid.show('Este Email já está em uso', ToastAndroid.SHORT)
