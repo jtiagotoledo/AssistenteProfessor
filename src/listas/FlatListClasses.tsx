@@ -1,10 +1,8 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext} from 'react'
 import { SafeAreaView, FlatList, Text, StyleSheet, TouchableOpacity, View } from 'react-native'
 import firestore from '@react-native-firebase/firestore';
 import { Context } from "../data/Provider";
 import Globais from '../data/Globais';
-import { atualizarNotas } from "../banco_dados/atualizarBD"
-
 
 type ItemData = {
   classe: string;

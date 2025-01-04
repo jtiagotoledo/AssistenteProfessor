@@ -18,22 +18,24 @@ const Frequencia = () => {
         nomePeriodoSelec, setFlagLongPressDataFreq, setDataSelec } = useContext(Context);
 
     useFocusEffect(
-            useCallback(() => {
-              setDataSelec(''); // Garante que dataSelec será resetado
-            }, [])
-          );
+        useCallback(() => {
+            return () => {
+                setDataSelec(''); 
+            };
+        }, [])
+    );
 
-    function formatarData(data:String) {
+    function formatarData(data: String) {
         if (typeof data === "string" && data.includes("-")) {
             const [ano, mes, dia] = data.split("-");
             return `${dia}/${mes}/${ano}`;
-        }else{
+        } else {
             return 'Selecione uma data...'
         }
     }
 
     const renderHeader = () => (
-        <TouchableOpacity onPress={() => setFlagLongPressDataFreq(false)}  activeOpacity={1}>
+        <TouchableOpacity onPress={() => setFlagLongPressDataFreq(false)} activeOpacity={1}>
             <Text style={styles.textLoad}>
                 {nomePeriodoSelec != undefined ? 'Período: ' + nomePeriodoSelec : 'Selecione um período'}
             </Text>
@@ -67,11 +69,11 @@ const Frequencia = () => {
         <View style={styles.container}>
             <HeaderFrequencia title="Frequência" />
             <ConexaoInternet />
-            
+
             <FlatListFrequencia
                 ListHeaderComponent={renderHeader}
-                data={[]} 
-                renderItem={() => null} 
+                data={[]}
+                renderItem={() => null}
                 contentContainerStyle={styles.listContent}
             />
             <ModalCalendarioFrequencia />

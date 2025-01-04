@@ -1,4 +1,4 @@
-import React, { useContext, useCallback } from "react";
+import React, { useContext, useCallback, useRef, useEffect, useState } from "react";
 import { useFocusEffect } from '@react-navigation/native';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, TouchableWithoutFeedback } from "react-native";
 import { Divider } from "react-native-paper";
@@ -12,30 +12,44 @@ import FlatListClasses from "../listas/FlatListClasses";
 import FabNotas from "../componentes/FabNotas";
 import HeaderNotas from "../componentes/HeaderNotas";
 import ConexaoInternet from "../componentes/ConexaoInternet";
+import { atualizarNotas } from "../banco_dados/atualizarBD"
+
 
 const Notas = () => {
+    const listaNotasRef = useRef({})
+    const [dataTemp,setDataTemp] = useState()
     const {
-        dataSelec, setModalCalendarioNota, valueAtividade,setDataSelec,
+        dataSelec, setModalCalendarioNota, valueAtividade, setDataSelec,
         setValueAtividade, nomePeriodoSelec, setFlagLongPressDataNotas,
+        listaNotas, idUsuario, idPeriodoSelec, idClasseSelec, valueNota
     } = useContext(Context);
+
+    useEffect(() => {
+        //mantem uma cópia da lista de notas para salvar quando a aba é trocada
+        listaNotasRef.current = listaNotas
+    }, [valueNota])
 
     useFocusEffect(
         useCallback(() => {
-          setDataSelec(''); // Garante que dataSelec será resetado
+            setDataTemp(dataSelec)
+            return () => {
+                atualizarNotas(listaNotasRef.current, idUsuario, idPeriodoSelec, idClasseSelec, dataTemp)
+                setDataSelec('');
+            };
         }, [])
-      );
+    );
 
-    function formatarData(data:String) {
+    function formatarData(data: String) {
         if (typeof data === "string" && data.includes("-")) {
             const [ano, mes, dia] = data.split("-");
             return `${dia}/${mes}/${ano}`;
-        }else{
+        } else {
             return 'Selecione uma data...'
         }
     }
 
     const renderHeader = () => (
-        <TouchableOpacity onPress={() => setFlagLongPressDataNotas(false)}  activeOpacity={1}>
+        <TouchableOpacity onPress={() => setFlagLongPressDataNotas(false)} activeOpacity={1}>
             <Text style={styles.textLoad}>
                 {nomePeriodoSelec ? `Período: ${nomePeriodoSelec}` : "Selecione um período"}
             </Text>
@@ -45,7 +59,7 @@ const Notas = () => {
                 <TouchableOpacity
                     activeOpacity={1}
                     onPress={() => setModalCalendarioNota(true)}
-                    onLongPress={()=>setFlagLongPressDataNotas(true)}>
+                    onLongPress={() => setFlagLongPressDataNotas(true)}>
                     <Text style={styles.text}>
                         {formatarData(dataSelec)}
                     </Text>
@@ -68,11 +82,11 @@ const Notas = () => {
     return (
         <View style={styles.container}>
             <HeaderNotas title="Notas" />
-            <ConexaoInternet/>
+            <ConexaoInternet />
             <FlatListNotas
                 ListHeaderComponent={renderHeader}
                 data={[]}
-                renderItem={() => null} 
+                renderItem={() => null}
                 contentContainerStyle={styles.listContent}
             />
             <ModalCalendarioNota />
