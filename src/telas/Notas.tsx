@@ -21,7 +21,6 @@ const Notas = () => {
 
     useFocusEffect(
         useCallback(() => {
-          console.log('Resetando estado ao focar na aba notas');
           setDataSelec(''); // Garante que dataSelec será resetado
         }, [])
       );

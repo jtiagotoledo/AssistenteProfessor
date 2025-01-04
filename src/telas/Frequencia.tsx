@@ -19,7 +19,6 @@ const Frequencia = () => {
 
     useFocusEffect(
             useCallback(() => {
-              console.log('Resetando estado ao focar na aba freq');
               setDataSelec(''); // Garante que dataSelec será resetado
             }, [])
           );

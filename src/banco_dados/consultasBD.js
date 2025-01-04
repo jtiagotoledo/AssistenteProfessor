@@ -84,7 +84,6 @@ const consultasBD = () => {
   useEffect(() => {
     //consulta ao BD retorna a lista de alunos com nome, num, frequencias e id
     const unsub = listaAlunosRef.orderBy('numero').onSnapshot(docSnapshot => {
-      console.log('entrouAqui')
       const alunos = []
       docSnapshot.forEach((docSnapshot) => {
         let frequencias = docSnapshot.data().frequencias
