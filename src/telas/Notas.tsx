@@ -19,8 +19,12 @@ const Notas = () => {
     } = useContext(Context);
 
     function formatarData(data:String) {
-        const [ano, mes, dia] = data.split("-");
-        return `${dia}/${mes}/${ano}`;
+        if (typeof data === "string" && data.includes("-")) {
+            const [ano, mes, dia] = data.split("-");
+            return `${dia}/${mes}/${ano}`;
+        }else{
+            return 'Selecione uma data...'
+        }
     }
 
     const renderHeader = () => (

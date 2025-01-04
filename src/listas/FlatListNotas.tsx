@@ -11,24 +11,24 @@ type ItemData = {
   idAluno: string;
 };
 
-const FlatListNotas = (props:any) => {
+const FlatListNotas = (props: any) => {
   const flatListRef = useRef<FlatList>(null);
   const listaNotasRef = useRef({})
   const textInputRefs = useRef<TextInput[]>([]);
   const [selection, setSelection] = useState({ start: 0, end: 0 });
   const [textNota, setTextNota] = useState('');
   const { idClasseSelec, dataSelec, listaNotas, setTecladoAtivo,
-    idUsuario, idPeriodoSelec} = useContext(Context)
+    idUsuario, idPeriodoSelec } = useContext(Context)
 
-  useEffect(()=>{
+  useEffect(() => {
     //mantem uma cópia da lista de notas para salvar quando o app é fechado
     listaNotasRef.current = listaNotas
-  },[textNota])
+  }, [textNota])
 
   useEffect(() => {
     //monitoramento do app, se fechado ele chama a função para salvar as notas.
-    const handleAppStateChange = (nextAppState:any) => {
-      if (nextAppState === 'background' && listaNotasRef.current!==undefined) {
+    const handleAppStateChange = (nextAppState: any) => {
+      if (nextAppState === 'background' && listaNotasRef.current !== undefined) {
         atualizarNotas(listaNotasRef.current, idUsuario, idPeriodoSelec, idClasseSelec, dataSelec)
       }
     };
@@ -62,7 +62,7 @@ const FlatListNotas = (props:any) => {
     setTextNota(nota)
   }
 
-  const salvarNota = () =>{
+  const salvarNota = () => {
     //ao desfocar o campo de notas, salva a nota
     atualizarNotas(listaNotas, idUsuario, idPeriodoSelec, idClasseSelec, dataSelec)
   }
@@ -96,7 +96,7 @@ const FlatListNotas = (props:any) => {
     return (
       <View style={styles.containerItem}>
         <View style={[styles.item, styles.nome]}>
-        <Text style={[styles.title]}>{item.numero+'  '} {item.nome}</Text>
+          <Text style={[styles.title]}>{item.numero + '  '} {item.nome}</Text>
         </View>
         <View>
           <TextInput
@@ -106,7 +106,7 @@ const FlatListNotas = (props:any) => {
             inputMode='numeric'
             onChangeText={(text) => onChangeNota(item, text)}
             defaultValue={item.nota}
-            onBlur={()=> salvarNota()}
+            onBlur={() => salvarNota()}
             onFocus={() => [scrollToItem(item.idAluno, item.numero)]}
             onSubmitEditing={() => nextItem(item.idAluno)}
             selection={selection}
@@ -118,33 +118,17 @@ const FlatListNotas = (props:any) => {
   };
 
   const renderCarregamento = () => {
-    if (idClasseSelec != '') {
-      if (dataSelec != '') {
-        return (
-          <FlatList
-            {...props}
-            data={listaNotas}
-            renderItem={renderItem}
-            ref={flatListRef}
-            keyExtractor={item => item.idAluno}
-            contentContainerStyle={{ paddingBottom: 300 }}
-            keyboardShouldPersistTaps='handled'
-          />
-        )
-      } else {
-        return (
-          <View>
-            <Text style={styles.textLoad}>Selecione uma data...</Text>
-          </View>
-        )
-      }
-    } else {
-      return (
-        <View>
-          <Text style={styles.textLoad}>Selecione uma Classe...</Text>
-        </View>
-      )
-    }
+    return (
+      <FlatList
+        {...props}
+        data={listaNotas}
+        renderItem={renderItem}
+        ref={flatListRef}
+        keyExtractor={item => item.idAluno}
+        contentContainerStyle={{ paddingBottom: 300 }}
+        keyboardShouldPersistTaps='handled'
+      />
+    )
   }
 
   return (
@@ -176,7 +160,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    color:Globais.corTextoEscuro
+    color: Globais.corTextoEscuro
   },
   titleFrequencia: {
     fontSize: 24,

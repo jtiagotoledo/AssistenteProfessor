@@ -70,32 +70,16 @@ const FlatListFrequencia = (props: any) => {
   };
 
   const renderCarregamento = () => {
-    if (idClasseSelec != '') {
-      if (dataSelec != '') {
-        return (
-          <FlatList
-            {...props}
-            data={listaFrequencia}
-            renderItem={renderItem}
-            keyExtractor={item => item.idAluno}
-            contentContainerStyle={{ paddingBottom: 120 }}
-            extraData={selectedId}
-          />
-        )
-      } else {
-        return (
-          <View>
-            <Text style={styles.textLoad}>Selecione uma data...</Text>
-          </View>
-        )
-      }
-    } else {
-      return (
-        <View>
-          <Text style={styles.textLoad}>Selecione uma Classe...</Text>
-        </View>
-      )
-    }
+    return (
+      <FlatList
+        {...props}
+        data={listaFrequencia}
+        renderItem={renderItem}
+        keyExtractor={item => item.idAluno}
+        contentContainerStyle={{ paddingBottom: 120 }}
+        extraData={selectedId}
+      />
+    )
   }
   return (
     <SafeAreaView style={styles.container}>

@@ -12,7 +12,7 @@ import { Context } from "../data/Provider";
 
 const Tab = createBottomTabNavigator();
 
-type RouteNames = 'Classes' | 'Frequencia' | 'Notas';
+type RouteNames = 'Classes' | 'Frequencia' | 'Notas' ;
 
 const App = ({ navigation }: any) => {
   const { idUsuario, setIdPeriodoSelec, setIdClasseSelec, setDataSelec } = useContext(Context);
@@ -22,8 +22,8 @@ const App = ({ navigation }: any) => {
 
   useEffect(() => {
     const unsubscribe = estadosAppRef.onSnapshot(snapshot => {
-      const tab = snapshot.data()?.aba as RouteNames;
-      if (tab) setCurrentTab(tab);
+      const tab = snapshot.data()?.aba;
+      if (tab!=='') setCurrentTab(tab);
     });
     return () => unsubscribe();
   }, []);
@@ -79,6 +79,7 @@ const App = ({ navigation }: any) => {
                 {...props}
                 onPress={(e) => {
                   atualizarAba('Frequencia'); // Atualiza Firestore
+                  setDataSelec('')
                   if (props.onPress) props.onPress(e); // Chama comportamento padrão
                 }}
               />
@@ -94,6 +95,7 @@ const App = ({ navigation }: any) => {
                 {...props}
                 onPress={(e) => {
                   atualizarAba('Notas'); // Atualiza Firestore
+                  setDataSelec('')
                   if (props.onPress) props.onPress(e); // Chama comportamento padrão
                 }}
               />

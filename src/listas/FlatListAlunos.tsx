@@ -76,7 +76,6 @@ const FlatListAlunos = (props:any) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {idClasseSelec !== '' && (
         <FlatList
           {...props}
           data={listaAlunos}
@@ -84,7 +83,6 @@ const FlatListAlunos = (props:any) => {
           keyExtractor={item => item.idAluno}
           extraData={selectedIdAluno}
         />
-      )}
     </SafeAreaView>
   );
 };
