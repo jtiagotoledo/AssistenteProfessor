@@ -15,7 +15,7 @@ const Tab = createBottomTabNavigator();
 type RouteNames = 'Classes' | 'Frequencia' | 'Notas' ;
 
 const App = ({ navigation }: any) => {
-  const { idUsuario, setIdPeriodoSelec, setIdClasseSelec, setDataSelec } = useContext(Context);
+  const { idUsuario, dataSelec, setDataSelec } = useContext(Context);
   const [currentTab, setCurrentTab] = useState<RouteNames>('Classes');
 
   const estadosAppRef = firestore().collection(idUsuario ? idUsuario : ' ').doc('EstadosApp');
@@ -79,7 +79,6 @@ const App = ({ navigation }: any) => {
                 {...props}
                 onPress={(e) => {
                   atualizarAba('Frequencia'); // Atualiza Firestore
-                  setDataSelec('')
                   if (props.onPress) props.onPress(e); // Chama comportamento padrão
                 }}
               />
@@ -95,7 +94,6 @@ const App = ({ navigation }: any) => {
                 {...props}
                 onPress={(e) => {
                   atualizarAba('Notas'); // Atualiza Firestore
-                  setDataSelec('')
                   if (props.onPress) props.onPress(e); // Chama comportamento padrão
                 }}
               />

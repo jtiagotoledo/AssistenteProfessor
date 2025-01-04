@@ -1,4 +1,5 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useCallback } from "react";
+import { useFocusEffect } from '@react-navigation/native';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, TouchableWithoutFeedback } from "react-native";
 import { Divider } from "react-native-paper";
 
@@ -14,9 +15,16 @@ import ConexaoInternet from "../componentes/ConexaoInternet";
 
 const Notas = () => {
     const {
-        dataSelec, setModalCalendarioNota, valueAtividade,
+        dataSelec, setModalCalendarioNota, valueAtividade,setDataSelec,
         setValueAtividade, nomePeriodoSelec, setFlagLongPressDataNotas,
     } = useContext(Context);
+
+    useFocusEffect(
+        useCallback(() => {
+          console.log('Resetando estado ao focar na aba notas');
+          setDataSelec(''); // Garante que dataSelec será resetado
+        }, [])
+      );
 
     function formatarData(data:String) {
         if (typeof data === "string" && data.includes("-")) {

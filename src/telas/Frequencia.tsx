@@ -1,4 +1,5 @@
-import React, { useContext } from "react";
+import React, { useContext, useCallback } from "react";
+import { useFocusEffect } from '@react-navigation/native';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity } from "react-native";
 import { Divider } from "react-native-paper";
 
@@ -14,7 +15,14 @@ import ConexaoInternet from "../componentes/ConexaoInternet";
 
 const Frequencia = () => {
     const { dataSelec, setModalCalendarioFreq, valueAtividade, setValueAtividade,
-        nomePeriodoSelec, setFlagLongPressDataFreq } = useContext(Context);
+        nomePeriodoSelec, setFlagLongPressDataFreq, setDataSelec } = useContext(Context);
+
+    useFocusEffect(
+            useCallback(() => {
+              console.log('Resetando estado ao focar na aba freq');
+              setDataSelec(''); // Garante que dataSelec será resetado
+            }, [])
+          );
 
     function formatarData(data:String) {
         if (typeof data === "string" && data.includes("-")) {
