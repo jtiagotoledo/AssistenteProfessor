@@ -125,7 +125,7 @@ const FlatListNotas = (props: any) => {
         data={listaNotas}
         renderItem={renderItem}
         ref={flatListRef}
-        keyExtractor={item => item.idAluno}
+        keyExtractor={(item, index) => (item.id ? item.id.toString() : index.toString())}
         contentContainerStyle={{ paddingBottom: 300 }}
         keyboardShouldPersistTaps='handled'
       />

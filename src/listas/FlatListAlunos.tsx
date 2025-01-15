@@ -80,7 +80,7 @@ const FlatListAlunos = (props:any) => {
           {...props}
           data={listaAlunos}
           renderItem={renderItem}
-          keyExtractor={item => item.idAluno}
+          keyExtractor={(item, index) => (item.id ? item.id.toString() : index.toString())}
           extraData={selectedIdAluno}
         />
     </SafeAreaView>

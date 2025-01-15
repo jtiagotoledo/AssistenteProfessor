@@ -75,7 +75,7 @@ const FlatListFrequencia = (props: any) => {
         {...props}
         data={listaFrequencia}
         renderItem={renderItem}
-        keyExtractor={item => item.idAluno}
+        keyExtractor={(item, index) => (item.id ? item.id.toString() : index.toString())}
         contentContainerStyle={{ paddingBottom: 120 }}
         extraData={selectedId}
       />

@@ -78,7 +78,7 @@ const FlatListClasses = () => {
             horizontal={true}
             data={listaClasses}
             renderItem={renderItem}
-            keyExtractor={item => item.idClasse}
+            keyExtractor={(item, index) => (item.idClasse ? item.idClasse.toString() : index.toString())}
           />
         </SafeAreaView>
       )
