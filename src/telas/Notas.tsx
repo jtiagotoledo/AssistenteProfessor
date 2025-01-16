@@ -20,8 +20,8 @@ const Notas = () => {
     const textoTituloNotasRef = useRef('')
     const listaNotasRef = useRef({})
     const [dataTemp, setDataTemp] = useState()
-    const { dataSelec, setModalCalendarioNota, valueAtividade, setDataSelec,
-        setValueAtividade, nomePeriodoSelec, setFlagLongPressDataNotas,
+    const { dataSelec, setModalCalendarioNota, setDataSelec,
+        nomePeriodoSelec, setFlagLongPressDataNotas,
         listaNotas, idUsuario, idPeriodoSelec, idClasseSelec, valueNota } = useContext(Context);
 
     useEffect(() => {

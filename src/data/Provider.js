@@ -60,6 +60,9 @@ export default function Provider ({children}){
     const[listaDatasMarcadasNotas,setListaDatasMarcadasNotas]=useState({});
     const[valueAtividade,setValueAtividade]=useState([{atividade:''}]);
     const[valueNota,setValueNota]=useState([{nota:''}]);
+    const[textoAtividades,setTextoAtividades]=useState('');
+    const[textoTituloNotas,setTextoTituloNotas]=useState('');
+
 
     return(
         <Context.Provider value={{
@@ -117,7 +120,9 @@ export default function Provider ({children}){
             listaDatasMarcadasFreq,setListaDatasMarcadasFreq,
             listaDatasMarcadasNotas,setListaDatasMarcadasNotas,
             valueAtividade,setValueAtividade,
-            valueNota,setValueNota}}>
+            valueNota,setValueNota,
+            textoAtividades,setTextoAtividades,
+            textoTituloNotas,setTextoTituloNotas}}>
             {children}
         </Context.Provider>
     )

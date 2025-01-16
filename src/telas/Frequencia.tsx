@@ -18,7 +18,7 @@ const Frequencia = () => {
     const dataTempRef = useRef('')
     const textoAtividadesRef = useRef('')
     const { dataSelec, setModalCalendarioFreq, idUsuario, idPeriodoSelec, idClasseSelec,
-        nomePeriodoSelec, setFlagLongPressDataFreq, setDataSelec } = useContext(Context);
+        nomePeriodoSelec, setFlagLongPressDataFreq, setDataSelec, textoAtividades } = useContext(Context);
 
     useFocusEffect(
         useCallback(() => {
@@ -81,6 +81,7 @@ const Frequencia = () => {
                         multiline
                         placeholder="Descreva as atividades realizadas..."
                         onChangeText={(text) => onChangeAtividades(text)}
+                        defaultValue = {textoAtividades}
                         style={styles.textInput}
                         onBlur={() => atualizarAtividades(textoAtividadesRef.current, idUsuario, idPeriodoSelec, idClasseSelec, dataSelec)}
                     />

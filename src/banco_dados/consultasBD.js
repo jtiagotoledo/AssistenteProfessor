@@ -6,7 +6,7 @@ const consultasBD = () => {
 
   const { idUsuario, setListaPeriodos, setIdPeriodoSelec, setIdClasseSelec,
     setNomePeriodoSelec, idPeriodoSelec, setListaClasses, idClasseSelec, setListaAlunos,
-    dataSelec, setListaFrequencia, setListaNotas } = useContext(Context)
+    dataSelec, setListaFrequencia, setListaNotas, setTextoAtividades, setTextoTituloNotas } = useContext(Context)
 
   const listaAlunosRef = firestore().collection(idUsuario?idUsuario:' ')
     .doc(idPeriodoSelec).collection('Classes')
@@ -122,6 +122,26 @@ const consultasBD = () => {
       unsub();
     };
   }, [idPeriodoSelec,idClasseSelec, dataSelec]);
+
+  useEffect(() => {
+    //consulta ao BD retorna o texto das atividades desenvolvidas na data escolhida
+    const unsub = firestore().collection(idUsuario)
+    .doc(idPeriodoSelec).collection('Classes')
+    .doc(idClasseSelec).collection('DatasFrequencias')
+    .onSnapshot(docSnapshot => {
+      docSnapshot.forEach((docSnapshot) => {
+        if(docSnapshot.id){
+          if(docSnapshot.id==dataSelec){
+            console.log('id',docSnapshot.data().atividade);
+            setTextoAtividades(docSnapshot.data().atividade)
+          }
+        }
+      });
+    })
+    return () => {
+      unsub();
+    };
+  }, [dataSelec]);
 }
 
 export default consultasBD
