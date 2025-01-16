@@ -1,7 +1,6 @@
 import firestore from '@react-native-firebase/firestore';
 
 export async function atualizarAtividades(texto,idUsuario, idPeriodoSelec, idClasseSelec, dataSelec) {
-  console.log('texto',texto,'idUsuario',idUsuario, 'idPeriodoSelec',idPeriodoSelec, 'idClasseSelec',idClasseSelec ,'dataSelec',dataSelec);
   firestore().collection(idUsuario)
     .doc(idPeriodoSelec).collection('Classes')
     .doc(idClasseSelec).collection('DatasFrequencias')
@@ -11,7 +10,6 @@ export async function atualizarAtividades(texto,idUsuario, idPeriodoSelec, idCla
 }
 
 export async function atualizarTituloNotas(texto,idUsuario, idPeriodoSelec, idClasseSelec, dataSelec) {
-  console.log('texto',texto,'idUsuario',idUsuario, 'idPeriodoSelec',idPeriodoSelec, 'idClasseSelec',idClasseSelec ,'dataSelec',dataSelec);
   firestore().collection(idUsuario)
     .doc(idPeriodoSelec).collection('Classes')
     .doc(idClasseSelec).collection('DatasNotas')

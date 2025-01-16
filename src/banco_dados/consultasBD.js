@@ -8,7 +8,7 @@ const consultasBD = () => {
     setNomePeriodoSelec, idPeriodoSelec, setListaClasses, idClasseSelec, setListaAlunos,
     dataSelec, setListaFrequencia, setListaNotas, setTextoAtividades, setTextoTituloNotas } = useContext(Context)
 
-  const listaAlunosRef = firestore().collection(idUsuario?idUsuario:' ')
+  const listaAlunosRef = firestore().collection(idUsuario ? idUsuario : ' ')
     .doc(idPeriodoSelec).collection('Classes')
     .doc(idClasseSelec).collection('ListaAlunos')
 
@@ -121,23 +121,37 @@ const consultasBD = () => {
     return () => {
       unsub();
     };
-  }, [idPeriodoSelec,idClasseSelec, dataSelec]);
+  }, [idPeriodoSelec, idClasseSelec, dataSelec]);
 
   useEffect(() => {
     //consulta ao BD retorna o texto das atividades desenvolvidas na data escolhida
     const unsub = firestore().collection(idUsuario)
-    .doc(idPeriodoSelec).collection('Classes')
-    .doc(idClasseSelec).collection('DatasFrequencias')
-    .onSnapshot(docSnapshot => {
-      docSnapshot.forEach((docSnapshot) => {
-        if(docSnapshot.id){
-          if(docSnapshot.id==dataSelec){
-            console.log('id',docSnapshot.data().atividade);
+      .doc(idPeriodoSelec).collection('Classes')
+      .doc(idClasseSelec).collection('DatasFrequencias')
+      .onSnapshot(docSnapshot => {
+        docSnapshot.forEach((docSnapshot) => {
+          if (docSnapshot.id == dataSelec) {
             setTextoAtividades(docSnapshot.data().atividade)
           }
-        }
-      });
-    })
+        });
+      })
+    return () => {
+      unsub();
+    };
+  }, [dataSelec]);
+
+  useEffect(() => {
+    //consulta ao BD retorna o texto do título da nota na data escolhida
+    const unsub = firestore().collection(idUsuario)
+      .doc(idPeriodoSelec).collection('Classes')
+      .doc(idClasseSelec).collection('DatasNotas')
+      .onSnapshot(docSnapshot => {
+        docSnapshot.forEach((docSnapshot) => {
+          if (docSnapshot.id == dataSelec) {
+            setTextoTituloNotas(docSnapshot.data().tituloNota)
+          }
+        });
+      })
     return () => {
       unsub();
     };

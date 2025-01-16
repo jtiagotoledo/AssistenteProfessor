@@ -21,7 +21,7 @@ const Notas = () => {
     const listaNotasRef = useRef({})
     const [dataTemp, setDataTemp] = useState()
     const { dataSelec, setModalCalendarioNota, setDataSelec,
-        nomePeriodoSelec, setFlagLongPressDataNotas,
+        nomePeriodoSelec, setFlagLongPressDataNotas,textoTituloNotas,
         listaNotas, idUsuario, idPeriodoSelec, idClasseSelec, valueNota } = useContext(Context);
 
     useEffect(() => {
@@ -92,6 +92,7 @@ const Notas = () => {
                         multiline
                         placeholder="Título da avaliação..."
                         onChangeText={(text) => onChangeTituloNotas(text)}
+                        defaultValue={textoTituloNotas}
                         style={styles.textInput}
                         onBlur={() => atualizarTituloNotas(textoTituloNotasRef.current, idUsuario, idPeriodoSelec, idClasseSelec, dataSelec)}
                     />
