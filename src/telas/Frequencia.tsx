@@ -12,18 +12,26 @@ import FlatListFrequencia from "../listas/FlatListFrequencia";
 import FlatListClasses from "../listas/FlatListClasses";
 import FabFrequencia from "../componentes/FabFrequencia";
 import ConexaoInternet from "../componentes/ConexaoInternet";
+import { atualizarAtividades } from "../banco_dados/atualizarBD"
 
 const Frequencia = () => {
-    const { dataSelec, setModalCalendarioFreq, valueAtividade, setValueAtividade,
+    let textoAtividades = ''
+    const { dataSelec, setModalCalendarioFreq, idUsuario, idPeriodoSelec, idClasseSelec,
         nomePeriodoSelec, setFlagLongPressDataFreq, setDataSelec } = useContext(Context);
+
 
     useFocusEffect(
         useCallback(() => {
             return () => {
-                setDataSelec(''); 
+                setDataSelec('');
             };
         }, [])
     );
+
+    function salvarAtividades() {
+        console.log("Texto salvo:", textoAtividades);
+        atualizarAtividades(textoAtividades, idUsuario, idPeriodoSelec, idClasseSelec, dataSelec)
+    }
 
     function formatarData(data: String) {
         if (typeof data === "string" && data.includes("-")) {
@@ -56,11 +64,12 @@ const Frequencia = () => {
                     <TextInput
                         multiline
                         placeholder="Descreva as atividades realizadas..."
-                        value={valueAtividade.atividade}
-                        onChangeText={(text) => setValueAtividade({ atividade: text })}
+                        onChangeText={(text) => textoAtividades = text}
                         style={styles.textInput}
+                        onBlur={()=>salvarAtividades()}
                     />
                 </View>
+
             )}
         </TouchableOpacity>
     );
@@ -118,6 +127,11 @@ const styles = StyleSheet.create({
         fontSize: 24,
         color: Globais.corTextoClaro,
         textAlign: 'center',
+    },
+    saveButton: {
+        marginLeft: 16,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
 });
 
