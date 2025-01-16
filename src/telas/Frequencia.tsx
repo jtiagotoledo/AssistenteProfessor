@@ -1,6 +1,6 @@
 import React, { useContext, useCallback, useRef, useEffect } from "react";
 import { useFocusEffect } from '@react-navigation/native';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, AppState} from "react-native";
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, AppState } from "react-native";
 import { Divider } from "react-native-paper";
 
 import { Context } from "../data/Provider";
@@ -32,18 +32,18 @@ const Frequencia = () => {
     useEffect(() => {
         //monitoramento do app, se fechado ele chama a função para salvar as atividades.
         const handleAppStateChange = (nextAppState: any) => {
-          if (nextAppState === 'background' && textoAtividadesRef.current !== undefined) {
-            atualizarAtividades(textoAtividadesRef.current, idUsuario, idPeriodoSelec, idClasseSelec, dataTempRef.current)
-          }
+            if (nextAppState === 'background' && textoAtividadesRef.current !== undefined) {
+                atualizarAtividades(textoAtividadesRef.current, idUsuario, idPeriodoSelec, idClasseSelec, dataTempRef.current)
+            }
         };
         const subscription = AppState.addEventListener('change', handleAppStateChange);
-    
-        return () => {
-          subscription.remove();
-        };
-      }, []);
 
-    function onChangeAtividades(text:string){
+        return () => {
+            subscription.remove();
+        };
+    }, []);
+
+    function onChangeAtividades(text: string) {
         // mantem cópia do texto e dataSelec para salvar quando troca de aba
         textoAtividadesRef.current = text
         dataTempRef.current = dataSelec
@@ -80,9 +80,9 @@ const Frequencia = () => {
                     <TextInput
                         multiline
                         placeholder="Descreva as atividades realizadas..."
-                        onChangeText={(text)=> onChangeAtividades(text)}
+                        onChangeText={(text) => onChangeAtividades(text)}
                         style={styles.textInput}
-                        onBlur={()=>atualizarAtividades(textoAtividadesRef.current, idUsuario, idPeriodoSelec, idClasseSelec, dataSelec)}
+                        onBlur={() => atualizarAtividades(textoAtividadesRef.current, idUsuario, idPeriodoSelec, idClasseSelec, dataSelec)}
                     />
                 </View>
 

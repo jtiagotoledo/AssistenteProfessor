@@ -1,6 +1,6 @@
 import React, { useContext, useCallback, useRef, useEffect, useState } from "react";
 import { useFocusEffect } from '@react-navigation/native';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, TouchableWithoutFeedback } from "react-native";
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, AppState } from "react-native";
 import { Divider } from "react-native-paper";
 
 import { Context } from "../data/Provider";
@@ -13,16 +13,16 @@ import FabNotas from "../componentes/FabNotas";
 import HeaderNotas from "../componentes/HeaderNotas";
 import ConexaoInternet from "../componentes/ConexaoInternet";
 import { atualizarNotas } from "../banco_dados/atualizarBD"
-
+import { atualizarTituloNotas } from "../banco_dados/atualizarBD"
 
 const Notas = () => {
+    const dataTempRef = useRef('')
+    const textoTituloNotasRef = useRef('')
     const listaNotasRef = useRef({})
-    const [dataTemp,setDataTemp] = useState()
-    const {
-        dataSelec, setModalCalendarioNota, valueAtividade, setDataSelec,
+    const [dataTemp, setDataTemp] = useState()
+    const { dataSelec, setModalCalendarioNota, valueAtividade, setDataSelec,
         setValueAtividade, nomePeriodoSelec, setFlagLongPressDataNotas,
-        listaNotas, idUsuario, idPeriodoSelec, idClasseSelec, valueNota
-    } = useContext(Context);
+        listaNotas, idUsuario, idPeriodoSelec, idClasseSelec, valueNota } = useContext(Context);
 
     useEffect(() => {
         //mantem uma cópia da lista de notas para salvar quando a aba é trocada
@@ -34,10 +34,31 @@ const Notas = () => {
             setDataTemp(dataSelec)
             return () => {
                 atualizarNotas(listaNotasRef.current, idUsuario, idPeriodoSelec, idClasseSelec, dataTemp)
+                atualizarTituloNotas(textoTituloNotasRef.current, idUsuario, idPeriodoSelec, idClasseSelec, dataTempRef.current)
                 setDataSelec('')
             };
         }, [])
     );
+
+    useEffect(() => {
+        //monitoramento do app, se fechado ele chama a função para salvar o título das notas.
+        const handleAppStateChange = (nextAppState: any) => {
+            if (nextAppState === 'background' && textoTituloNotasRef.current !== undefined) {
+                atualizarTituloNotas(textoTituloNotasRef.current, idUsuario, idPeriodoSelec, idClasseSelec, dataTempRef.current)
+            }
+        };
+        const subscription = AppState.addEventListener('change', handleAppStateChange);
+
+        return () => {
+            subscription.remove();
+        };
+    }, []);
+
+    function onChangeTituloNotas(text: string) {
+        // mantem cópia do texto e dataSelec para salvar quando troca de aba
+        textoTituloNotasRef.current = text
+        dataTempRef.current = dataSelec
+    }
 
     function formatarData(data: String) {
         if (typeof data === "string" && data.includes("-")) {
@@ -70,9 +91,9 @@ const Notas = () => {
                     <TextInput
                         multiline
                         placeholder="Título da avaliação..."
-                        value={valueAtividade.avaliacao}
-                        onChangeText={(text) => setValueAtividade({ avaliacao: text })}
+                        onChangeText={(text) => onChangeTituloNotas(text)}
                         style={styles.textInput}
+                        onBlur={() => atualizarTituloNotas(textoTituloNotasRef.current, idUsuario, idPeriodoSelec, idClasseSelec, dataSelec)}
                     />
                 </View>
             )}
