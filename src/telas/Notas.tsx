@@ -34,7 +34,7 @@ const Notas = () => {
             setDataTemp(dataSelec)
             return () => {
                 atualizarNotas(listaNotasRef.current, idUsuario, idPeriodoSelec, idClasseSelec, dataTemp)
-                setDataSelec('');
+                setDataSelec('')
             };
         }, [])
     );

@@ -1,6 +1,6 @@
-import React, { useContext, useCallback } from "react";
+import React, { useContext, useCallback, useRef, useEffect } from "react";
 import { useFocusEffect } from '@react-navigation/native';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, AppState} from "react-native";
 import { Divider } from "react-native-paper";
 
 import { Context } from "../data/Provider";
@@ -15,22 +15,38 @@ import ConexaoInternet from "../componentes/ConexaoInternet";
 import { atualizarAtividades } from "../banco_dados/atualizarBD"
 
 const Frequencia = () => {
-    let textoAtividades = ''
+    const dataTempRef = useRef('')
+    const textoAtividadesRef = useRef('')
     const { dataSelec, setModalCalendarioFreq, idUsuario, idPeriodoSelec, idClasseSelec,
         nomePeriodoSelec, setFlagLongPressDataFreq, setDataSelec } = useContext(Context);
-
 
     useFocusEffect(
         useCallback(() => {
             return () => {
-                setDataSelec('');
+                atualizarAtividades(textoAtividadesRef.current, idUsuario, idPeriodoSelec, idClasseSelec, dataTempRef.current)
+                setDataSelec('')
             };
         }, [])
     );
 
-    function salvarAtividades() {
-        console.log("Texto salvo:", textoAtividades);
-        atualizarAtividades(textoAtividades, idUsuario, idPeriodoSelec, idClasseSelec, dataSelec)
+    useEffect(() => {
+        //monitoramento do app, se fechado ele chama a função para salvar as atividades.
+        const handleAppStateChange = (nextAppState: any) => {
+          if (nextAppState === 'background' && textoAtividadesRef.current !== undefined) {
+            atualizarAtividades(textoAtividadesRef.current, idUsuario, idPeriodoSelec, idClasseSelec, dataTempRef.current)
+          }
+        };
+        const subscription = AppState.addEventListener('change', handleAppStateChange);
+    
+        return () => {
+          subscription.remove();
+        };
+      }, []);
+
+    function onChangeAtividades(text:string){
+        // mantem cópia do texto e dataSelec para salvar quando troca de aba
+        textoAtividadesRef.current = text
+        dataTempRef.current = dataSelec
     }
 
     function formatarData(data: String) {
@@ -64,9 +80,9 @@ const Frequencia = () => {
                     <TextInput
                         multiline
                         placeholder="Descreva as atividades realizadas..."
-                        onChangeText={(text) => textoAtividades = text}
+                        onChangeText={(text)=> onChangeAtividades(text)}
                         style={styles.textInput}
-                        onBlur={()=>salvarAtividades()}
+                        onBlur={()=>atualizarAtividades(textoAtividadesRef.current, idUsuario, idPeriodoSelec, idClasseSelec, dataSelec)}
                     />
                 </View>
 
