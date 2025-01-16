@@ -39,23 +39,6 @@ const FlatListNotas = (props: any) => {
     };
   }, []);
 
-  useEffect(() => {
-    const keyboardDidShowListener = Keyboard.addListener(
-      'keyboardDidShow',
-      () => {
-        setTecladoAtivo('none')
-      }
-    );
-    const keyboardDidHideListener = Keyboard.addListener(
-      'keyboardDidHide',
-      () => {
-        setTecladoAtivo('flex')
-      })
-    return () => {
-      keyboardDidShowListener.remove();
-    };
-  }, []);
-
   const onChangeNota = (item: ItemData, nota: string) => {
     const index = listaNotas.findIndex((el: any) => el.idAluno === item.idAluno);
     listaNotas[index].nota = nota
