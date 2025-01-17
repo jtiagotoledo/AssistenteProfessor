@@ -292,7 +292,9 @@ export const deleteDataNotas = async (idUsuario, idPeriodoSelec, idClasseSelec, 
     }
 
   } catch (error) {
+    return
   }
+  
 };
 
 

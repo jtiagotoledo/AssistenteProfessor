@@ -1,6 +1,55 @@
+import { useEffect, useContext } from "react";
 import firestore from '@react-native-firebase/firestore';
+import { Context } from "../data/Provider";
 
-export async function atualizarAtividades(texto,idUsuario, idPeriodoSelec, idClasseSelec, dataSelec) {
+export default atualizarBD = () => {
+  const {abaSelec, idUsuario, idPeriodoSelec, idClasseSelec, listaNotas, } = useContext(Context)
+
+  useEffect(() => {
+    //atualiza as médias de notas quando alguma data é excluída
+  /*   console.log('entrou no atualizarBD');
+    const fetchData = async () => {
+      let listaAlunosRef = firestore().collection(idUsuario)
+        .doc(idPeriodoSelec).collection('Classes')
+        .doc(idClasseSelec).collection('ListaAlunos')
+
+      const batch = firestore().batch()
+
+      Object.values(listaNotas).forEach(valor => {
+        let datas = valor.notas
+
+        //cálculo da média das notas
+        let somaNotas = 0, mediaNotas
+        let qntDatas = Object.keys(datas).length
+
+        datas.forEach((item) => {
+          item.nota !== '' ? somaNotas += parseFloat(item.nota) : null
+        })
+
+        if (qntDatas > 0) {
+          mediaNotas = (somaNotas / qntDatas).toFixed(1).toString()
+        } else {
+          mediaNotas = '...'
+        }
+
+        //atualizando a média no BD
+        batch.update(listaAlunosRef.doc(valor.idAluno), {
+          mediaNotas
+        })
+
+      })
+
+      try {
+        await batch.commit();
+      } catch (error) {
+      }
+
+    }
+    fetchData(); */
+  }, [listaNotas]);
+}
+
+export async function atualizarAtividades(texto, idUsuario, idPeriodoSelec, idClasseSelec, dataSelec) {
   firestore().collection(idUsuario)
     .doc(idPeriodoSelec).collection('Classes')
     .doc(idClasseSelec).collection('DatasFrequencias')
@@ -9,7 +58,7 @@ export async function atualizarAtividades(texto,idUsuario, idPeriodoSelec, idCla
     })
 }
 
-export async function atualizarTituloNotas(texto,idUsuario, idPeriodoSelec, idClasseSelec, dataSelec) {
+export async function atualizarTituloNotas(texto, idUsuario, idPeriodoSelec, idClasseSelec, dataSelec) {
   firestore().collection(idUsuario)
     .doc(idPeriodoSelec).collection('Classes')
     .doc(idClasseSelec).collection('DatasNotas')
@@ -69,11 +118,12 @@ export async function atualizarFrequencia(listaFreq, idUsuario, idPeriodoSelec, 
 }
 
 export async function atualizarNotas(listaNotas, idUsuario, idPeriodoSelec, idClasseSelec, dataSelec) {
+
   let listaAlunosRef = firestore().collection(idUsuario)
     .doc(idPeriodoSelec).collection('Classes')
     .doc(idClasseSelec).collection('ListaAlunos')
 
-    const batch = firestore().batch()
+  const batch = firestore().batch()
 
   Object.values(listaNotas).forEach(valor => {
     let datas = valor.notas
@@ -117,4 +167,3 @@ export async function atualizarNotas(listaNotas, idUsuario, idPeriodoSelec, idCl
   } catch (error) {
   }
 }
-

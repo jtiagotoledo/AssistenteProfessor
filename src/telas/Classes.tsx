@@ -9,6 +9,7 @@ import HeaderClasses from "../componentes/HeaderClasses";
 import ConexaoInternet from "../componentes/ConexaoInternet";
 import Globais from "../data/Globais";
 import consultasBD from "../banco_dados/consultasBD";
+import atualizarBD from "../banco_dados/atualizarBD";
 
 import ModalAddPeriodo from "../modais/ModalAddPeriodo";
 import ModalAddClasse from "../modais/ModalAddClasse";
@@ -28,7 +29,8 @@ function Classes({ navigation }: any) {
   const { nomePeriodoSelec } = useContext(Context);
 
   consultasBD();
-
+  atualizarBD();
+  
   const renderHeader = () => (
     <>
       <Text style={styles.textLoad}>
