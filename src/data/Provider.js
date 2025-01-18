@@ -51,7 +51,7 @@ export default function Provider ({children}){
     const[abaSelec,setAbaSelec]=useState('');
     const[listaPeriodos,setListaPeriodos] = useState([{label:'',value:'',periodo:'',idPeriodo:''}]);
     const[listaClasses,setListaClasses]=useState([{classe:'',idClasse:''}]);
-    const[listaAlunos,setListaAlunos]=useState([{numero:'',nome:''}]);
+    const[listaAlunos,setListaAlunos]=useState('');
     const[listaFrequencia,setListaFrequencia]=useState('');
     const[listaNotas,setListaNotas]=useState();
     const[listaDatasFreq,setListaDatasFreq]=useState('');

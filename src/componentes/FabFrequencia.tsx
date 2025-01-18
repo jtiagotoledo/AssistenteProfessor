@@ -7,8 +7,7 @@ import FontIAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 
 const FabFrequencia = ()=>{
 
-  const {setModalCalendarioFreq, flagLoadAlunos,
-     idClasseSelec} = useContext(Context);
+  const {setModalCalendarioFreq, flagLoadAlunos, listaAlunos, idClasseSelec} = useContext(Context);
 
   const abrirCalendário = () =>{
     if(idClasseSelec!='' && flagLoadAlunos!='vazio'){
@@ -38,7 +37,7 @@ const FabFrequencia = ()=>{
             color={Globais.corPrimaria}
             overrideWithAction={true}
             actions={actions}
-            onPressItem={abrirCalendário}
+            onPressItem={()=>{listaAlunos.length>0? abrirCalendário(): ToastAndroid.show('Adicione pelo menos um aluno na classe', ToastAndroid.SHORT)}}
           />
       </View>
   )

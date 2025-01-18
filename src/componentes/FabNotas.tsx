@@ -1,23 +1,22 @@
 import { FloatingAction } from "react-native-floating-action";
 import React, { useContext } from 'react';
 import { View, ToastAndroid } from "react-native";
-import {Context} from "../data/Provider";
+import { Context } from "../data/Provider";
 import Globais from "../data/Globais";
 import FontIAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 
-const FabNotas = ()=>{
+const FabNotas = () => {
 
-  const {setModalCalendarioNota, flagLoadAlunos,
-     idClasseSelec} = useContext(Context);
+  const { setModalCalendarioNota, flagLoadAlunos, listaAlunos, idClasseSelec } = useContext(Context);
 
-  const abrirCalendário = () =>{
-    if(idClasseSelec!='' && flagLoadAlunos!='vazio'){
+  const abrirCalendário = () => {
+    if (idClasseSelec != '' && flagLoadAlunos != 'vazio') {
       setModalCalendarioNota(true)
-    }else if(idClasseSelec==''){
-        ToastAndroid.show('Selecione uma classe primeiro...',ToastAndroid.SHORT)
+    } else if (idClasseSelec == '') {
+      ToastAndroid.show('Selecione uma classe primeiro...', ToastAndroid.SHORT)
     }
-    if(flagLoadAlunos=='vazio'){
-        ToastAndroid.show('Primeiro, adicione os alunos nessa classe...',ToastAndroid.SHORT)
+    if (flagLoadAlunos == 'vazio') {
+      ToastAndroid.show('Primeiro, adicione os alunos nessa classe...', ToastAndroid.SHORT)
     }
   }
 
@@ -32,15 +31,15 @@ const FabNotas = ()=>{
     }
   ]
 
-  return(
-      <View>
-          <FloatingAction
-            color={Globais.corPrimaria}
-            overrideWithAction={true}
-            actions={actions}
-            onPressItem={abrirCalendário}
-          />
-      </View>
+  return (
+    <View>
+      <FloatingAction
+        color={Globais.corPrimaria}
+        overrideWithAction={true}
+        actions={actions}
+        onPressItem={() => { listaAlunos.length > 0 ? abrirCalendário() : ToastAndroid.show('Adicione pelo menos um aluno na classe', ToastAndroid.SHORT) }}
+      />
+    </View>
   )
 }
 
