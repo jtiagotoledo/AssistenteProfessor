@@ -20,6 +20,10 @@ const Frequencia = () => {
     const { dataSelec, setModalCalendarioFreq, idUsuario, idPeriodoSelec, idClasseSelec,
         nomePeriodoSelec, setFlagLongPressDataFreq, setDataSelec, textoAtividades } = useContext(Context);
 
+    const onPressFab = () =>{
+        atualizarAtividades(textoAtividadesRef.current, idUsuario, idPeriodoSelec, idClasseSelec, dataSelec)
+    }
+
     useFocusEffect(
         useCallback(() => {
             return () => {
@@ -104,7 +108,7 @@ const Frequencia = () => {
             />
             <ModalCalendarioFrequencia />
             <ModalDelDataFreq />
-            <FabFrequencia />
+            <FabFrequencia onPress={()=>onPressFab()}/>
         </View>
     );
 };

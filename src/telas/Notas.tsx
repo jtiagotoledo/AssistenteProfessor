@@ -21,8 +21,13 @@ const Notas = () => {
     const listaNotasRef = useRef({})
     const [dataTemp, setDataTemp] = useState()
     const { dataSelec, setModalCalendarioNota, setDataSelec,
-        nomePeriodoSelec, setFlagLongPressDataNotas,textoTituloNotas,
+        nomePeriodoSelec, setFlagLongPressDataNotas, textoTituloNotas,
         listaNotas, idUsuario, idPeriodoSelec, idClasseSelec, valueNota } = useContext(Context);
+
+    const onPressFab = () => {
+        atualizarTituloNotas(textoTituloNotasRef.current, idUsuario, idPeriodoSelec, idClasseSelec, dataSelec)
+        atualizarNotas(listaNotasRef.current, idUsuario, idPeriodoSelec, idClasseSelec, dataSelec)
+    }
 
     useEffect(() => {
         //mantem uma cópia da lista de notas para salvar quando a aba é trocada
@@ -113,7 +118,7 @@ const Notas = () => {
             />
             <ModalCalendarioNota />
             <ModalDelDataNotas />
-            <FabNotas />
+            <FabNotas onPress={()=>onPressFab()}/>
         </View>
     );
 };

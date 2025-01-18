@@ -1,22 +1,35 @@
 import { FloatingAction } from "react-native-floating-action";
 import React, { useContext } from 'react';
 import { View, ToastAndroid } from "react-native";
-import {Context} from "../data/Provider";
+import { Context } from "../data/Provider";
 import Globais from "../data/Globais";
 import FontIAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 
-const FabFrequencia = ()=>{
+type Props = {
+  onPress: () => void; // Define o tipo do onPress como uma função sem parâmetros que retorna void
+};
 
-  const {setModalCalendarioFreq, flagLoadAlunos, listaAlunos, idClasseSelec} = useContext(Context);
+const FabFrequencia: React.FC<Props> = ({ onPress }) => {
 
-  const abrirCalendário = () =>{
-    if(idClasseSelec!='' && flagLoadAlunos!='vazio'){
-      setModalCalendarioFreq(true)
-    }else if(idClasseSelec==''){
-        ToastAndroid.show('Selecione uma classe primeiro...',ToastAndroid.SHORT)
+  const { setModalCalendarioFreq, flagLoadAlunos, listaAlunos, idClasseSelec } = useContext(Context);
+
+  const onPressFab = () => {
+    onPress()
+    if (listaAlunos.length > 0) {
+      abrirCalendário()
+    } else {
+      ToastAndroid.show('Adicione pelo menos um aluno na classe', ToastAndroid.SHORT)
     }
-    if(flagLoadAlunos=='vazio'){
-        ToastAndroid.show('Primeiro, adicione os alunos nessa classe...',ToastAndroid.SHORT)
+  }
+
+  const abrirCalendário = () => {
+    if (idClasseSelec != '' && flagLoadAlunos != 'vazio') {
+      setModalCalendarioFreq(true)
+    } else if (idClasseSelec == '') {
+      ToastAndroid.show('Selecione uma classe primeiro...', ToastAndroid.SHORT)
+    }
+    if (flagLoadAlunos == 'vazio') {
+      ToastAndroid.show('Primeiro, adicione os alunos nessa classe...', ToastAndroid.SHORT)
     }
   }
 
@@ -31,15 +44,15 @@ const FabFrequencia = ()=>{
     }
   ]
 
-  return(
-      <View>
-          <FloatingAction
-            color={Globais.corPrimaria}
-            overrideWithAction={true}
-            actions={actions}
-            onPressItem={()=>{listaAlunos.length>0? abrirCalendário(): ToastAndroid.show('Adicione pelo menos um aluno na classe', ToastAndroid.SHORT)}}
-          />
-      </View>
+  return (
+    <View>
+      <FloatingAction
+        color={Globais.corPrimaria}
+        overrideWithAction={true}
+        actions={actions}
+        onPressItem={() => onPressFab()}
+      />
+    </View>
   )
 }
 

@@ -5,9 +5,22 @@ import { Context } from "../data/Provider";
 import Globais from "../data/Globais";
 import FontIAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 
-const FabNotas = () => {
+type Props = {
+  onPress: () => void; // Define o tipo do onPress como uma função sem parâmetros que retorna void
+};
+
+const FabNotas: React.FC<Props> = ({ onPress }) => {
 
   const { setModalCalendarioNota, flagLoadAlunos, listaAlunos, idClasseSelec } = useContext(Context);
+
+  const onPressFab = () => {
+    onPress()
+    if (listaAlunos.length > 0) {
+      abrirCalendário()
+    } else {
+      ToastAndroid.show('Adicione pelo menos um aluno na classe', ToastAndroid.SHORT)
+    }
+  }
 
   const abrirCalendário = () => {
     if (idClasseSelec != '' && flagLoadAlunos != 'vazio') {
@@ -37,7 +50,7 @@ const FabNotas = () => {
         color={Globais.corPrimaria}
         overrideWithAction={true}
         actions={actions}
-        onPressItem={() => { listaAlunos.length > 0 ? abrirCalendário() : ToastAndroid.show('Adicione pelo menos um aluno na classe', ToastAndroid.SHORT) }}
+        onPressItem={() => onPressFab()}
       />
     </View>
   )
