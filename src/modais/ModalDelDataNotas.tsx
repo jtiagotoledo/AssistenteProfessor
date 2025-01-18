@@ -12,13 +12,13 @@ const ModalDelDataNotas = () => {
 
   const { idPeriodoSelec, idClasseSelec, idUsuario, setListaNotas,
     setRecarregarFrequencia, dataSelec, modalDelDataNotas, setValueNota,
-    setModalDelDataNotas, setFlagLongPressDataNotas, setDataSelec } = useContext(Context);
+    setModalDelDataNotas, setFlagLongPressDataNotas, setDataSelec, setIdClasseSelec } = useContext(Context);
 
   const deletarData = async () => {
     await deleteDataNotas(idUsuario, idPeriodoSelec, idClasseSelec, dataSelec)
-    setListaNotas('')
     setValueNota('')
     setDataSelec('')
+    setIdClasseSelec('')
     setModalDelDataNotas(!modalDelDataNotas)
     setFlagLongPressDataNotas(false)
     setRecarregarFrequencia('recarregar')

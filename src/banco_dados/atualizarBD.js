@@ -3,11 +3,11 @@ import firestore from '@react-native-firebase/firestore';
 import { Context } from "../data/Provider";
 
 export default atualizarBD = () => {
-  const {abaSelec, idUsuario, idPeriodoSelec, idClasseSelec, listaNotas, } = useContext(Context)
+  const { idUsuario, idPeriodoSelec, idClasseSelec, listaAlunos, } = useContext(Context)
 
   useEffect(() => {
     //atualiza as médias de notas quando alguma data é excluída
-  /*   console.log('entrou no atualizarBD');
+    console.log('entrou no atualizarBD');
     const fetchData = async () => {
       let listaAlunosRef = firestore().collection(idUsuario)
         .doc(idPeriodoSelec).collection('Classes')
@@ -15,7 +15,7 @@ export default atualizarBD = () => {
 
       const batch = firestore().batch()
 
-      Object.values(listaNotas).forEach(valor => {
+      Object.values(listaAlunos).forEach(valor => {
         let datas = valor.notas
 
         //cálculo da média das notas
@@ -45,8 +45,8 @@ export default atualizarBD = () => {
       }
 
     }
-    fetchData(); */
-  }, [listaNotas]);
+    fetchData();
+  }, [listaAlunos]);
 }
 
 export async function atualizarAtividades(texto, idUsuario, idPeriodoSelec, idClasseSelec, dataSelec) {

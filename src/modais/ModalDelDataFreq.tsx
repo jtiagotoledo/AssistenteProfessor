@@ -39,7 +39,7 @@ const ModalDelDataFreq = () =>{
                 <View style={styles.centeredView}>
                     <View style={styles.modalView}>
                         <View style={styles.containerIcon}>
-                            <TouchableOpacity  onPress={()=>setModalDelDataFreq(!modalDelDataFreq)}>
+                            <TouchableOpacity  onPress={()=>[setModalDelDataFreq(!modalDelDataFreq),setDataSelec('')]}>
                                 <MaterialIcon name="cancel" color="black" size={20}/>
                             </TouchableOpacity>
                         </View>
