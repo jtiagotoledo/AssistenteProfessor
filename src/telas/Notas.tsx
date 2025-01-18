@@ -19,14 +19,14 @@ const Notas = () => {
     const dataTempRef = useRef('')
     const textoTituloNotasRef = useRef('')
     const listaNotasRef = useRef({})
+    const [isFocused, setIsFocused] = useState(false);
     const [dataTemp, setDataTemp] = useState()
     const { dataSelec, setModalCalendarioNota, setDataSelec,
         nomePeriodoSelec, setFlagLongPressDataNotas, textoTituloNotas,
         listaNotas, idUsuario, idPeriodoSelec, idClasseSelec, valueNota } = useContext(Context);
 
     const onPressFab = () => {
-        atualizarTituloNotas(textoTituloNotasRef.current, idUsuario, idPeriodoSelec, idClasseSelec, dataSelec)
-        atualizarNotas(listaNotasRef.current, idUsuario, idPeriodoSelec, idClasseSelec, dataSelec)
+        atualizarNotas(listaNotas, idUsuario, idPeriodoSelec, idClasseSelec, dataSelec)
     }
 
     useEffect(() => {
@@ -99,7 +99,8 @@ const Notas = () => {
                         onChangeText={(text) => onChangeTituloNotas(text)}
                         defaultValue={textoTituloNotas}
                         style={styles.textInput}
-                        onBlur={() => atualizarTituloNotas(textoTituloNotasRef.current, idUsuario, idPeriodoSelec, idClasseSelec, dataSelec)}
+                        onFocus={() => setIsFocused(true)}
+                        onBlur={() => [atualizarTituloNotas(textoTituloNotasRef.current, idUsuario, idPeriodoSelec, idClasseSelec, dataSelec),setIsFocused(false)]}
                     />
                 </View>
             )}
@@ -118,7 +119,7 @@ const Notas = () => {
             />
             <ModalCalendarioNota />
             <ModalDelDataNotas />
-            <FabNotas onPress={()=>onPressFab()}/>
+            <FabNotas onPress={()=>onPressFab()} isFocused={isFocused}/>
         </View>
     );
 };

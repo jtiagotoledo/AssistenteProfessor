@@ -9,11 +9,12 @@ import { deleteDataNotas } from "../banco_dados/deletarBD";
 
 const ModalDelDataNotas = () => {
 
-  const { idPeriodoSelec, idClasseSelec, idUsuario, dataSelec, modalDelDataNotas, setValueNota,
+  const { idPeriodoSelec, idClasseSelec, idUsuario, dataSelec, modalDelDataNotas, setValueNota, setListaNotas,
     setModalDelDataNotas, setFlagLongPressDataNotas, setDataSelec, setIdClasseSelec } = useContext(Context);
 
   const deletarData = async () => {
     await deleteDataNotas(idUsuario, idPeriodoSelec, idClasseSelec, dataSelec)
+    setListaNotas('')
     setValueNota('')
     setDataSelec('')
     setIdClasseSelec('')

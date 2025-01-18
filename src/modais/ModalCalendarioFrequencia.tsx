@@ -9,7 +9,7 @@ import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 
 const ModalCalendarioFrequencia = () => {
 
-  const { modalCalendarioFreq, setModalCalendarioFreq, dataSelec } = useContext(Context)
+  const { modalCalendarioFreq, setModalCalendarioFreq, dataSelec, setDataSelec } = useContext(Context)
 
   let dataAno = '', dataMes = '', dataDia = '', data = ''
 
@@ -42,7 +42,7 @@ const ModalCalendarioFrequencia = () => {
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
             <View style={styles.containerIcon}>
-              <TouchableOpacity onPress={() => setModalCalendarioFreq(!modalCalendarioFreq)}>
+              <TouchableOpacity onPress={() => [setModalCalendarioFreq(!modalCalendarioFreq),setDataSelec('')]}>
                 <MaterialIcon name="cancel" color="black" size={20}/>
               </TouchableOpacity>
             </View>

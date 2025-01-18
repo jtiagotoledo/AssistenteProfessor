@@ -6,15 +6,14 @@ import Globais from "../data/Globais";
 import FontIAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 
 type Props = {
-  onPress: () => void; // Define o tipo do onPress como uma função sem parâmetros que retorna void
+  isFocused: boolean
 };
 
-const FabFrequencia: React.FC<Props> = ({ onPress }) => {
+const FabFrequencia: React.FC<Props> = ({ isFocused }) => {
 
   const { setModalCalendarioFreq, flagLoadAlunos, listaAlunos, idClasseSelec } = useContext(Context);
 
   const onPressFab = () => {
-    onPress()
     if (listaAlunos.length > 0) {
       abrirCalendário()
     } else {
@@ -51,6 +50,7 @@ const FabFrequencia: React.FC<Props> = ({ onPress }) => {
         overrideWithAction={true}
         actions={actions}
         onPressItem={() => onPressFab()}
+        visible={!isFocused}
       />
     </View>
   )

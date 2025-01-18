@@ -1,4 +1,4 @@
-import React, { useContext, useCallback, useRef, useEffect } from "react";
+import React, { useContext, useCallback, useRef, useEffect, useState } from "react";
 import { useFocusEffect } from '@react-navigation/native';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, AppState } from "react-native";
 import { Divider } from "react-native-paper";
@@ -17,13 +17,10 @@ import { atualizarAtividades } from "../banco_dados/atualizarBD"
 const Frequencia = () => {
     const dataTempRef = useRef('')
     const textoAtividadesRef = useRef('')
+    const [isFocused, setIsFocused] = useState(false);
     const { dataSelec, setModalCalendarioFreq, idUsuario, idPeriodoSelec, idClasseSelec,
         nomePeriodoSelec, setFlagLongPressDataFreq, setDataSelec, textoAtividades } = useContext(Context);
-
-    const onPressFab = () =>{
-        atualizarAtividades(textoAtividadesRef.current, idUsuario, idPeriodoSelec, idClasseSelec, dataSelec)
-    }
-
+    
     useFocusEffect(
         useCallback(() => {
             return () => {
@@ -87,7 +84,8 @@ const Frequencia = () => {
                         onChangeText={(text) => onChangeAtividades(text)}
                         defaultValue = {textoAtividades}
                         style={styles.textInput}
-                        onBlur={() => atualizarAtividades(textoAtividadesRef.current, idUsuario, idPeriodoSelec, idClasseSelec, dataSelec)}
+                        onFocus={() => setIsFocused(true)}
+                        onBlur={() => [atualizarAtividades(textoAtividadesRef.current, idUsuario, idPeriodoSelec, idClasseSelec, dataSelec),setIsFocused(false)]}
                     />
                 </View>
 
@@ -108,7 +106,7 @@ const Frequencia = () => {
             />
             <ModalCalendarioFrequencia />
             <ModalDelDataFreq />
-            <FabFrequencia onPress={()=>onPressFab()}/>
+            <FabFrequencia isFocused={isFocused}/>
         </View>
     );
 };

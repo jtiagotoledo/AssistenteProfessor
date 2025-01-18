@@ -7,9 +7,10 @@ import FontIAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 
 type Props = {
   onPress: () => void; // Define o tipo do onPress como uma função sem parâmetros que retorna void
+  isFocused: boolean
 };
 
-const FabNotas: React.FC<Props> = ({ onPress }) => {
+const FabNotas: React.FC<Props> = ({ onPress, isFocused }) => {
 
   const { setModalCalendarioNota, flagLoadAlunos, listaAlunos, idClasseSelec } = useContext(Context);
 
@@ -51,6 +52,7 @@ const FabNotas: React.FC<Props> = ({ onPress }) => {
         overrideWithAction={true}
         actions={actions}
         onPressItem={() => onPressFab()}
+        visible={!isFocused}
       />
     </View>
   )
