@@ -5,13 +5,11 @@ import { Context } from "../data/Provider";
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import Globais from "../data/Globais";
 import { deleteDataNotas } from "../banco_dados/deletarBD";
-import { atualizarNotas } from "../banco_dados/atualizarBD"
 
 
 const ModalDelDataNotas = () => {
 
-  const { idPeriodoSelec, idClasseSelec, idUsuario, setListaNotas,
-    setRecarregarFrequencia, dataSelec, modalDelDataNotas, setValueNota,
+  const { idPeriodoSelec, idClasseSelec, idUsuario, dataSelec, modalDelDataNotas, setValueNota,
     setModalDelDataNotas, setFlagLongPressDataNotas, setDataSelec, setIdClasseSelec } = useContext(Context);
 
   const deletarData = async () => {
@@ -21,7 +19,6 @@ const ModalDelDataNotas = () => {
     setIdClasseSelec('')
     setModalDelDataNotas(!modalDelDataNotas)
     setFlagLongPressDataNotas(false)
-    setRecarregarFrequencia('recarregar')
 
 
     //deletando o estado da data

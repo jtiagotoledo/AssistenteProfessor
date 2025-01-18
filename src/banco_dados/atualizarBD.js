@@ -6,7 +6,7 @@ export default atualizarBD = () => {
   const { idUsuario, idPeriodoSelec, idClasseSelec, listaAlunos, } = useContext(Context)
 
   useEffect(() => {
-    //atualiza as médias de notas quando alguma data é excluída
+    //atualiza as médias de notas e porcentagem de frequencia quando alguma data é excluída
     console.log('entrou no atualizarBD');
     const fetchData = async () => {
       let listaAlunosRef = firestore().collection(idUsuario)
@@ -16,18 +16,40 @@ export default atualizarBD = () => {
       const batch = firestore().batch()
 
       Object.values(listaAlunos).forEach(valor => {
-        let datas = valor.notas
+
+        //contagem e cálculo da porcentagem de frequência
+        let datasFreq = valor.frequencias 
+
+        let contFreq = 0, porcFreq
+        let qntDatasFreq = Object.keys(datasFreq).length
+
+        datasFreq.forEach((item) => {
+          if (item.freq === 'P') contFreq += 1
+        })
+
+        if (qntDatasFreq > 0) {
+          porcFreq = ((contFreq / qntDatasFreq) * 100).toFixed(1).toString()
+        } else {
+          porcFreq = '...'
+        }
+
+        //atualizando a frequência no BD
+        batch.update(listaAlunosRef.doc(valor.idAluno), {
+          porcFreq
+        })
 
         //cálculo da média das notas
-        let somaNotas = 0, mediaNotas
-        let qntDatas = Object.keys(datas).length
+        let datasNotas = valor.notas
 
-        datas.forEach((item) => {
+        let somaNotas = 0, mediaNotas
+        let qntDatasNotas = Object.keys(datasNotas).length
+
+        datasNotas.forEach((item) => {
           item.nota !== '' ? somaNotas += parseFloat(item.nota) : null
         })
 
-        if (qntDatas > 0) {
-          mediaNotas = (somaNotas / qntDatas).toFixed(1).toString()
+        if (qntDatasNotas > 0) {
+          mediaNotas = (somaNotas / qntDatasNotas).toFixed(1).toString()
         } else {
           mediaNotas = '...'
         }
@@ -50,21 +72,25 @@ export default atualizarBD = () => {
 }
 
 export async function atualizarAtividades(texto, idUsuario, idPeriodoSelec, idClasseSelec, dataSelec) {
-  firestore().collection(idUsuario)
-    .doc(idPeriodoSelec).collection('Classes')
-    .doc(idClasseSelec).collection('DatasFrequencias')
-    .doc(dataSelec).set({
-      atividade: texto
-    })
+  if(dataSelec!==''){
+    firestore().collection(idUsuario)
+      .doc(idPeriodoSelec).collection('Classes')
+      .doc(idClasseSelec).collection('DatasFrequencias')
+      .doc(dataSelec).set({
+        atividade: texto
+      })
+  }
 }
 
 export async function atualizarTituloNotas(texto, idUsuario, idPeriodoSelec, idClasseSelec, dataSelec) {
-  firestore().collection(idUsuario)
-    .doc(idPeriodoSelec).collection('Classes')
-    .doc(idClasseSelec).collection('DatasNotas')
-    .doc(dataSelec).set({
-      tituloNota: texto
-    })
+  if(dataSelec!==''){
+    firestore().collection(idUsuario)
+      .doc(idPeriodoSelec).collection('Classes')
+      .doc(idClasseSelec).collection('DatasNotas')
+      .doc(dataSelec).set({
+        tituloNota: texto
+      })
+  }
 }
 
 export async function atualizarFrequencia(listaFreq, idUsuario, idPeriodoSelec, idClasseSelec, dataSelec) {
