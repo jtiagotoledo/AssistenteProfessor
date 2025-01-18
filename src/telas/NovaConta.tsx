@@ -23,25 +23,29 @@ const NovaConta = ({ navigation }: any) => {
     }
 
     const criarConta = () => {
-        auth()
-            .createUserWithEmailAndPassword(email, senha)
-            .then(() => {
-                ToastAndroid.show('Conta criada com sucesso', ToastAndroid.SHORT)
-                navigation.reset({ index: 0, routes: [{ name: "App" }] })
-                setIdUsuario(email)
-                criarCaminhoSalvarEstados()
-            }).catch(error => {
+        if (email && senha) {
+            auth()
+                .createUserWithEmailAndPassword(email, senha)
+                .then(() => {
+                    ToastAndroid.show('Conta criada com sucesso', ToastAndroid.SHORT)
+                    navigation.reset({ index: 0, routes: [{ name: "App" }] })
+                    setIdUsuario(email)
+                    criarCaminhoSalvarEstados()
+                }).catch(error => {
 
-                if (error.code === 'auth/email-already-in-use') {
-                    ToastAndroid.show('Este Email já está em uso', ToastAndroid.SHORT)
-                }
-                if (error.code === 'auth/invalid-email') {
-                    ToastAndroid.show('Email inválido', ToastAndroid.SHORT)
-                }
-                if (error.code === 'auth/weak-password') {
-                    ToastAndroid.show('A senha deve conter ao menos 6 caracteres', ToastAndroid.SHORT)
-                }
-            });
+                    if (error.code === 'auth/email-already-in-use') {
+                        ToastAndroid.show('Este Email já está em uso', ToastAndroid.SHORT)
+                    }
+                    if (error.code === 'auth/invalid-email') {
+                        ToastAndroid.show('Email inválido', ToastAndroid.SHORT)
+                    }
+                    if (error.code === 'auth/weak-password') {
+                        ToastAndroid.show('A senha deve conter ao menos 6 caracteres', ToastAndroid.SHORT)
+                    }
+                });
+        } else {
+            ToastAndroid.show('Email e senha devem ser preenchidos', ToastAndroid.SHORT)
+        }
     }
 
     const onChangeInputEmail = (event: NativeSyntheticEvent<TextInputChangeEventData>) => {
