@@ -34,8 +34,8 @@ android {
         applicationId "com.apolotecnologia.assistenteprofessor"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 2 // Atualize conforme necessário
-        versionName "1.1" // Atualize conforme necessário
+        versionCode 3 // Atualize conforme necessário
+        versionName "1.1.1" // Atualize conforme necessário
     }
 
     signingConfigs {

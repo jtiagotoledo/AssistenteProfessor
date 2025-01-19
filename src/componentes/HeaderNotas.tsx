@@ -29,7 +29,7 @@ const HeaderFrequencia: React.FunctionComponent<HeaderComponentProps> = (props) 
 
   const onPressSave = () => {
     atualizarNotas(listaNotas, idUsuario, idPeriodoSelec, idClasseSelec, dataSelec)
-    ToastAndroid.show('NOtas salvas com sucesso...',ToastAndroid.SHORT)
+    ToastAndroid.show('Notas salvas com sucesso...',ToastAndroid.SHORT)
   };
 
   return (
