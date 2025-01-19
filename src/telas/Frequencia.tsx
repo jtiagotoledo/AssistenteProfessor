@@ -1,6 +1,6 @@
 import React, { useContext, useCallback, useRef, useEffect, useState } from "react";
 import { useFocusEffect } from '@react-navigation/native';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, AppState } from "react-native";
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, AppState, Alert, ToastAndroid } from "react-native";
 import { Divider } from "react-native-paper";
 
 import { Context } from "../data/Provider";
@@ -17,10 +17,9 @@ import { atualizarAtividades } from "../banco_dados/atualizarBD"
 const Frequencia = () => {
     const dataTempRef = useRef('')
     const textoAtividadesRef = useRef('')
-    const [isFocused, setIsFocused] = useState(false);
     const { dataSelec, setModalCalendarioFreq, idUsuario, idPeriodoSelec, idClasseSelec,
         nomePeriodoSelec, setFlagLongPressDataFreq, setDataSelec, textoAtividades } = useContext(Context);
-    
+
     useFocusEffect(
         useCallback(() => {
             return () => {
@@ -78,18 +77,33 @@ const Frequencia = () => {
             </View>
             {dataSelec && (
                 <View style={styles.containerInput}>
-                    <TextInput
-                        multiline
-                        placeholder="Descreva as atividades realizadas..."
-                        onChangeText={(text) => onChangeAtividades(text)}
-                        defaultValue = {textoAtividades}
-                        style={styles.textInput}
-                        onFocus={() => setIsFocused(true)}
-                        onBlur={() => [atualizarAtividades(textoAtividadesRef.current, idUsuario, idPeriodoSelec, idClasseSelec, dataSelec),setIsFocused(false)]}
-                    />
+                    <View style={styles.inputWrapper}>
+                        <TextInput
+                            multiline
+                            placeholder="Descreva as atividades realizadas..."
+                            onChangeText={(text) => onChangeAtividades(text)}
+                            defaultValue={textoAtividades}
+                            style={styles.textInput}
+                        />
+                        <TouchableOpacity
+                            style={styles.saveButtonInside}
+                            onPress={() => {
+                                if (textoAtividadesRef.current.trim() === '') {
+                                    ToastAndroid.show('Por favor, preencha a atividade antes de salvar.',ToastAndroid.SHORT);
+                                } else {
+                                    atualizarAtividades(
+                                        textoAtividadesRef.current, idUsuario, idPeriodoSelec, idClasseSelec, dataTempRef.current
+                                    );
+                                    ToastAndroid.show('Atividade salva com sucesso!',ToastAndroid.SHORT);
+                                }
+                            }}
+                        >
+                            <Text style={styles.saveButtonTextInside}>Salvar{'\n'} Atividade</Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
-
             )}
+
         </TouchableOpacity>
     );
 
@@ -97,7 +111,6 @@ const Frequencia = () => {
         <View style={styles.container}>
             <HeaderFrequencia title="Frequência" />
             <ConexaoInternet />
-
             <FlatListFrequencia
                 ListHeaderComponent={renderHeader}
                 data={[]}
@@ -106,7 +119,7 @@ const Frequencia = () => {
             />
             <ModalCalendarioFrequencia />
             <ModalDelDataFreq />
-            <FabFrequencia isFocused={isFocused}/>
+            <FabFrequencia />
         </View>
     );
 };
@@ -132,11 +145,6 @@ const styles = StyleSheet.create({
     divider: {
         backgroundColor: Globais.corPrimaria,
     },
-    textInput: {
-        width: '90%',
-        backgroundColor: Globais.corTextoClaro,
-        padding: 8,
-    },
     containerInput: {
         marginVertical: 16,
         flexDirection: 'row',
@@ -147,11 +155,36 @@ const styles = StyleSheet.create({
         color: Globais.corTextoClaro,
         textAlign: 'center',
     },
-    saveButton: {
-        marginLeft: 16,
+    inputWrapper: {
+        width: '90%',
+    },
+    textInput: {
+        width: '100%',
+        backgroundColor: Globais.corTextoClaro,
+        padding: 8,
+        paddingRight: 80, // Deixa espaço para o botão "Salvar"
+        fontSize: 16,
+        borderRadius: 5,
+    },
+    saveButtonInside: {
+        position: 'absolute',
+        right: 10,
+        bottom: 10,
+        backgroundColor: Globais.corSecundaria, // Cor do botão
+        paddingVertical: 5,
+        paddingHorizontal: 10,
+        borderRadius: 5,
         justifyContent: 'center',
         alignItems: 'center',
     },
+    saveButtonTextInside: {
+        color: Globais.corTextoClaro, // Cor do texto
+        fontSize: 8,
+        fontWeight: 'bold',
+        textAlign: 'center', // Centraliza o texto dentro do botão
+        flexWrap: 'wrap',
+    },
+
 });
 
 export default Frequencia;

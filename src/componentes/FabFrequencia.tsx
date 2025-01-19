@@ -5,11 +5,8 @@ import { Context } from "../data/Provider";
 import Globais from "../data/Globais";
 import FontIAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 
-type Props = {
-  isFocused: boolean
-};
 
-const FabFrequencia: React.FC<Props> = ({ isFocused }) => {
+const FabFrequencia = () => {
 
   const { setModalCalendarioFreq, flagLoadAlunos, listaAlunos, idClasseSelec } = useContext(Context);
 
@@ -50,7 +47,6 @@ const FabFrequencia: React.FC<Props> = ({ isFocused }) => {
         overrideWithAction={true}
         actions={actions}
         onPressItem={() => onPressFab()}
-        visible={!isFocused}
       />
     </View>
   )

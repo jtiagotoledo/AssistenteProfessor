@@ -6,7 +6,7 @@ import Globais from "../data/Globais";
 import FontIAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 
 type Props = {
-  onPress: () => void; // Define o tipo do onPress como uma função sem parâmetros que retorna void
+  onPress: () => void; 
   isFocused: boolean
 };
 
