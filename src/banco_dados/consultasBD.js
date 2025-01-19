@@ -75,8 +75,6 @@ const consultasBD = () => {
           alunos.push(item.data())
         })
         setListaAlunos(alunos)
-        console.log('listaAlunos',alunos);
-        
       });
     return () => {
       unsub();

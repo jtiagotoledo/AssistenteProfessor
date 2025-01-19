@@ -7,7 +7,6 @@ export default atualizarBD = () => {
 
   useEffect(() => {
     //atualiza as médias de notas e porcentagem de frequencia quando alguma data é excluída
-    console.log('entrou no atualizarBD');
     const fetchData = async () => {
       let listaAlunosRef = firestore().collection(idUsuario)
         .doc(idPeriodoSelec).collection('Classes')

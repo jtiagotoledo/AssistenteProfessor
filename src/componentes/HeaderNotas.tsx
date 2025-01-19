@@ -1,9 +1,10 @@
 import React, { useContext } from 'react';
-import { StyleSheet, TouchableWithoutFeedback, View, Text, Dimensions } from 'react-native';
+import { StyleSheet, TouchableWithoutFeedback, View, Text, Dimensions, ToastAndroid } from 'react-native';
 import { Header as HeaderRNE } from '@rneui/themed';
 import { TouchableOpacity } from 'react-native';
 import { Context } from "../data/Provider";
 import Globais from '../data/Globais';
+import { atualizarNotas } from "../banco_dados/atualizarBD"
 
 import AntIcon from 'react-native-vector-icons/AntDesign';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
@@ -17,15 +18,18 @@ type HeaderComponentProps = {
 
 const HeaderFrequencia: React.FunctionComponent<HeaderComponentProps> = (props) => {
   const {
-    setModalMenu,
-    flagLongPressDataNotas,
-    setModalDelDataNotas,
-  } = useContext(Context);
+    setModalMenu,flagLongPressDataNotas,setModalDelDataNotas,dataSelec,
+    listaNotas, idUsuario, idPeriodoSelec, idClasseSelec} = useContext(Context);
 
   const onPressBin = () => {
     if (flagLongPressDataNotas) {
       setModalDelDataNotas(true);
     }
+  };
+
+  const onPressSave = () => {
+    atualizarNotas(listaNotas, idUsuario, idPeriodoSelec, idClasseSelec, dataSelec)
+    ToastAndroid.show('NOtas salvas com sucesso...',ToastAndroid.SHORT)
   };
 
   return (
@@ -46,6 +50,14 @@ const HeaderFrequencia: React.FunctionComponent<HeaderComponentProps> = (props) 
               style={styles.icon}
               name="trash-o"
               color={flagLongPressDataNotas ? 'rgba(255,255,255,1)' : 'rgba(255,255,255,0.6)'}
+              size={24}
+            />
+          </TouchableWithoutFeedback>
+          <TouchableWithoutFeedback onPress={onPressSave}>
+            <FontAwesomeIcon
+              style={styles.icon}
+              name="save"
+              color={dataSelec ? 'rgba(255,255,255,1)' : 'rgba(255,255,255,0.6)'}
               size={24}
             />
           </TouchableWithoutFeedback>

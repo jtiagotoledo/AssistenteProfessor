@@ -25,8 +25,6 @@ const ModalAddClasse = () => {
           ToastAndroid.show(
             'A classe informada já existe',
             ToastAndroid.SHORT)
-      }).catch((erro) => {
-        console.error(erro);
       })
 
     // inclusão da classe no BD

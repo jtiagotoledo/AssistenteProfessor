@@ -93,7 +93,6 @@ export const deleteUser = async (navigation, idUsuario) => {
       
       navigation.replace('Login')
     } catch (error) {
-      console.error('Erro ao deletar dados do usuário:', error);
     }
   };
 

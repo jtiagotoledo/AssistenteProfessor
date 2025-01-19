@@ -29,9 +29,7 @@ const ModalMenu = ({ navigation }: any) => {
         navigation.reset({ index: 0, routes: [{ name: "Login" }] }),
         setIdUsuario('')
       ])
-      .catch((erro) => {
-        console.error(erro);
-      });
+      
   };
 
   return (

@@ -31,8 +31,6 @@ const ModalAddAluno = () => {
           ToastAndroid.show(
             'O número informado já existe na classe',
             ToastAndroid.SHORT)
-      }).catch((erro) => {
-        console.error(erro);
       })
 
     // inclusão do aluno no BD

@@ -29,7 +29,7 @@ const App = ({ navigation }: any) => {
   }, []);
 
   const atualizarAba = (aba: RouteNames): void => {
-    estadosAppRef.update({ aba }).catch((erro) => console.error(erro));
+    estadosAppRef.update({ aba })
   };
 
   return (

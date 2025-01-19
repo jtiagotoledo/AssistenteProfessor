@@ -27,8 +27,6 @@ const ModalEditClasse = () => {
           ToastAndroid.show(
             'A classe informada já existe',
             ToastAndroid.SHORT)
-      }).catch((erro) => {
-        console.error(erro);
       })
 
     // edição da classe no BD
