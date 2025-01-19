@@ -80,7 +80,7 @@ const Frequencia = () => {
                     <View style={styles.inputWrapper}>
                         <TextInput
                             multiline
-                            placeholder="Descreva as atividades realizadas..."
+                            placeholder="Descreva as atividades..."
                             onChangeText={(text) => onChangeAtividades(text)}
                             defaultValue={textoAtividades}
                             style={styles.textInput}
@@ -168,8 +168,8 @@ const styles = StyleSheet.create({
     },
     saveButtonInside: {
         position: 'absolute',
-        right: 10,
-        bottom: 10,
+        right: 5,
+        bottom: 5,
         backgroundColor: Globais.corSecundaria, // Cor do botão
         paddingVertical: 5,
         paddingHorizontal: 10,

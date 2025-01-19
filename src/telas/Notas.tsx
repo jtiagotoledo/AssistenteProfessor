@@ -1,6 +1,6 @@
 import React, { useContext, useCallback, useRef, useEffect, useState } from "react";
 import { useFocusEffect } from '@react-navigation/native';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, AppState } from "react-native";
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, AppState, ToastAndroid } from "react-native";
 import { Divider } from "react-native-paper";
 
 import { Context } from "../data/Provider";
@@ -19,7 +19,6 @@ const Notas = () => {
     const dataTempRef = useRef('')
     const textoTituloNotasRef = useRef('')
     const listaNotasRef = useRef({})
-    const [isFocused, setIsFocused] = useState(false);
     const [dataTemp, setDataTemp] = useState()
     const { dataSelec, setModalCalendarioNota, setDataSelec,
         nomePeriodoSelec, setFlagLongPressDataNotas, textoTituloNotas,
@@ -93,15 +92,30 @@ const Notas = () => {
             </View>
             {dataSelec && (
                 <View style={styles.containerInput}>
-                    <TextInput
-                        multiline
-                        placeholder="Título da avaliação..."
-                        onChangeText={(text) => onChangeTituloNotas(text)}
-                        defaultValue={textoTituloNotas}
-                        style={styles.textInput}
-                        onFocus={() => setIsFocused(true)}
-                        onBlur={() => [atualizarTituloNotas(textoTituloNotasRef.current, idUsuario, idPeriodoSelec, idClasseSelec, dataSelec),setIsFocused(false)]}
-                    />
+                    <View style={styles.inputWrapper}>
+                        <TextInput
+                            multiline
+                            placeholder="Título da avaliação..."
+                            onChangeText={(text) => onChangeTituloNotas(text)}
+                            defaultValue={textoTituloNotas}
+                            style={styles.textInput}
+                        />
+                        <TouchableOpacity
+                            style={styles.saveButtonInside}
+                            onPress={() => {
+                                if (textoTituloNotasRef.current.trim() === '') {
+                                    ToastAndroid.show('Por favor, preencha a atividade antes de salvar.', ToastAndroid.SHORT);
+                                } else {
+                                    atualizarTituloNotas(
+                                        textoTituloNotasRef.current, idUsuario, idPeriodoSelec, idClasseSelec, dataSelec
+                                    );
+                                    ToastAndroid.show('Atividade salva com sucesso!', ToastAndroid.SHORT);
+                                }
+                            }}
+                        >
+                            <Text style={styles.saveButtonTextInside}>Salvar{'\n'} título</Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
             )}
         </TouchableOpacity>
@@ -119,7 +133,7 @@ const Notas = () => {
             />
             <ModalCalendarioNota />
             <ModalDelDataNotas />
-            <FabNotas onPress={()=>onPressFab()} isFocused={isFocused}/>
+            <FabNotas onPress={() => onPressFab()} />
         </View>
     );
 };
@@ -145,11 +159,6 @@ const styles = StyleSheet.create({
     divider: {
         backgroundColor: Globais.corPrimaria,
     },
-    textInput: {
-        width: "90%",
-        backgroundColor: Globais.corTextoClaro,
-        padding: 8,
-    },
     containerInput: {
         marginVertical: 16,
         flexDirection: "row",
@@ -159,6 +168,35 @@ const styles = StyleSheet.create({
         fontSize: 24,
         color: Globais.corTextoClaro,
         textAlign: "center",
+    },
+    inputWrapper: {
+        width: '90%',
+    },
+    textInput: {
+        width: '100%',
+        backgroundColor: Globais.corTextoClaro,
+        padding: 8,
+        paddingRight: 80, // Deixa espaço para o botão "Salvar"
+        fontSize: 16,
+        borderRadius: 5,
+    },
+    saveButtonInside: {
+        position: 'absolute',
+        right: 5,
+        bottom: 5,
+        backgroundColor: Globais.corSecundaria, // Cor do botão
+        paddingVertical: 5,
+        paddingHorizontal: 10,
+        borderRadius: 5,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    saveButtonTextInside: {
+        color: Globais.corTextoClaro, // Cor do texto
+        fontSize: 8,
+        fontWeight: 'bold',
+        textAlign: 'center', // Centraliza o texto dentro do botão
+        flexWrap: 'wrap',
     },
 });
 
