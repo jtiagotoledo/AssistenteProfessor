@@ -1,16 +1,25 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { TextInput, View, Text, StyleSheet, ToastAndroid, NativeSyntheticEvent, TextInputChangeEventData, Image, TouchableOpacity, ScrollView } from 'react-native';
 import auth from '@react-native-firebase/auth';
+import { GoogleSignin, SignInResponse } from '@react-native-google-signin/google-signin';
 import { Context } from "../data/Provider";
 import Globais from "../data/Globais";
 import Ionicons from 'react-native-vector-icons/Ionicons';
+
+
 
 const Login = ({ navigation }: any) => {
     const [senhaVisivel, setSenhaVisivel] = useState(false);
     const { email, setEmail, senha, setSenha } = useContext(Context);
 
+    useEffect(() => {
+        GoogleSignin.configure({
+            webClientId: '1000578379733-ahmcfl9ot3gn7p87c1ed4v3ejinhvkii.apps.googleusercontent.com',
+        });
+    }, []);
+
     const entrarConta = () => {
-        if(email && senha){
+        if (email && senha) {
             auth()
                 .signInWithEmailAndPassword(email, senha)
                 .then(() => {
@@ -20,10 +29,29 @@ const Login = ({ navigation }: any) => {
                         ToastAndroid.show('Este e-mail não está cadastrado ou senha incorreta', ToastAndroid.SHORT)
                     }
                 });
-        }else{
+        } else {
             ToastAndroid.show('Email e senha devem ser preenchidos', ToastAndroid.SHORT)
         }
     }
+
+    const loginComGoogle = async () => {
+        try {
+            await GoogleSignin.hasPlayServices();
+
+            const result: any = await GoogleSignin.signIn(); // <-- aqui
+            const idToken = result.idToken;
+
+            if (!idToken) throw new Error('ID Token não encontrado');
+
+            const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+            const userCredential = await auth().signInWithCredential(googleCredential);
+
+            console.log('Usuário logado:', userCredential.user);
+            navigation.reset({ index: 0, routes: [{ name: "App" }] });
+        } catch (error) {
+            console.error('Erro no login com Google:', error);
+        }
+    };
 
     const funcSenha = () => {
         if (email != '') {
@@ -80,9 +108,9 @@ const Login = ({ navigation }: any) => {
                         onPress={alternarVisibilidadeSenha}
                     >
                         <Ionicons
-                        name={senhaVisivel ? 'eye' : 'eye-off'}
-                        size={24}
-                        color="gray"
+                            name={senhaVisivel ? 'eye' : 'eye-off'}
+                            size={24}
+                            color="gray"
                         />
                     </TouchableOpacity>
                 </View>
@@ -98,6 +126,13 @@ const Login = ({ navigation }: any) => {
                     })}>Criar uma conta
                     </Text>
                 </View>
+                <TouchableOpacity onPress={loginComGoogle} style={styles.googleButton}>
+                    <Image
+                        source={require('../../assets/google_icon.png')} // coloque o ícone do Google nessa pasta
+                        style={styles.googleLogo}
+                    />
+                    <Text style={styles.googleButtonText}>Entrar com Google</Text>
+                </TouchableOpacity>
                 <View style={styles.containerText}>
                     <Text style={styles.text}
                         onPress={() => funcSenha()}>Esqueci minha senha
@@ -162,16 +197,36 @@ const styles = StyleSheet.create({
         borderColor: '#ccc',
         borderRadius: 5,
         paddingHorizontal: 10,
-        marginBottom:30,
+        marginBottom: 30,
         backgroundColor: Globais.corSecundaria,
     },
     iconContainer: {
         marginLeft: 10,
     },
     textInputSenha: {
-        flex:1,
+        flex: 1,
         backgroundColor: Globais.corSecundaria,
-    }
+    },
+    googleButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#ffffff',
+        borderColor: '#ddd',
+        borderWidth: 1,
+        borderRadius: 5,
+        padding: 10,
+        marginBottom: 20,
+      },
+      googleLogo: {
+        width: 20,
+        height: 20,
+        marginRight: 10,
+      },
+      googleButtonText: {
+        color: '#000',
+        fontWeight: 'bold',
+      },
 });
 
 export default Login;

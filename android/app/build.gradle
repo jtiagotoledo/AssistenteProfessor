@@ -34,8 +34,11 @@ android {
         applicationId "com.apolotecnologia.assistenteprofessor"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 3 // Atualize conforme necessário
-        versionName "1.1.1" // Atualize conforme necessário
+        versionCode 3 
+        versionName "1.1.1" 
+        manifestPlaceholders = [
+        appAuthRedirectScheme: 'com.googleusercontent.apps.1000578379733-ahmcfl9ot3gn7p87c1ed4v3ejinhvkii'
+        ]
     }
 
     signingConfigs {

@@ -2,7 +2,7 @@
   "project_info": {
     "project_number": "1000578379733",
     "project_id": "assistenteprofessor-9873d",
-    "storage_bucket": "assistenteprofessor-9873d.appspot.com"
+    "storage_bucket": "assistenteprofessor-9873d.firebasestorage.app"
   },
   "client": [
     {
@@ -12,7 +12,20 @@
           "package_name": "com.apolotecnologia.assistenteprofessor"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "1000578379733-a5l8f9jnnn2a5ghbj50n0i41jl3fjccs.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.apolotecnologia.assistenteprofessor",
+            "certificate_hash": "7d58595f51e2f4fdbda8d40bf198ee9a1845611a"
+          }
+        },
+        {
+          "client_id": "1000578379733-ahmcfl9ot3gn7p87c1ed4v3ejinhvkii.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyC390XxaQyQg70xldUUb60SrnoKwxuqNx0"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1000578379733-ahmcfl9ot3gn7p87c1ed4v3ejinhvkii.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
