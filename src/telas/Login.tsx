@@ -6,16 +6,23 @@ import { Context } from "../data/Provider";
 import Globais from "../data/Globais";
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-
-
 const Login = ({ navigation }: any) => {
     const [senhaVisivel, setSenhaVisivel] = useState(false);
     const { email, setEmail, senha, setSenha } = useContext(Context);
 
     useEffect(() => {
-        GoogleSignin.configure({
-            webClientId: '1000578379733-ahmcfl9ot3gn7p87c1ed4v3ejinhvkii.apps.googleusercontent.com',
-        });
+        const setupGoogleSignin = async () => {
+            try {
+                await GoogleSignin.configure({
+                    webClientId: '1000578379733-ahmcfl9ot3gn7p87c1ed4v3ejinhvkii.apps.googleusercontent.com',
+                });
+                console.log('GoogleSignin configurado com sucesso!');
+            } catch (error: any) {
+                console.error('Erro ao configurar GoogleSignin:', error.message);
+            }
+        };
+
+        setupGoogleSignin();
     }, []);
 
     const entrarConta = () => {
@@ -23,33 +30,48 @@ const Login = ({ navigation }: any) => {
             auth()
                 .signInWithEmailAndPassword(email, senha)
                 .then(() => {
-                    navigation.reset({ index: 0, routes: [{ name: "App" }] })
+                    console.log('Usuário logado com email e senha!');
+                    navigation.reset({ index: 0, routes: [{ name: "App" }] });
                 }).catch(error => {
+                    console.error('Erro ao logar com email e senha:', error);
                     if (error.code === 'auth/invalid-credential') {
-                        ToastAndroid.show('Este e-mail não está cadastrado ou senha incorreta', ToastAndroid.SHORT)
+                        ToastAndroid.show('Este e-mail não está cadastrado ou senha incorreta', ToastAndroid.SHORT);
+                    } else {
+                        ToastAndroid.show('Erro ao logar: ' + error.message, ToastAndroid.SHORT);
                     }
                 });
         } else {
-            ToastAndroid.show('Email e senha devem ser preenchidos', ToastAndroid.SHORT)
+            ToastAndroid.show('Email e senha devem ser preenchidos', ToastAndroid.SHORT);
         }
-    }
+    };
 
     const loginComGoogle = async () => {
         try {
-            await GoogleSignin.hasPlayServices();
+            console.log('Tentando login com Google...');
+            await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
+            const result: any = await GoogleSignin.signIn();
 
-            const result: any = await GoogleSignin.signIn(); // <-- aqui
-            const idToken = result.idToken;
+            if (result && result.data && result.data.idToken) {
+                console.log('ID Token recebido:', result.data.idToken);
+                const idToken = result.data.idToken;
+                const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+                const userCredential = await auth().signInWithCredential(googleCredential);
 
-            if (!idToken) throw new Error('ID Token não encontrado');
-
-            const googleCredential = auth.GoogleAuthProvider.credential(idToken);
-            const userCredential = await auth().signInWithCredential(googleCredential);
-
-            console.log('Usuário logado:', userCredential.user);
-            navigation.reset({ index: 0, routes: [{ name: "App" }] });
-        } catch (error) {
+                console.log('Usuário logado com Google:', userCredential.user);
+                navigation.reset({ index: 0, routes: [{ name: "App" }] });
+            } else {
+                console.error('Erro: ID Token não encontrado no resultado do login do Google', result);
+                ToastAndroid.show('Erro ao logar com Google: ID Token não encontrado', ToastAndroid.LONG);
+            }
+        } catch (error: any) {
             console.error('Erro no login com Google:', error);
+            if (error.code === 'SIGN_IN_CANCELLED') {
+                ToastAndroid.show('Login com Google cancelado pelo usuário', ToastAndroid.SHORT);
+            } else if (error.code === 'INSUFFICIENT_SCOPES') {
+                ToastAndroid.show('Você não concedeu permissões suficientes ao Google', ToastAndroid.SHORT);
+            } else {
+                ToastAndroid.show('Erro ao logar com Google: ' + error.message, ToastAndroid.LONG);
+            }
         }
     };
 
@@ -57,24 +79,29 @@ const Login = ({ navigation }: any) => {
         if (email != '') {
             auth().sendPasswordResetEmail(email)
                 .then(() => {
-                    ToastAndroid.show('Enviamos para ' + email + ', instruções para alterar a senha.', ToastAndroid.LONG)
+                    ToastAndroid.show('Enviamos para ' + email + ', instruções para alterar a senha.', ToastAndroid.LONG);
                 }).catch(error => {
+                    console.error('Erro ao enviar email de recuperação de senha:', error);
                     if (error.code === 'auth/invalid-email') {
-                        ToastAndroid.show('Email inválido', ToastAndroid.SHORT)
+                        ToastAndroid.show('Email inválido', ToastAndroid.SHORT);
+                    } else if (error.code === 'auth/user-not-found') {
+                        ToastAndroid.show('Não há usuário cadastrado com este email', ToastAndroid.SHORT);
+                    } else {
+                        ToastAndroid.show('Erro ao enviar email: ' + error.message, ToastAndroid.SHORT);
                     }
                 });
         } else {
-            ToastAndroid.show('Digite o email no campo acima!', ToastAndroid.SHORT)
+            ToastAndroid.show('Digite o email no campo acima!', ToastAndroid.SHORT);
         }
-    }
+    };
 
     const onChangeInputEmail = (event: NativeSyntheticEvent<TextInputChangeEventData>) => {
         setEmail(event.nativeEvent.text);
-    }
+    };
 
     const onChangeInputSenha = (event: NativeSyntheticEvent<TextInputChangeEventData>) => {
         setSenha(event.nativeEvent.text);
-    }
+    };
 
     const alternarVisibilidadeSenha = () => {
         setSenhaVisivel(!senhaVisivel);
@@ -217,16 +244,16 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         padding: 10,
         marginBottom: 20,
-      },
-      googleLogo: {
+    },
+    googleLogo: {
         width: 20,
         height: 20,
         marginRight: 10,
-      },
-      googleButtonText: {
+    },
+    googleButtonText: {
         color: '#000',
         fontWeight: 'bold',
-      },
+    },
 });
 
 export default Login;
