@@ -14,11 +14,27 @@
       },
       "oauth_client": [
         {
-          "client_id": "1000578379733-a5l8f9jnnn2a5ghbj50n0i41jl3fjccs.apps.googleusercontent.com",
+          "client_id": "1000578379733-56lrh4aku3js480p2hgcn6li2rdm6r7n.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.apolotecnologia.assistenteprofessor",
-            "certificate_hash": "7d58595f51e2f4fdbda8d40bf198ee9a1845611a"
+            "certificate_hash": "857f0ea68d5b684dac605ed1a753f39505c3b015"
+          }
+        },
+        {
+          "client_id": "1000578379733-i087sva2pus216171sk1r8pma82huph6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.apolotecnologia.assistenteprofessor",
+            "certificate_hash": "b16f1153025ccadb0585ff4866110e0e3b0b91fe"
+          }
+        },
+        {
+          "client_id": "1000578379733-q8n608cdecu7hrhlhjq5e8kueft2u2i3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.apolotecnologia.assistenteprofessor",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
           }
         },
         {
