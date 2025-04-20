@@ -1,5 +1,23 @@
 {
+    "msg_001":"Este e-mail não está cadastrado ou senha incorreta",
+    "msg_002":"Erro ao logar",
+    "msg_003":"Email e senha devem ser preenchidos",
+    "msg_004":"Erro ao logar com Google: ID Token não encontrado",
+    "msg_005":"Login com Google cancelado pelo usuário",
+    "msg_006":"Você não concedeu permissões suficientes ao Google",
+    "msg_007":"Erro ao logar com Google: ",
+    "msg_008":"Enviamos para ",
+    "msg_009":", instruções para alterar a senha.",
+    "msg_010":"Email inválido",
+    "msg_011":"Não há usuário cadastrado com este email",
+    "msg_012":"Erro ao enviar email: ",
+    "msg_013":"Digite o email no campo acima!",
+
+    
     "email":"Email",
     "senha":"Senha",
-    "entrar":"Entrar"
+    "entrar":"Entrar",
+    "Criar uma conta":"Criar uma conta",
+    "Entrar com Google":"Entrar com Google",
+    "Esqueci minha senha":"Esqueci minha senha"
 }

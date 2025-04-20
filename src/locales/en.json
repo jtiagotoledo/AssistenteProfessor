@@ -1,5 +1,23 @@
 {
+    "msg_001":"This email is not registered or incorrect password",
+    "msg_002":"Login error",
+    "msg_003":"Email and password must be filled in",
+    "msg_004":"Google login with error: ID Token not found",
+    "msg_005":"Google login canceled by user",
+    "msg_006":"You have not granted sufficient permissions to Google",
+    "msg_007":"Google login error: ",
+    "msg_008":"Send to ",
+    "msg_009":", intructions for changing password.",
+    "msg_010":"Invalid email",
+    "msg_011":"No user is registered with this email",
+    "msg_012":"Error sending email: ",
+    "msg_013":"Enter your email above",
+
+    
     "email":"Email",
     "senha":"Password",
-    "entrar":"Login"
+    "entrar":"Login",
+    "Criar uma conta":"Create an account",
+    "Entrar com Google":"Login with Google",
+    "Esqueci minha senha":"Forgot my password"
 }

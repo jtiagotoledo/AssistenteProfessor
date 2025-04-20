@@ -6,14 +6,15 @@ import { GoogleSignin, SignInResponse } from '@react-native-google-signin/google
 import { Context } from "../data/Provider";
 import Globais from "../data/Globais";
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { Picker } from '@react-native-picker/picker';
 import { useTranslation } from 'react-i18next';
 import i18n from '../../i18n';
 
 const Login = ({ navigation }: any) => {
     const [senhaVisivel, setSenhaVisivel] = useState(false);
     const { email, setEmail, senha, setSenha } = useContext(Context);
+    const [selectedLanguage, setSelectedLanguage] = useState(i18n.language)
     const { t } = useTranslation();
-    i18n.changeLanguage('en');
 
     useEffect(() => {
         const setupGoogleSignin = async () => {
@@ -30,34 +31,35 @@ const Login = ({ navigation }: any) => {
         setupGoogleSignin();
     }, []);
 
+    const changeLanguage = (lng: string) => {
+        i18n.changeLanguage(lng);
+        setSelectedLanguage(lng); 
+    };
+
     const entrarConta = () => {
         if (email && senha) {
             auth()
                 .signInWithEmailAndPassword(email, senha)
                 .then(() => {
-                    console.log('Usuário logado com email e senha!');
                     navigation.reset({ index: 0, routes: [{ name: "App" }] });
                 }).catch(error => {
-                    console.error('Erro ao logar com email e senha:', error);
                     if (error.code === 'auth/invalid-credential') {
-                        ToastAndroid.show('Este e-mail não está cadastrado ou senha incorreta', ToastAndroid.SHORT);
+                        ToastAndroid.show(t('msg_001'), ToastAndroid.SHORT);
                     } else {
-                        ToastAndroid.show('Erro ao logar: ' + error.message, ToastAndroid.SHORT);
+                        ToastAndroid.show(t('msg_002') + error.message, ToastAndroid.SHORT);
                     }
                 });
         } else {
-            ToastAndroid.show('Email e senha devem ser preenchidos', ToastAndroid.SHORT);
+            ToastAndroid.show(t('msg_003'), ToastAndroid.SHORT);
         }
     };
 
     const loginComGoogle = async () => {
         try {
-            console.log('Tentando login com Google...');
             await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
             const result: any = await GoogleSignin.signIn();
 
             if (result && result.data && result.data.idToken) {
-                console.log('ID Token recebido:', result.data.idToken);
                 const idToken = result.data.idToken;
                 const googleCredential = auth.GoogleAuthProvider.credential(idToken);
                 const userCredential = await auth().signInWithCredential(googleCredential);
@@ -71,20 +73,17 @@ const Login = ({ navigation }: any) => {
                         iudUsuario: userCredential.user.uid
                     })
 
-                console.log('Usuário logado com Google:', userCredential.user);
                 navigation.reset({ index: 0, routes: [{ name: "App" }] });
             } else {
-                console.error('Erro: ID Token não encontrado no resultado do login do Google', result);
-                ToastAndroid.show('Erro ao logar com Google: ID Token não encontrado', ToastAndroid.LONG);
+                ToastAndroid.show(t('msg_004'), ToastAndroid.LONG);
             }
         } catch (error: any) {
-            console.error('Erro no login com Google:', error);
             if (error.code === 'SIGN_IN_CANCELLED') {
-                ToastAndroid.show('Login com Google cancelado pelo usuário', ToastAndroid.SHORT);
+                ToastAndroid.show(t('msg_005'), ToastAndroid.SHORT);
             } else if (error.code === 'INSUFFICIENT_SCOPES') {
-                ToastAndroid.show('Você não concedeu permissões suficientes ao Google', ToastAndroid.SHORT);
+                ToastAndroid.show(t('msg_006'), ToastAndroid.SHORT);
             } else {
-                ToastAndroid.show('Erro ao logar com Google: ' + error.message, ToastAndroid.LONG);
+                ToastAndroid.show(t('msg_007') + error.message, ToastAndroid.LONG);
             }
         }
     };
@@ -93,19 +92,18 @@ const Login = ({ navigation }: any) => {
         if (email != '') {
             auth().sendPasswordResetEmail(email)
                 .then(() => {
-                    ToastAndroid.show('Enviamos para ' + email + ', instruções para alterar a senha.', ToastAndroid.LONG);
+                    ToastAndroid.show(t('msg_008') + email + t('msg_009'), ToastAndroid.LONG);
                 }).catch(error => {
-                    console.error('Erro ao enviar email de recuperação de senha:', error);
                     if (error.code === 'auth/invalid-email') {
-                        ToastAndroid.show('Email inválido', ToastAndroid.SHORT);
+                        ToastAndroid.show(t('msg_010'), ToastAndroid.SHORT);
                     } else if (error.code === 'auth/user-not-found') {
-                        ToastAndroid.show('Não há usuário cadastrado com este email', ToastAndroid.SHORT);
+                        ToastAndroid.show(t('msg_011'), ToastAndroid.SHORT);
                     } else {
-                        ToastAndroid.show('Erro ao enviar email: ' + error.message, ToastAndroid.SHORT);
+                        ToastAndroid.show(t('msg_012') + error.message, ToastAndroid.SHORT);
                     }
                 });
         } else {
-            ToastAndroid.show('Digite o email no campo acima!', ToastAndroid.SHORT);
+            ToastAndroid.show(t('msg_013'), ToastAndroid.SHORT);
         }
     };
 
@@ -130,19 +128,31 @@ const Login = ({ navigation }: any) => {
                         style={styles.logo}
                     />
                 </View>
+                <View style={styles.picker}>
+                    <Text>Selecione a linguaguem/ Select Language</Text>
+                    <Picker
+                        selectedValue={selectedLanguage}
+                        onValueChange={(itemValue, itemIndex) => {
+                            changeLanguage(itemValue);
+                        }}
+                    >
+                        <Picker.Item label="Português" value="pt" />
+                        <Picker.Item label="English" value="en" />
+                    </Picker>
+                </View>
                 <TextInput style={styles.textInput}
                     onChange={onChangeInputEmail}
                     keyboardType='email-address'
                     autoCapitalize='none'
                     autoCorrect={false}
-                    placeholder='Email'></TextInput>
+                    placeholder={t('email')}></TextInput>
                 <View style={styles.containerSenha}>
                     <TextInput style={styles.textInputSenha}
                         onChange={onChangeInputSenha}
                         autoCapitalize='none'
                         secureTextEntry={!senhaVisivel}
                         autoCorrect={false}
-                        placeholder='Senha'>
+                        placeholder={t('senha')}>
                     </TextInput>
                     <TouchableOpacity
                         style={styles.iconContainer}
@@ -155,28 +165,29 @@ const Login = ({ navigation }: any) => {
                         />
                     </TouchableOpacity>
                 </View>
+                
                 <TouchableOpacity
                     style={styles.button}
                     onPress={entrarConta}>
                     <Text style={styles.buttonText}>{t('entrar')}</Text>
                 </TouchableOpacity>
+                <TouchableOpacity onPress={loginComGoogle} style={styles.googleButton}>
+                    <Image
+                        source={require('../../assets/google_icon.png')} 
+                        style={styles.googleLogo}
+                    />
+                    <Text style={styles.googleButtonText}>{t('Entrar com Google')}</Text>
+                </TouchableOpacity>
                 <View style={styles.containerText}>
                     <Text style={styles.text} onPress={() => navigation.reset({
                         index: 0,
                         routes: [{ name: "NovaConta" }]
-                    })}>Criar uma conta
+                    })}>{t('Criar uma conta')}
                     </Text>
                 </View>
-                <TouchableOpacity onPress={loginComGoogle} style={styles.googleButton}>
-                    <Image
-                        source={require('../../assets/google_icon.png')} // coloque o ícone do Google nessa pasta
-                        style={styles.googleLogo}
-                    />
-                    <Text style={styles.googleButtonText}>Entrar com Google</Text>
-                </TouchableOpacity>
                 <View style={styles.containerText}>
                     <Text style={styles.text}
-                        onPress={() => funcSenha()}>Esqueci minha senha
+                        onPress={() => funcSenha()}>{t('Esqueci minha senha')}
                     </Text>
                 </View>
             </View>
@@ -201,7 +212,8 @@ const styles = StyleSheet.create({
     textInput: {
         backgroundColor: Globais.corSecundaria,
         marginBottom: 8,
-        borderRadius: 5
+        borderRadius: 5,
+        paddingLeft: 16,
     },
     text: {
         color: Globais.corPrimaria,
@@ -225,7 +237,6 @@ const styles = StyleSheet.create({
         padding: 10,
         borderRadius: 5,
         marginBottom: 24
-
     },
     buttonText: {
         color: 'white',
@@ -268,6 +279,10 @@ const styles = StyleSheet.create({
         color: '#000',
         fontWeight: 'bold',
     },
+    picker:{
+        marginTop:20,
+        marginBottom: 20,
+    }
 });
 
 export default Login;
