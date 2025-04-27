@@ -12,7 +12,7 @@ import i18n from '../../i18n';
 
 const Login = ({ navigation }: any) => {
     const [senhaVisivel, setSenhaVisivel] = useState(false);
-    const { email, setEmail, senha, setSenha } = useContext(Context);
+    const { email, setEmail, senha, setSenha, setIdUsuario, idUsuario } = useContext(Context);
     const [selectedLanguage, setSelectedLanguage] = useState(i18n.language)
     const { t } = useTranslation();
 
@@ -66,14 +66,24 @@ const Login = ({ navigation }: any) => {
 
                 //salvando credenciais no BD
                 firestore().collection(userCredential.user.email ?? '').
-                    doc('DadosUsuario').set({
-                        nomeUsuario: userCredential.user.displayName,
-                        emailUsuario: userCredential.user.email,
-                        fotoUsuario: userCredential.user.photoURL,
-                        iudUsuario: userCredential.user.uid
-                    })
-
+                doc('DadosUsuario').set({
+                    nomeUsuario: userCredential.user.displayName,
+                    emailUsuario: userCredential.user.email,
+                    fotoUsuario: userCredential.user.photoURL,
+                    iudUsuario: userCredential.user.uid
+                })
+                //cria Estados do App
+                firestore().collection(userCredential.user.email??'').doc('EstadosApp').set({
+                    idPeriodo: '',
+                    periodo: '',
+                    idClasse: '',
+                    classe: '',
+                    data: '',
+                    aba: 'Classes'
+                })
+                setIdUsuario(userCredential.user.email)
                 navigation.reset({ index: 0, routes: [{ name: "App" }] });
+
             } else {
                 ToastAndroid.show(t('msg_004'), ToastAndroid.LONG);
             }
