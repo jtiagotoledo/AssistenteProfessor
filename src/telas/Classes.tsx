@@ -22,19 +22,21 @@ import ModalDelClasse from "../modais/ModalDelClasse";
 import ModalDelAluno from "../modais/ModalDelAluno";
 import ModalMenu from "../modais/ModalMenu";
 
+import { useTranslation } from 'react-i18next';
 import { Context } from "../data/Provider";
 import React from "react";
 
 function Classes({ navigation }: any) {
   const { nomePeriodoSelec } = useContext(Context);
+  const { t } = useTranslation();
 
   consultasBD();
   atualizarBD();
-  
+
   const renderHeader = () => (
     <>
       <Text style={styles.textLoad}>
-        {nomePeriodoSelec ? `Período: ${nomePeriodoSelec}` : "Adicione um período"}
+        {nomePeriodoSelec ? t("Período") + ": " + nomePeriodoSelec : t("Adicione um período")}
       </Text>
       <FlatListClasses />
       <Divider style={styles.divider} />
@@ -44,11 +46,11 @@ function Classes({ navigation }: any) {
   return (
     <View style={styles.container}>
       <ConexaoInternet />
-      <HeaderClasses title="Classes" />
+      <HeaderClasses title={t("Classes")} />
       <FlatListAlunos
         ListHeaderComponent={renderHeader}
-        data={[]} 
-        renderItem={() => null} 
+        data={[]}
+        renderItem={() => null}
         contentContainerStyle={styles.listContent}
       />
       <ModalAddPeriodo />

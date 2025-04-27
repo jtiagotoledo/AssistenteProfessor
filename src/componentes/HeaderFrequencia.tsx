@@ -53,7 +53,7 @@ const HeaderFrequencia: React.FunctionComponent<HeaderComponentProps> = (props) 
       }
       centerComponent={
         <View>
-          <Text style={styles.heading}>Frequência</Text>
+          <Text style={styles.heading}>{props.title}</Text>
         </View>
       }
     />

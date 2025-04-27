@@ -102,7 +102,8 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: Globais.corTerciaria,
     padding: 8,
-    width: '100%'
+    width: '100%',
+    marginBottom:24
   },
   containerIcon: {
     flexDirection: 'row'

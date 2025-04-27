@@ -5,10 +5,12 @@ import auth from '@react-native-firebase/auth';
 import { Context } from "../data/Provider";
 import firestore from '@react-native-firebase/firestore';
 import Globais from '../data/Globais';
+import { useTranslation } from 'react-i18next';
 
 const NovaConta = ({ navigation }: any) => {
     const { email, setEmail, senha, setSenha, setIdUsuario } = useContext(Context);
     const [senhaVisivel, setSenhaVisivel] = useState(false); // Estado para alternar a visibilidade da senha
+    const { t } = useTranslation();
 
     const criarCaminhoSalvarEstados = () => {
         firestore().collection(email)
@@ -27,24 +29,24 @@ const NovaConta = ({ navigation }: any) => {
             auth()
                 .createUserWithEmailAndPassword(email, senha)
                 .then(() => {
-                    ToastAndroid.show('Conta criada com sucesso', ToastAndroid.SHORT)
+                    ToastAndroid.show(t('msg_014'), ToastAndroid.SHORT)
                     navigation.reset({ index: 0, routes: [{ name: "App" }] })
                     setIdUsuario(email)
                     criarCaminhoSalvarEstados()
                 }).catch(error => {
 
                     if (error.code === 'auth/email-already-in-use') {
-                        ToastAndroid.show('Este Email já está em uso', ToastAndroid.SHORT)
+                        ToastAndroid.show(t('msg_015'), ToastAndroid.SHORT)
                     }
                     if (error.code === 'auth/invalid-email') {
-                        ToastAndroid.show('Email inválido', ToastAndroid.SHORT)
+                        ToastAndroid.show(t('msg_010'), ToastAndroid.SHORT)
                     }
                     if (error.code === 'auth/weak-password') {
-                        ToastAndroid.show('A senha deve conter ao menos 6 caracteres', ToastAndroid.SHORT)
+                        ToastAndroid.show(t('msg_016'), ToastAndroid.SHORT)
                     }
                 });
         } else {
-            ToastAndroid.show('Email e senha devem ser preenchidos', ToastAndroid.SHORT)
+            ToastAndroid.show(t('msg_003'), ToastAndroid.SHORT)
         }
     }
 
@@ -70,7 +72,7 @@ const NovaConta = ({ navigation }: any) => {
                 keyboardType='email-address'
                 autoCapitalize='none'
                 autoCorrect={false}
-                placeholder='Digite um Email válido'
+                placeholder={t('Digite um Email válido')}
             />
             <View style={styles.passwordContainer}>
                 <TextInput
@@ -79,7 +81,7 @@ const NovaConta = ({ navigation }: any) => {
                     autoCapitalize='none'
                     secureTextEntry={!senhaVisivel}
                     autoCorrect={false}
-                    placeholder='Crie uma senha'
+                    placeholder={t('Crie uma senha')}
                 />
                 <TouchableOpacity onPress={() => setSenhaVisivel(!senhaVisivel)}>
                     <Icon
@@ -92,13 +94,13 @@ const NovaConta = ({ navigation }: any) => {
             <TouchableOpacity
                 style={styles.button}
                 onPress={criarConta}>
-                <Text style={styles.buttonText}>Criar Conta</Text>
+                <Text style={styles.buttonText}>{t('Criar conta')}</Text>
             </TouchableOpacity>
             <View style={styles.containerText}>
                 <Text style={styles.text} onPress={() => navigation.reset({
                     index: 0,
                     routes: [{ name: "Login" }]
-                })}>Já possui uma conta?</Text>
+                })}>{t('Já possui uma conta?')}</Text>
             </View>
         </ScrollView>
     )

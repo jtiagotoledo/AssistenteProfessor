@@ -1,14 +1,14 @@
-import React, { useContext } from 'react';
-import { 
-  Image, 
-  Text, 
-  View, 
-  StyleSheet, 
-  Button, 
-  Modal, 
-  TouchableWithoutFeedback, 
-  ScrollView, 
-  Dimensions 
+import React, { useContext, useState } from 'react';
+import {
+  Image,
+  Text,
+  View,
+  StyleSheet,
+  Button,
+  Modal,
+  TouchableWithoutFeedback,
+  ScrollView,
+  Dimensions
 } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import { Context } from "../data/Provider";
@@ -16,10 +16,13 @@ import Globais from "../data/Globais";
 import HeaderMenu from '../componentes/HeaderMenu';
 import DropDown from "../listas/DropDownPeriodo";
 import { deleteUser } from "../banco_dados/deletarBD";
+import { Picker } from '@react-native-picker/picker';
+import i18n from '../../i18n';
 
 const ModalMenu = ({ navigation }: any) => {
   const { modalMenu, setModalMenu, setIdUsuario, idUsuario } = useContext(Context);
   const { width, height } = Dimensions.get('window');
+  const [selectedLanguage, setSelectedLanguage] = useState(i18n.language)
   const isLandscape = width > height;
 
   const funcSair = () => {
@@ -29,7 +32,12 @@ const ModalMenu = ({ navigation }: any) => {
         navigation.reset({ index: 0, routes: [{ name: "Login" }] }),
         setIdUsuario('')
       ])
-      
+
+  };
+
+  const changeLanguage = (lng: string) => {
+    i18n.changeLanguage(lng);
+    setSelectedLanguage(lng);
   };
 
   return (
@@ -57,6 +65,16 @@ const ModalMenu = ({ navigation }: any) => {
             </View>
             <View style={styles.dropDownContainer}>
               <DropDown />
+              <Text>Selecione a linguaguem/ Select Language</Text>
+              <Picker
+                selectedValue={selectedLanguage}
+                onValueChange={(itemValue, itemIndex) => {
+                  changeLanguage(itemValue);
+                }}
+              >
+                <Picker.Item label="Português" value="pt" />
+                <Picker.Item label="English" value="en" />
+              </Picker>
               <View style={styles.containerButton}>
                 <View style={styles.button}>
                   <Button color={Globais.corPrimaria} title='SAIR' onPress={funcSair} />

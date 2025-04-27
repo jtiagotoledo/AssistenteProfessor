@@ -13,12 +13,15 @@ import FlatListClasses from "../listas/FlatListClasses";
 import FabFrequencia from "../componentes/FabFrequencia";
 import ConexaoInternet from "../componentes/ConexaoInternet";
 import { atualizarAtividades } from "../banco_dados/atualizarBD"
+import { useTranslation } from 'react-i18next';
+import i18n from '../../i18n';
 
 const Frequencia = () => {
     const dataTempRef = useRef('')
     const textoAtividadesRef = useRef('')
     const { dataSelec, setModalCalendarioFreq, idUsuario, idPeriodoSelec, idClasseSelec,
         nomePeriodoSelec, setFlagLongPressDataFreq, setDataSelec, textoAtividades } = useContext(Context);
+    const { t } = useTranslation();
 
     useFocusEffect(
         useCallback(() => {
@@ -52,16 +55,17 @@ const Frequencia = () => {
     function formatarData(data: String) {
         if (typeof data === "string" && data.includes("-")) {
             const [ano, mes, dia] = data.split("-");
-            return `${dia}/${mes}/${ano}`;
+            if(i18n.language=='pt') return `${dia}/${mes}/${ano}`;
+            if(i18n.language=='en') return `${mes}/${dia}/${ano}`;
         } else {
-            return 'Selecione uma data...'
+            return t("Selecione uma data")+'...'
         }
     }
 
     const renderHeader = () => (
         <TouchableOpacity onPress={() => setFlagLongPressDataFreq(false)} activeOpacity={1}>
             <Text style={styles.textLoad}>
-                {nomePeriodoSelec != undefined ? 'Período: ' + nomePeriodoSelec : 'Selecione um período'}
+                {nomePeriodoSelec != undefined ? t("Período") + ": " + nomePeriodoSelec: t('Selecione um período')+"..."}
             </Text>
             <FlatListClasses />
             <Divider style={styles.divider} />
@@ -80,7 +84,7 @@ const Frequencia = () => {
                     <View style={styles.inputWrapper}>
                         <TextInput
                             multiline
-                            placeholder="Descreva as atividades..."
+                            placeholder={t("Descreva as atividades")+"..."}
                             onChangeText={(text) => onChangeAtividades(text)}
                             defaultValue={textoAtividades}
                             style={styles.textInput}
@@ -89,16 +93,16 @@ const Frequencia = () => {
                             style={styles.saveButtonInside}
                             onPress={() => {
                                 if (textoAtividadesRef.current.trim() === '') {
-                                    ToastAndroid.show('Por favor, preencha a atividade antes de salvar.',ToastAndroid.SHORT);
+                                    ToastAndroid.show(t("msg_017"), ToastAndroid.SHORT);
                                 } else {
                                     atualizarAtividades(
                                         textoAtividadesRef.current, idUsuario, idPeriodoSelec, idClasseSelec, dataTempRef.current
                                     );
-                                    ToastAndroid.show('Atividade salva com sucesso!',ToastAndroid.SHORT);
+                                    ToastAndroid.show(t("msg_018"), ToastAndroid.SHORT);
                                 }
                             }}
                         >
-                            <Text style={styles.saveButtonTextInside}>Salvar{'\n'} Atividade</Text>
+                            <Text style={styles.saveButtonTextInside}>{t('Salvar')}{'\n'} {t('Atividade')}</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -109,7 +113,7 @@ const Frequencia = () => {
 
     return (
         <View style={styles.container}>
-            <HeaderFrequencia title="Frequência" />
+            <HeaderFrequencia title={t('Frequência')} />
             <ConexaoInternet />
             <FlatListFrequencia
                 ListHeaderComponent={renderHeader}

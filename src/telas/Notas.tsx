@@ -14,6 +14,8 @@ import HeaderNotas from "../componentes/HeaderNotas";
 import ConexaoInternet from "../componentes/ConexaoInternet";
 import { atualizarNotas } from "../banco_dados/atualizarBD"
 import { atualizarTituloNotas } from "../banco_dados/atualizarBD"
+import { useTranslation } from 'react-i18next';
+import i18n from '../../i18n';
 
 const Notas = () => {
     const dataTempRef = useRef('')
@@ -23,6 +25,7 @@ const Notas = () => {
     const { dataSelec, setModalCalendarioNota, setDataSelec,
         nomePeriodoSelec, setFlagLongPressDataNotas, textoTituloNotas,
         listaNotas, idUsuario, idPeriodoSelec, idClasseSelec, valueNota } = useContext(Context);
+    const { t } = useTranslation();
 
     const onPressFab = () => {
         atualizarNotas(listaNotas, idUsuario, idPeriodoSelec, idClasseSelec, dataSelec)
@@ -67,16 +70,17 @@ const Notas = () => {
     function formatarData(data: String) {
         if (typeof data === "string" && data.includes("-")) {
             const [ano, mes, dia] = data.split("-");
-            return `${dia}/${mes}/${ano}`;
+            if (i18n.language == 'pt') return `${dia}/${mes}/${ano}`;
+            if (i18n.language == 'en') return `${mes}/${dia}/${ano}`;
         } else {
-            return 'Selecione uma data...'
+            return t("Selecione uma data") + '...'
         }
     }
 
     const renderHeader = () => (
         <TouchableOpacity onPress={() => setFlagLongPressDataNotas(false)} activeOpacity={1}>
             <Text style={styles.textLoad}>
-                {nomePeriodoSelec ? `Período: ${nomePeriodoSelec}` : "Selecione um período"}
+                {nomePeriodoSelec != undefined ? t("Período") + ": " + nomePeriodoSelec : t('Selecione um período') + "..."}
             </Text>
             <FlatListClasses />
             <Divider style={styles.divider} />
@@ -95,7 +99,7 @@ const Notas = () => {
                     <View style={styles.inputWrapper}>
                         <TextInput
                             multiline
-                            placeholder="Título da avaliação..."
+                            placeholder={t('Título da avaliação')+"..."}
                             onChangeText={(text) => onChangeTituloNotas(text)}
                             defaultValue={textoTituloNotas}
                             style={styles.textInput}
@@ -104,16 +108,16 @@ const Notas = () => {
                             style={styles.saveButtonInside}
                             onPress={() => {
                                 if (textoTituloNotasRef.current.trim() === '') {
-                                    ToastAndroid.show('Por favor, preencha a atividade antes de salvar.', ToastAndroid.SHORT);
+                                    ToastAndroid.show(t('msg_019'), ToastAndroid.SHORT);
                                 } else {
                                     atualizarTituloNotas(
                                         textoTituloNotasRef.current, idUsuario, idPeriodoSelec, idClasseSelec, dataSelec
                                     );
-                                    ToastAndroid.show('Atividade salva com sucesso!', ToastAndroid.SHORT);
+                                    ToastAndroid.show(t('msg_020'), ToastAndroid.SHORT);
                                 }
                             }}
                         >
-                            <Text style={styles.saveButtonTextInside}>Salvar{'\n'} título</Text>
+                            <Text style={styles.saveButtonTextInside}>{t('Salvar')}{'\n'} {t('Avaliação')}</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -123,7 +127,7 @@ const Notas = () => {
 
     return (
         <View style={styles.container}>
-            <HeaderNotas title="Notas" />
+            <HeaderNotas title={t('Notas')} />
             <ConexaoInternet />
             <FlatListNotas
                 ListHeaderComponent={renderHeader}
