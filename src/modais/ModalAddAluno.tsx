@@ -5,6 +5,7 @@ import { Context } from "../data/Provider";
 import Globais from "../data/Globais";
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import FontIstoIcon from 'react-native-vector-icons/Fontisto';
+import { useTranslation } from 'react-i18next';
 
 const ModalAddAluno = () => {
 
@@ -12,6 +13,7 @@ const ModalAddAluno = () => {
   const [valueNome, setValueNome] = useState<string>('')
   const { idPeriodoSelec, idClasseSelec, modalAddAluno, setModalAddAluno,
     idUsuario, alunoInativo, setAlunoInativo } = useContext(Context)
+  const { t } = useTranslation();
 
   const onChangeInputNumero = (event: NativeSyntheticEvent<TextInputChangeEventData>) => {
     setValueNumero(event.nativeEvent.text);
@@ -29,7 +31,7 @@ const ModalAddAluno = () => {
       .get().then((snapshot) => {
         snapshot.empty ? addAluno() :
           ToastAndroid.show(
-            'O número informado já existe na classe',
+            t('msg_021'),
             ToastAndroid.SHORT)
       })
 
@@ -54,7 +56,7 @@ const ModalAddAluno = () => {
         setAlunoInativo(false)
       } else {
         ToastAndroid.show(
-          'Digite o número e o nome do aluno!',
+          t('msg_022'),
           ToastAndroid.SHORT)
       }
     }
@@ -62,8 +64,8 @@ const ModalAddAluno = () => {
 
   const renderIconCheck = () => {
     return (
-      alunoInativo ? <FontIstoIcon name="checkbox-active" color="white" size={20} /> :
-        <FontIstoIcon name="checkbox-passive" color="white" size={20} />
+      alunoInativo ? <FontIstoIcon name="checkbox-active" color="black" size={20} /> :
+        <FontIstoIcon name="checkbox-passive" color="black" size={20} />
     )
   }
 
@@ -80,20 +82,20 @@ const ModalAddAluno = () => {
           <View style={styles.modalView}>
             <View style={styles.containerIcon}>
               <TouchableOpacity onPress={() => [setModalAddAluno(!modalAddAluno), setAlunoInativo(false)]}>
-                <MaterialIcon name="cancel" color="white" size={20}></MaterialIcon>
+                <MaterialIcon name="cancel" color="black" size={25}></MaterialIcon>
               </TouchableOpacity>
             </View>
-            <Text style={styles.modalText}>Adicione um novo aluno:</Text>
-            <TextInput placeholder='Número' onChange={onChangeInputNumero} style={styles.textInput} keyboardType='numeric'></TextInput>
-            <TextInput placeholder='Nome' onChange={onChangeInputNome} style={styles.textInput}></TextInput>
+            <Text style={styles.modalText}>{t('Adicione um novo aluno:')}</Text>
+            <TextInput placeholder={t('Número')} onChange={onChangeInputNumero} style={styles.textInput} keyboardType='numeric'></TextInput>
+            <TextInput placeholder={t('Nome')} onChange={onChangeInputNome} style={styles.textInput}></TextInput>
             <TouchableOpacity style={styles.iconCheckContainer} onPress={() => setAlunoInativo(!alunoInativo)}>
               {renderIconCheck()}
-              <Text style={[styles.textStyle, styles.textCheck]}>Aluno inativo?</Text>
+              <Text style={[styles.textStyle, styles.textCheck]}>{t('Aluno inativo?')}</Text>
             </TouchableOpacity>
             <Pressable
               style={[styles.button, styles.buttonClose]}
               onPress={() => onPressAddAluno()}>
-              <Text style={styles.textStyle}>Criar</Text>
+              <Text style={styles.textStyle}>{t('Criar')}</Text>
             </Pressable>
           </View>
         </View>
@@ -154,14 +156,14 @@ const styles = StyleSheet.create({
     backgroundColor: Globais.corPrimaria,
   },
   textStyle: {
-    color: 'white',
+    color: 'black',
     fontWeight: 'bold',
     textAlign: 'center',
   },
   modalText: {
     marginBottom: 15,
     textAlign: 'center',
-    color: 'white',
+    color: 'black',
     fontSize: 18
   },
   textInput: {

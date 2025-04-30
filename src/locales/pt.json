@@ -19,6 +19,12 @@
     "msg_018":"Atividade salva com sucesso!",
     "msg_019":"Por favor, preencha com o título da avaliação antes de salvar.",
     "msg_020":"Título da avaliação salvo com sucesso!",
+    "msg_021":"O número informado já existe na classe",
+    "msg_022":"Digite o número e o nome do aluno!",
+    "msg_023":"A classe informada já existe",
+    "msg_024":"Digite o nome da classe!",
+    "msg_025":"O período informado já existe",
+    "msg_026":"Digite o nome do período!",
     "email":"Email",
     "senha":"Senha",
     "entrar":"Entrar",
@@ -40,5 +46,17 @@
     "Frequência":"Frequência",
     "Título da avaliação":"Título da avaliação",
     "Avaliação":"Avaliação",
-    "Notas":"Notas"
+    "Notas":"Notas",
+    "Adicione um novo aluno:":"Adicione um novo aluno:",
+    "Número":"Número",
+    "Nome":"Nome",
+    "Aluno inativo?":"Aluno inativo?",
+    "Criar":"Criar",
+    "Crie uma nova classe:":"Crie uma nova classe:",
+    "Nome da classe":"Nome da classe",
+    "Crie um novo período:":"Crie um novo período:",
+    "Nome do período":"Nome do período"
+
+
+
 }

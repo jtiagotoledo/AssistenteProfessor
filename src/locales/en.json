@@ -19,6 +19,13 @@
     "msg_018": "Activity saved successfully!",
     "msg_019": "Please fill in the assessment title before saving.",
     "msg_020": "Assessment title saved successfully!",
+    "msg_021": "The entered number already exists in the class",
+    "msg_022": "Enter the student's number and name!",
+    "msg_023": "The specified class already exists",
+    "msg_024": "Enter the class name!",
+    "msg_025": "The specified period already exists",
+    "msg_026": "Enter the period name!",
+
     "email": "Email",
     "senha": "Password",
     "entrar": "Login",
@@ -40,5 +47,16 @@
     "Frequência": "Frequency",
     "Título da avaliação": "Assessment title",
     "Avaliação": "Assessment",
-    "Notas": "Notes"
+    "Notas": "Notes",
+    "Adicione um novo aluno:": "Add a new student:",
+    "Número": "Number",
+    "Nome": "Name",
+    "Aluno inativo?": "Inactive student?",
+    "Criar": "Create",
+    "Crie uma nova classe:": "Create a new class:",
+    "Nome da classe": "Class name",
+    "Crie um novo período:": "Create a new period:",
+    "Nome do período": "Period name:"
+
+
 }

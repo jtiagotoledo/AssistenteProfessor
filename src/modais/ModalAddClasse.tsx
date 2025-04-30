@@ -4,12 +4,14 @@ import firestore from '@react-native-firebase/firestore';
 import { Context } from "../data/Provider";
 import Globais from "../data/Globais";
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
+import { useTranslation } from 'react-i18next';
 
 const ModalAddClasse = () => {
 
   const [valueClasse, setValueClasse] = useState<string>('')
   const { modalAddClasse, setModalAddClasse, idPeriodoSelec, idUsuario, setIdClasseSelec,
     nomePeriodoSelec, setNomeClasseSelec } = useContext(Context)
+  const { t } = useTranslation();
 
   const onChangeInputClasse = (event: NativeSyntheticEvent<TextInputChangeEventData>) => {
     setValueClasse(event.nativeEvent.text);
@@ -23,7 +25,7 @@ const ModalAddClasse = () => {
       .get().then((snapshot) => {
         snapshot.empty ? addClasse() :
           ToastAndroid.show(
-            'A classe informada já existe',
+            t('msg_023'),
             ToastAndroid.SHORT)
       })
 
@@ -53,7 +55,7 @@ const ModalAddClasse = () => {
         setValueClasse('')
       } else {
         ToastAndroid.show(
-          'Digite o nome da classe!',
+          t('msg_024'),
           ToastAndroid.SHORT)
       }
     }
@@ -72,15 +74,15 @@ const ModalAddClasse = () => {
           <View style={styles.modalView}>
             <View style={styles.containerIcon}>
               <TouchableOpacity onPress={() => setModalAddClasse(!modalAddClasse)}>
-                <MaterialIcon name="cancel" color="white" size={20}/>
+                <MaterialIcon name="cancel" color="black" size={25}/>
               </TouchableOpacity>
             </View>
-            <Text style={styles.modalText}>Crie uma nova classe:</Text>
-            <TextInput placeholder='Nome da classe' onChange={onChangeInputClasse} style={styles.textInput}></TextInput>
+            <Text style={styles.modalText}>{t("Crie uma nova classe:")}</Text>
+            <TextInput placeholder={t('Nome da classe')}onChange={onChangeInputClasse} style={styles.textInput}></TextInput>
             <Pressable
               style={[styles.button, styles.buttonClose]}
               onPress={() =>onPressAddClasse()}>
-              <Text style={styles.textStyle}>Criar</Text>
+              <Text style={styles.textStyle}>{t('Criar')}</Text>
             </Pressable>
           </View>
         </View>
@@ -141,7 +143,7 @@ const styles = StyleSheet.create({
   modalText: {
     marginBottom: 15,
     textAlign: 'center',
-    color: 'white',
+    color: 'black',
     fontSize: 18,
   },
   textInput: {

@@ -4,12 +4,14 @@ import firestore from '@react-native-firebase/firestore';
 import { Context } from "../data/Provider";
 import Globais from "../data/Globais";
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
+import { useTranslation } from 'react-i18next';
 
 const ModalAddPeriodo = () => {
 
   const [valuePeriodo, setValuePeriodo] = useState<string>('')
   const { modalAddPeriodo, setModalAddPeriodo, idUsuario, setNomePeriodoSelec,
     setIdPeriodoSelec } = useContext(Context)
+  const { t } = useTranslation();
 
   const onChangeInputPeriodo = (event: NativeSyntheticEvent<TextInputChangeEventData>) => {
     setValuePeriodo(event.nativeEvent.text);
@@ -22,7 +24,7 @@ const ModalAddPeriodo = () => {
       .get().then((snapshot) => {
         snapshot.empty ? addPeriodo() :
           ToastAndroid.show(
-            'O período informado já existe',
+            t('msg_025'),
             ToastAndroid.SHORT)
       })
     const addPeriodo = async () => {
@@ -50,7 +52,7 @@ const ModalAddPeriodo = () => {
       }
       else {
         ToastAndroid.show(
-          'Digite o nome do período!',
+          t('msg_026'),
           ToastAndroid.SHORT)
       }
     }
@@ -69,15 +71,15 @@ const ModalAddPeriodo = () => {
           <View style={styles.modalView}>
             <View style={styles.containerIcon}>
               <TouchableOpacity onPress={() => setModalAddPeriodo(!modalAddPeriodo)}>
-                <MaterialIcon name="cancel" color="white" size={20}/>
+                <MaterialIcon name="cancel" color="black" size={25}/>
               </TouchableOpacity>
             </View>
-            <Text style={styles.modalText}>Crie um novo período:</Text>
-            <TextInput placeholder='Nome do período' onChange={onChangeInputPeriodo} style={styles.textInput}></TextInput>
+            <Text style={styles.modalText}>{t('Crie um novo período:')}</Text>
+            <TextInput placeholder={t('Nome do período')} onChange={onChangeInputPeriodo} style={styles.textInput}></TextInput>
             <Pressable
               style={[styles.button, styles.buttonClose]}
               onPress={onPressAddPeriodo}>
-              <Text style={styles.textStyle}>Criar</Text>
+              <Text style={styles.textStyle}>{t('Criar')}</Text>
             </Pressable>
           </View>
         </View>
@@ -137,7 +139,7 @@ const styles = StyleSheet.create({
   modalText: {
     marginBottom: 15,
     textAlign: 'center',
-    color: 'white',
+    color: 'black',
     fontSize: 18,
   },
   textInput: {

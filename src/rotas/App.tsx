@@ -9,6 +9,7 @@ import Provider from "../data/Provider";
 import Globais from '../data/Globais';
 import firestore from '@react-native-firebase/firestore';
 import { Context } from "../data/Provider";
+import { useTranslation } from 'react-i18next';
 
 const Tab = createBottomTabNavigator();
 
@@ -17,6 +18,7 @@ type RouteNames = 'Classes' | 'Frequencia' | 'Notas' ;
 const App = ({ navigation }: any) => {
   const { idUsuario, dataSelec, setDataSelec } = useContext(Context);
   const [currentTab, setCurrentTab] = useState<RouteNames>('Classes');
+  const { t } = useTranslation();
 
   const estadosAppRef = firestore().collection(idUsuario ? idUsuario : ' ').doc('EstadosApp');
 
@@ -59,6 +61,7 @@ const App = ({ navigation }: any) => {
           name="Classes"
           component={Classes}
           options={{
+            tabBarLabel:t('Classes'),
             tabBarButton: (props) => (
               <TouchableOpacity
                 {...props}
@@ -74,6 +77,7 @@ const App = ({ navigation }: any) => {
           name="Frequencia"
           component={Frequencia}
           options={{
+            tabBarLabel:t('Frequência'),
             tabBarButton: (props) => (
               <TouchableOpacity
                 {...props}
@@ -89,6 +93,7 @@ const App = ({ navigation }: any) => {
           name="Notas"
           component={Notas}
           options={{
+            tabBarLabel:t('Notas'),
             tabBarButton: (props) => (
               <TouchableOpacity
                 {...props}
