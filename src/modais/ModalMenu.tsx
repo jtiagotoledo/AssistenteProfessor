@@ -18,12 +18,14 @@ import DropDown from "../listas/DropDownPeriodo";
 import { deleteUser } from "../banco_dados/deletarBD";
 import { Picker } from '@react-native-picker/picker';
 import i18n from '../../i18n';
+import { useTranslation } from 'react-i18next';
 
 const ModalMenu = ({ navigation }: any) => {
   const { modalMenu, setModalMenu, setIdUsuario, idUsuario } = useContext(Context);
   const { width, height } = Dimensions.get('window');
   const [selectedLanguage, setSelectedLanguage] = useState(i18n.language)
   const isLandscape = width > height;
+  const { t } = useTranslation();
 
   const funcSair = () => {
     auth()
@@ -52,7 +54,7 @@ const ModalMenu = ({ navigation }: any) => {
           <View style={styles.modalOverlay} />
         </TouchableWithoutFeedback>
         <View style={[styles.modalView, isLandscape && styles.modalLandscape]}>
-          <HeaderMenu title="Menu" />
+          <HeaderMenu title={t('Menu')} />
           <ScrollView contentContainerStyle={styles.modalContent}>
             <View style={styles.logoContainer}>
               <Image
@@ -77,10 +79,10 @@ const ModalMenu = ({ navigation }: any) => {
               </Picker>
               <View style={styles.containerButton}>
                 <View style={styles.button}>
-                  <Button color={Globais.corPrimaria} title='SAIR' onPress={funcSair} />
+                  <Button color={Globais.corPrimaria} title={t('Sair')} onPress={funcSair} />
                 </View>
                 <View style={styles.button}>
-                  <Button color={Globais.corPrimaria} title='Excluir Conta' onPress={() => deleteUser(navigation, idUsuario)} />
+                  <Button color={Globais.corPrimaria} title={t('Excluir conta')} onPress={() => deleteUser(navigation, idUsuario)} />
                 </View>
               </View>
             </View>

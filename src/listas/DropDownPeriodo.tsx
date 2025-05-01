@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useContext } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import { Dropdown } from 'react-native-element-dropdown';
 import firestore from '@react-native-firebase/firestore';
@@ -6,12 +6,14 @@ import AntIcon from 'react-native-vector-icons/AntDesign';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import { Context } from "../data/Provider";
 import Globais from "../data/Globais";
+import { useTranslation } from 'react-i18next';
 
 const DropDownPeriodo = () => {
   const [valuePSelec, setValuePSelec] = useState('');
   const [isFocus, setIsFocus] = useState(false);
   const { setIdPeriodoSelec, setFlagLongPressAluno, idUsuario, setModalMenu, setFlagLongPressClasse, setModalDelPeriodo, 
     listaPeriodos, setNomePeriodoSelec, nomePeriodoSelec, setModalEditPeriodo } = useContext(Context)
+  const { t } = useTranslation();
 
   const onChangePeriodo = (item: any) => {
     setValuePSelec(item.periodo);
@@ -38,14 +40,14 @@ const DropDownPeriodo = () => {
     if (valuePSelec || isFocus) {
       return (
         <Text style={[styles.label, isFocus && { color: Globais.corTextoEscuro }]}>
-          Selecione o período:
+          {t('Selecione o período:')}
         </Text>
       );
     }
     if (valuePSelec || !isFocus) {
       return (
         <Text style={[styles.label, isFocus && { color: Globais.corTextoEscuro }]}>
-          Período Selecionado:
+          {t('Período Selecionado:')}
         </Text>
       );
     }
@@ -66,8 +68,6 @@ const DropDownPeriodo = () => {
         maxHeight={300}
         labelField="label"
         valueField="value"
-        placeholder={!isFocus ? 'Selecione o período' : '...'}
-        searchPlaceholder="Procurar..."
         onFocus={() => setIsFocus(true)}
         onBlur={() => setIsFocus(false)}
         onChange={item => { onChangePeriodo(item) }}
@@ -78,7 +78,7 @@ const DropDownPeriodo = () => {
                 style={styles.icon}
                 color={isFocus ? Globais.corPrimaria : 'black'}
                 name="edit"
-                size={20}
+                size={25}
               />
             </TouchableOpacity>
             <TouchableOpacity onPress={() => setModalDelPeriodo(true)}>
@@ -86,7 +86,7 @@ const DropDownPeriodo = () => {
                 style={styles.icon}
                 color={isFocus ? Globais.corPrimaria : 'black'}
                 name="trash-o"
-                size={20}
+                size={25}
               />
             </TouchableOpacity>
           </View>

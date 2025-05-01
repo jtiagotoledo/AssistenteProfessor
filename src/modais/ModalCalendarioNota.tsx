@@ -4,6 +4,8 @@ import { Context } from "../data/Provider";
 import Globais from "../data/Globais";
 import CalendarioNota from "../componentes/CalendarioNota";
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
+import { useTranslation } from 'react-i18next';
+import i18n from '../../i18n';
 
 const ModalCalendarioNota = () => {
 
@@ -15,7 +17,8 @@ const ModalCalendarioNota = () => {
     dataAno = dataSelec.slice(0, 4);
     dataMes = dataSelec.slice(5, 7);
     dataDia = dataSelec.slice(8, 10);
-    data = dataDia + '/' + dataMes + '/' + dataAno
+    if(i18n.language=='pt') data = dataDia + '/' + dataMes + '/' + dataAno
+    if(i18n.language=='en') data = dataMes + '/' + dataDia + '/' + dataAno
   }
 
   const renderData = () => {
@@ -41,7 +44,7 @@ const ModalCalendarioNota = () => {
           <View style={styles.modalView}>
             <View style={styles.containerIcon}>
               <TouchableOpacity onPress={() => [setModalCalendarioNota(!modalCalendarioNota),setDataSelec('')]}>
-                <MaterialIcon name="cancel" color="black" size={20}/>
+                <MaterialIcon name="cancel" color="black" size={25}/>
               </TouchableOpacity>
             </View>
             <View style={styles.containerText}>

@@ -25,6 +25,10 @@
     "msg_024":"Digite o nome da classe!",
     "msg_025":"O período informado já existe",
     "msg_026":"Digite o nome do período!",
+    "msg_027":"Os campos nome do aluno e número do aluno são obrigatórios!",
+    "msg_028":"O número informado já existe na classe",
+    "msg_029":"A classe informada já existe",
+    "msg_030":"O campo nome da classe é obrigatório!",
     "email":"Email",
     "senha":"Senha",
     "entrar":"Entrar",
@@ -55,8 +59,19 @@
     "Crie uma nova classe:":"Crie uma nova classe:",
     "Nome da classe":"Nome da classe",
     "Crie um novo período:":"Crie um novo período:",
-    "Nome do período":"Nome do período"
-
-
-
+    "Nome do período":"Nome do período",
+    "Criar data":"Criar data",
+    "Deseja realmente excluir o aluno?":"Deseja realmente excluir o aluno?",
+    "Deseja realmente excluir a classe?":"Deseja realmente excluir a classe?",
+    "Deseja realmente excluir o período?":"Deseja realmente excluir o período?",
+    "Deseja realmente excluir a data?":"Deseja realmente excluir a data?",
+    "Menu":"Menu",
+    "Sair":"Sair",
+    "Excluir conta":"Excluir conta",
+    "Selecione o período:":"Selecione o período:",
+    "Período Selecionado:":"Período Selecionado:",
+    "Edite o nome do aluno:":"Edite o nome do aluno:",
+    "Editar":"Editar",
+    "Edite o nome da classe:":"Edite o nome da classe:",
+    "Edite o nome do período:":"Edite o nome do período:"
 }

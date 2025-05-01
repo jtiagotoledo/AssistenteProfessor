@@ -4,8 +4,7 @@ import { Context } from "../data/Provider";
 import Globais from "../data/Globais";
 import CalendarioFrequencia from "../componentes/CalendarioFrequencia";
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
-
-
+import i18n from '../../i18n';
 
 const ModalCalendarioFrequencia = () => {
 
@@ -17,7 +16,8 @@ const ModalCalendarioFrequencia = () => {
     dataAno = dataSelec.slice(0, 4);
     dataMes = dataSelec.slice(5, 7);
     dataDia = dataSelec.slice(8, 10);
-    data = dataDia + '/' + dataMes + '/' + dataAno
+    if(i18n.language=='pt') data = dataDia + '/' + dataMes + '/' + dataAno
+    if(i18n.language=='en') data = dataMes + '/' + dataDia + '/' + dataAno
   }
 
   const renderData = () => {
@@ -43,7 +43,7 @@ const ModalCalendarioFrequencia = () => {
           <View style={styles.modalView}>
             <View style={styles.containerIcon}>
               <TouchableOpacity onPress={() => [setModalCalendarioFreq(!modalCalendarioFreq),setDataSelec('')]}>
-                <MaterialIcon name="cancel" color="black" size={20}/>
+                <MaterialIcon name="cancel" color="black" size={25}/>
               </TouchableOpacity>
             </View>
             <View style={styles.containerText}>

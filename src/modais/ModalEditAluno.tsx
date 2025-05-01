@@ -5,19 +5,21 @@ import { Context } from "../data/Provider";
 import Globais from "../data/Globais";
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import FontIstoIcon from 'react-native-vector-icons/Fontisto';
+import { useTranslation } from 'react-i18next';
 
 const ModalEditAluno = () => {
 
   const { modalEditAluno, setModalEditAluno, idPeriodoSelec, idUsuario, idClasseSelec, numAlunoSelec,
     nomeAlunoSelec, alunoInativo, setAlunoInativo, setFlagLongPressAluno, idAlunoSelec } = useContext(Context)
-    const [valueNomeAluno, setValueNomeAluno] = useState<string>('')
-    const [valueNumAluno, setValueNumAluno] = useState<string>('')
-   
-  useEffect(()=>{
+  const [valueNomeAluno, setValueNomeAluno] = useState<string>('')
+  const [valueNumAluno, setValueNumAluno] = useState<string>('')
+  const { t } = useTranslation();
+
+  useEffect(() => {
     setValueNomeAluno(nomeAlunoSelec)
     setValueNumAluno(numAlunoSelec)
-  },[nomeAlunoSelec,numAlunoSelec])
-  
+  }, [nomeAlunoSelec, numAlunoSelec])
+
 
   const onChangeInputAlunoNome = (event: NativeSyntheticEvent<TextInputChangeEventData>) => {
     setValueNomeAluno(event.nativeEvent.text);
@@ -29,7 +31,7 @@ const ModalEditAluno = () => {
 
   // edição do aluno no BD
   const editarAluno = () => {
-    
+
     if (valueNomeAluno != '' && valueNumAluno != '') {
       firestore().collection(idUsuario)
         .doc(idPeriodoSelec).collection('Classes')
@@ -45,7 +47,7 @@ const ModalEditAluno = () => {
       setModalEditAluno(!modalEditAluno)
     } else {
       ToastAndroid.show(
-        'Os campos nome do aluno e número do aluno são obrigatórios!',
+        t('msg_027'),
         ToastAndroid.SHORT)
     }
   }
@@ -62,7 +64,7 @@ const ModalEditAluno = () => {
         .get().then((snapshot) => {
           snapshot.empty ? editarAluno() :
             ToastAndroid.show(
-              'O número informado já existe na classe',
+              t('msg_028'),
               ToastAndroid.SHORT)
         })
     }
@@ -70,8 +72,8 @@ const ModalEditAluno = () => {
 
   const renderIconCheck = () => {
     return (
-      alunoInativo ? <FontIstoIcon name="checkbox-active" color="white" size={20} /> :
-        <FontIstoIcon name="checkbox-passive" color="white" size={20} />
+      alunoInativo ? <FontIstoIcon name="checkbox-active" color="black" size={20} /> :
+        <FontIstoIcon name="checkbox-passive" color="black" size={20} />
     )
   }
 
@@ -88,10 +90,10 @@ const ModalEditAluno = () => {
           <View style={styles.modalView}>
             <View style={styles.containerIcon}>
               <TouchableOpacity onPress={() => [setModalEditAluno(!modalEditAluno), setAlunoInativo(false), setFlagLongPressAluno(false)]}>
-                <MaterialIcon name="cancel" color="white" size={20} />
+                <MaterialIcon name="cancel" color="black" size={25} />
               </TouchableOpacity>
             </View>
-            <Text style={styles.modalText}>Edite o nome do aluno:</Text>
+            <Text style={styles.modalText}>{t('Edite o nome do aluno:')}</Text>
             <TextInput
               style={styles.textInput}
               placeholder='Número do aluno'
@@ -106,12 +108,12 @@ const ModalEditAluno = () => {
             </TextInput>
             <TouchableOpacity style={styles.iconCheckContainer} onPress={() => setAlunoInativo(!alunoInativo)}>
               {renderIconCheck()}
-              <Text style={[styles.textStyle, styles.textCheck]}>Aluno inativo?</Text>
+              <Text style={[styles.textStyle, styles.textCheck]}>{t('Aluno inativo?')}</Text>
             </TouchableOpacity>
             <Pressable
               style={[styles.button, styles.buttonClose]}
               onPress={() => [onPressEditAluno(), setFlagLongPressAluno(false)]}>
-              <Text style={styles.textStyle}>Editar</Text>
+              <Text style={styles.textStyle}>{t('Editar')}</Text>
             </Pressable>
           </View>
         </View>
@@ -172,14 +174,14 @@ const styles = StyleSheet.create({
     backgroundColor: Globais.corPrimaria,
   },
   textStyle: {
-    color: 'white',
+    color: 'black',
     fontWeight: 'bold',
     textAlign: 'center',
   },
   modalText: {
     marginBottom: 15,
     textAlign: 'center',
-    color: 'white',
+    color: 'black',
     fontSize: 18,
   },
   textInput: {

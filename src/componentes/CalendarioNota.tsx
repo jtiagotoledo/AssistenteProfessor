@@ -4,6 +4,8 @@ import { Calendar, LocaleConfig } from 'react-native-calendars';
 import { Context } from "../data/Provider";
 import Globais from '../data/Globais';
 import firestore from '@react-native-firebase/firestore';
+import { useTranslation } from 'react-i18next';
+import i18n from '../../i18n';
 
 const { width, height } = Dimensions.get('window'); // Captura a largura e altura da tela
 
@@ -14,9 +16,18 @@ LocaleConfig.locales.br = {
   dayNamesShort: ["Dom.", "Seg.", "Ter.", "Qua.", "Qui.", "Sex.", "Sáb."]
 };
 
-LocaleConfig.defaultLocale = "br";
+LocaleConfig.locales.en = {
+  monthNames: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+  monthNamesShort: ["Jan.", "Feb.", "Mar", "Apr", "May", "Jun", "Jul.", "Aug", "Sep.", "Oct.", "Nov.", "Dec."],
+  dayNames: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+  dayNamesShort: ["Sun.", "Mon.", "Tue.", "Wed.", "Thu.", "Fri.", "Sat."]
+};
+
+if (i18n.language == 'pt') LocaleConfig.defaultLocale = "br";
+if (i18n.language == 'en') LocaleConfig.defaultLocale = "en";
 
 const CalendarioNota = () => {
+  const { t } = useTranslation();
 
   let datasMarcadas: any = {}
   const datas: any[] = [];
@@ -37,8 +48,15 @@ const CalendarioNota = () => {
     .doc(idClasseSelec).collection('DatasNotas')
 
   useEffect(() => {
+    if (i18n.language === 'pt') {
+      LocaleConfig.defaultLocale = 'br';
+    } else if (i18n.language === 'en') {
+      LocaleConfig.defaultLocale = 'en';
+    }
+  }, [i18n.language]);
+
+  useEffect(() => {
     const data = async () => {
-      setflagLoadCalendarioNotas('carregando');
       setListaDatasNotas('');
       setListaDatasMarcadasNotas({})
       setRecarregarCalendarioNotas('');
@@ -95,48 +113,38 @@ const CalendarioNota = () => {
 
   const renderCarregamento = () => {
     if (idClasseSelec != '') {
-      switch (flagLoadCalendarioNotas) {
-        case 'carregando':
-          return (
-            <View>
-              <Text style={styles.textLoad}>Carregando...</Text>
-            </View>
-          )
-        case 'carregado':
-          return (
-            <ScrollView contentContainerStyle={styles.scrollContainer}>
-              <View style={styles.container}>
-                <Calendar
-                  style={styles.calendar} // Estilo ajustado para responsividade
-                  onDayPress={(day:any) => {
-                    setDataSelec(day.dateString);
-                    setFlagLoadNotas('carregando');
-                    setRecarregarNotas('recarregarNotas');
-                    if (listaDatasNotas.includes(day.dateString)) {
-                      setModalCalendarioNota(!modalCalendarioNota)
+      return (
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+          <View style={styles.container}>
+            <Calendar
+              style={styles.calendar} // Estilo ajustado para responsividade
+              onDayPress={(day: any) => {
+                setDataSelec(day.dateString);
+                setRecarregarNotas('recarregarNotas');
+                if (listaDatasNotas.includes(day.dateString)) {
+                  setModalCalendarioNota(!modalCalendarioNota)
 
-                      //atualizando o estado da data
-                      firestore().collection(idUsuario).
-                        doc('EstadosApp').update({
-                          idPeriodo: idPeriodoSelec,
-                          periodo: nomePeriodoSelec,
-                          idClasse: idClasseSelec,
-                          classe: nomeClasseSelec,
-                          data: day.dateString
-                        })
-                    }
-                  }}
-                  markedDates={listaDatasMarcadasNotas}
-                />
-                <Pressable
-                  style={[styles.button, styles.buttonClose]}
-                  onPress={() => [onPressAddData(), setflagLoadCalendarioNotas('carregando')]}>
-                  <Text style={styles.textStyle}>Criar data</Text>
-                </Pressable>
-              </View>
-            </ScrollView>
-          )
-      }
+                  //atualizando o estado da data
+                  firestore().collection(idUsuario).
+                    doc('EstadosApp').update({
+                      idPeriodo: idPeriodoSelec,
+                      periodo: nomePeriodoSelec,
+                      idClasse: idClasseSelec,
+                      classe: nomeClasseSelec,
+                      data: day.dateString
+                    })
+                }
+              }}
+              markedDates={listaDatasMarcadasNotas}
+            />
+            <Pressable
+              style={[styles.button, styles.buttonClose]}
+              onPress={() => [onPressAddData(), setflagLoadCalendarioNotas('carregando')]}>
+              <Text style={styles.textStyle}>{t('Criar data')}</Text>
+            </Pressable>
+          </View>
+        </ScrollView>
+      )
     }
   }
 

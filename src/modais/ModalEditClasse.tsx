@@ -4,13 +4,14 @@ import firestore from '@react-native-firebase/firestore';
 import { Context } from "../data/Provider";
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import Globais from "../data/Globais";
-
+import { useTranslation } from 'react-i18next';
 
 const ModalEditClasse = () => {
 
   const [valueClasse, setValueClasse] = useState<string>('')
   const { modalEditClasse, setModalEditClasse, idPeriodoSelec, idUsuario, setIdClasseSelec, idClasseSelec,
     nomeClasseSelec, setFlagLongPressClasse } = useContext(Context)
+  const { t } = useTranslation();
 
   const onChangeInputClasse = (event: NativeSyntheticEvent<TextInputChangeEventData>) => {
     setValueClasse(event.nativeEvent.text);
@@ -25,7 +26,7 @@ const ModalEditClasse = () => {
       .get().then((snapshot) => {
         snapshot.empty ? editarAluno() :
           ToastAndroid.show(
-            'A classe informada já existe',
+            t('msg_029'),
             ToastAndroid.SHORT)
       })
 
@@ -50,7 +51,7 @@ const ModalEditClasse = () => {
 
       } else {
         ToastAndroid.show(
-          'O campo nome da classe é obrigatório!',
+          t('msg_030'),
           ToastAndroid.SHORT)
       }
     }
@@ -69,10 +70,10 @@ const ModalEditClasse = () => {
           <View style={styles.modalView}>
             <View style={styles.containerIcon}>
               <TouchableOpacity onPress={() => setModalEditClasse(!modalEditClasse)}>
-                <MaterialIcon name="cancel" color="white" size={20}/>
+                <MaterialIcon name="cancel" color="black" size={25}/>
               </TouchableOpacity>
             </View>
-            <Text style={styles.modalText}>Edite o nome da classe:</Text>
+            <Text style={styles.modalText}>{t('Edite o nome da classe:')}</Text>
             <TextInput
               style={styles.textInput}
               placeholder='Nome da classe'
@@ -82,7 +83,7 @@ const ModalEditClasse = () => {
             <Pressable
               style={[styles.button, styles.buttonClose]}
               onPress={() =>onPressEditClasse()}>
-              <Text style={styles.textStyle}>Editar</Text>
+              <Text style={styles.textStyle}>{t('Editar')}</Text>
             </Pressable>
           </View>
         </View>
@@ -143,7 +144,7 @@ const styles = StyleSheet.create({
   modalText: {
     marginBottom: 15,
     textAlign: 'center',
-    color: 'white',
+    color: 'black',
     fontSize: 18,
   },
   textInput: {

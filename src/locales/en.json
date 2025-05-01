@@ -25,7 +25,10 @@
     "msg_024": "Enter the class name!",
     "msg_025": "The specified period already exists",
     "msg_026": "Enter the period name!",
-
+    "msg_027": "The student name and student number fields are required!",
+    "msg_028": "The number provided already exists in the class",
+    "msg_029": "The specified class already exists",
+    "msg_030": "The class name field is required!",
     "email": "Email",
     "senha": "Password",
     "entrar": "Login",
@@ -56,7 +59,19 @@
     "Crie uma nova classe:": "Create a new class:",
     "Nome da classe": "Class name",
     "Crie um novo período:": "Create a new period:",
-    "Nome do período": "Period name:"
-
-
+    "Nome do período": "Period name:",
+    "Criar data": "Create date",
+    "Deseja realmente excluir o aluno?": "Do you really want to delete the student?",
+    "Deseja realmente excluir a classe?": "Do you really want to delete the class?",
+    "Deseja realmente excluir o período?": "Do you really want to delete the period?",
+    "Deseja realmente excluir a data?": "Do you really want to delete the date?",
+    "Menu": "Menu",
+    "Sair": "Log out",
+    "Excluir conta": "Delete account",
+    "Selecione o período:": "Select the period:",
+    "Período Selecionado:": "Selected period:",
+    "Edite o nome do aluno:": "Edit the student's name:",
+    "Editar": "Edit",
+    "Edite o nome da classe:": "Edit the class name:",
+    "Edite o nome do período:": "Edit the period name:"
 }

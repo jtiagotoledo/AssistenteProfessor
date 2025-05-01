@@ -5,12 +5,13 @@ import { Context } from "../data/Provider";
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import Globais from "../data/Globais";
 import { deleteDataNotas } from "../banco_dados/deletarBD";
-
+import { useTranslation } from 'react-i18next';
 
 const ModalDelDataNotas = () => {
 
   const { idPeriodoSelec, idClasseSelec, idUsuario, dataSelec, modalDelDataNotas, setValueNota, setListaNotas,
     setModalDelDataNotas, setFlagLongPressDataNotas, setDataSelec, setIdClasseSelec } = useContext(Context);
+  const { t } = useTranslation();
 
   const deletarData = async () => {
     await deleteDataNotas(idUsuario, idPeriodoSelec, idClasseSelec, dataSelec)
@@ -42,10 +43,10 @@ const ModalDelDataNotas = () => {
           <View style={styles.modalView}>
             <View style={styles.containerIcon}>
               <TouchableOpacity onPress={() => setModalDelDataNotas(!modalDelDataNotas)}>
-                <MaterialIcon name="cancel" color="black" size={20} />
+                <MaterialIcon name="cancel" color="black" size={25} />
               </TouchableOpacity>
             </View>
-            <Text style={styles.modalText}>Deseja realmente excluir a data?</Text>
+            <Text style={styles.modalText}>{t('Deseja realmente excluir a data?')}</Text>
             <Pressable
               style={[styles.button, styles.buttonClose]}
               onPress={deletarData}>

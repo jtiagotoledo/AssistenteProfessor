@@ -4,11 +4,13 @@ import firestore from '@react-native-firebase/firestore';
 import { Context } from "../data/Provider";
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import Globais from "../data/Globais";
+import { useTranslation } from 'react-i18next';
 
 const ModalDelAluno = () => {
 
   const { idPeriodoSelec, idClasseSelec, modalDelAluno, setModalDelAluno, 
     idUsuario,setFlagLongPressAluno, setNumAlunoSelec, setSelectedIdAluno, idAlunoSelec } = useContext(Context);
+  const { t } = useTranslation();
 
   const deletarAluno = () => {
     //deletar aluno da lista de alunos
@@ -65,10 +67,10 @@ const ModalDelAluno = () => {
           <View style={styles.modalView}>
             <View style={styles.containerIcon}>
               <TouchableOpacity onPress={() => setModalDelAluno(!modalDelAluno)}>
-                <MaterialIcon name="cancel" color="black" size={20}/>
+                <MaterialIcon name="cancel" color="black" size={25}/>
               </TouchableOpacity>
             </View>
-            <Text style={styles.modalText}>Deseja realmente excluir o aluno?</Text>
+            <Text style={styles.modalText}>{t('Deseja realmente excluir o aluno?')}</Text>
             <Pressable
               style={[styles.button, styles.buttonClose]}
               onPress={deletarAluno}>
