@@ -66,6 +66,7 @@ const DropDownPeriodo = () => {
         data={listaPeriodos}
         value={nomePeriodoSelec}
         maxHeight={300}
+        placeholder={!isFocus ? t('Selecione o período:') : '...'}
         labelField="label"
         valueField="value"
         onFocus={() => setIsFocus(true)}

@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import { SafeAreaView, FlatList, Text, StyleSheet, StatusBar, TouchableOpacity, View, Dimensions } from 'react-native';
 import { Context } from "../data/Provider";
 import Globais from '../data/Globais';
+import { useTranslation } from 'react-i18next';
 
 type ItemData = {
   nome: string;
@@ -20,23 +21,23 @@ type ItemProps = {
   textColor: string;
 };
 
-const Item = ({ item, onPress, onLongPress, backgroundColor, textColor }: ItemProps) => (
-  <TouchableOpacity onPress={onPress} onLongPress={onLongPress} style={[styles.item, { backgroundColor }]}>
-    <View style={styles.itemHeader}>
-      <Text style={[styles.title, { color: textColor }]}>{item.numero+'  '}</Text>
-      <Text style={[styles.title, { color: textColor, flex: 1 }]}>{item.nome}</Text>
-    </View>
-    <View style={styles.itemFooter}>
-      <Text style={styles.smallText}>Média: {item.mediaNotas || '...'}</Text>
-      <Text style={styles.smallText}>%Freq: {item.porcFreq || '...'}</Text>
-    </View>
-  </TouchableOpacity>
-);
-
-const FlatListAlunos = (props:any) => {
-  const { idClasseSelec, setNumAlunoSelec, setFlagLongPressClasse, listaAlunos, setFlagLongPressAluno,
+const FlatListAlunos = (props: any) => {
+  const { setNumAlunoSelec, setFlagLongPressClasse, listaAlunos, setFlagLongPressAluno,
     selectedIdAluno, setSelectedIdAluno, setNomeAlunoSelec, setIdAlunoSelec, setAlunoInativo } = useContext(Context);
+  const { t } = useTranslation();
 
+  const Item = ({ item, onPress, onLongPress, backgroundColor, textColor }: ItemProps) => (
+    <TouchableOpacity onPress={onPress} onLongPress={onLongPress} style={[styles.item, { backgroundColor }]}>
+      <View style={styles.itemHeader}>
+        <Text style={[styles.title, { color: textColor }]}>{item.numero + '  '}</Text>
+        <Text style={[styles.title, { color: textColor, flex: 1 }]}>{item.nome}</Text>
+      </View>
+      <View style={styles.itemFooter}>
+        <Text style={styles.smallText}>{t('Média')+": "+item.mediaNotas || '...'}</Text>
+        <Text style={styles.smallText}>{t('Frequência')+": "+item.porcFreq+"%" || '...'}</Text>
+      </View>
+    </TouchableOpacity>
+  );
   const onPressItem = (item: any) => {
     selectedIdAluno === '' || selectedIdAluno !== item.idAluno ? setSelectedIdAluno(item.idAluno) : setSelectedIdAluno('');
     setIdAlunoSelec(item.idAluno);
@@ -76,13 +77,13 @@ const FlatListAlunos = (props:any) => {
 
   return (
     <SafeAreaView style={styles.container}>
-        <FlatList
-          {...props}
-          data={listaAlunos}
-          renderItem={renderItem}
-          keyExtractor={(item, index) => (item.id ? item.id.toString() : index.toString())}
-          extraData={selectedIdAluno}
-        />
+      <FlatList
+        {...props}
+        data={listaAlunos}
+        renderItem={renderItem}
+        keyExtractor={(item, index) => (item.id ? item.id.toString() : index.toString())}
+        extraData={selectedIdAluno}
+      />
     </SafeAreaView>
   );
 };
@@ -111,7 +112,7 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   title: {
-    fontSize: Dimensions.get('window').width * 0.045, 
+    fontSize: Dimensions.get('window').width * 0.045,
   },
   smallText: {
     fontSize: Dimensions.get('window').width * 0.035,

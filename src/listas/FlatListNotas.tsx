@@ -3,6 +3,7 @@ import { Keyboard, SafeAreaView, FlatList, View, Text, StyleSheet, AppState, Tex
 import { Context } from "../data/Provider";
 import Globais from '../data/Globais';
 import { atualizarNotas } from "../banco_dados/atualizarBD"
+import { useTranslation } from 'react-i18next';
 
 type ItemData = {
   nome: string;
@@ -19,6 +20,7 @@ const FlatListNotas = (props: any) => {
   const [textNota, setTextNota] = useState('');
   const { idClasseSelec, dataSelec, listaNotas, setTecladoAtivo,
     idUsuario, idPeriodoSelec, setValueNota } = useContext(Context)
+  const { t } = useTranslation();
 
   useEffect(() => {
     //mantem uma cópia da lista de notas para salvar quando o app é fechado
@@ -86,7 +88,7 @@ const FlatListNotas = (props: any) => {
           <TextInput
             ref={(ref) => (textInputRefs.current[parseInt(item.numero)] = ref!)}
             style={styles.itemNota}
-            placeholder='Nota'
+            placeholder={t('Nota')}
             inputMode='numeric'
             onChangeText={(text) => onChangeNota(item, text)}
             defaultValue={item.nota}

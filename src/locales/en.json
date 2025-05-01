@@ -51,7 +51,7 @@
     "Descreva as atividades": "Describe the activities",
     "Salvar": "Save",
     "Atividade": "Activity",
-    "Frequência": "Frequency",
+    "Frequência": "Attendance",
     "Título da avaliação": "Assessment title",
     "Avaliação": "Assessment",
     "Notas": "Notes",
@@ -83,5 +83,7 @@
     "Adicionar período": "Add period",
     "Adicionar classe": "Add class",
     "Adicionar aluno": "Add student",
-    "Adicionar data": "Add date"
+    "Adicionar data": "Add date",
+    "Média": "Average",
+    "Nota": "Grade"
 }
