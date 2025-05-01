@@ -29,6 +29,10 @@
     "msg_028":"O número informado já existe na classe",
     "msg_029":"A classe informada já existe",
     "msg_030":"O campo nome da classe é obrigatório!",
+    "msg_031":"Selecione um período primeiro!",
+    "msg_032":"Selecione uma classe primeiro!",
+    "msg_033":"Adicione pelo menos um aluno na classe!",
+    "msg_034":"Notas salvas com sucesso!",
     "email":"Email",
     "senha":"Senha",
     "entrar":"Entrar",
@@ -73,5 +77,11 @@
     "Edite o nome do aluno:":"Edite o nome do aluno:",
     "Editar":"Editar",
     "Edite o nome da classe:":"Edite o nome da classe:",
-    "Edite o nome do período:":"Edite o nome do período:"
+    "Edite o nome do período:":"Edite o nome do período:",
+    "Com internet":"Com internet",
+    "Sem internet":"Sem internet",
+    "Adicionar período":"Adicionar período",
+    "Adicionar classe":"Adicionar classe",
+    "Adicionar aluno":"Adicionar aluno",
+    "Adicionar data":"Adicionar data"
 }

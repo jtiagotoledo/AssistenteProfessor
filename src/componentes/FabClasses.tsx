@@ -2,12 +2,19 @@ import { FloatingAction } from "react-native-floating-action";
 import React, { useContext } from 'react';
 import { View, ToastAndroid } from "react-native";
 import Icon from 'react-native-vector-icons/FontAwesome';
-import {Context} from "../data/Provider";
+import { Context } from "../data/Provider";
 import Globais from "../data/Globais";
+import { useTranslation } from 'react-i18next';
 
-const actions = [
+const FabClasses = () => {
+
+  const { setModalAddPeriodo, setModalAddClasse,
+    setModalAddAluno, idPeriodoSelec, idClasseSelec } = useContext(Context);
+  const { t } = useTranslation();
+
+  const actions = [
     {
-      text: "Adicionar período",
+      text: t("Adicionar período"),
       textBackground: Globais.corPrimaria,
       textColor: Globais.corTextoClaro,
       color: Globais.corPrimaria,
@@ -16,7 +23,7 @@ const actions = [
       position: 1
     },
     {
-      text: "Adicionar classe",
+      text: t("Adicionar classe"),
       textBackground: Globais.corPrimaria,
       textColor: Globais.corTextoClaro,
       color: Globais.corPrimaria,
@@ -25,7 +32,7 @@ const actions = [
       position: 2,
     },
     {
-      text: "Adicionar aluno",
+      text: t("Adicionar aluno"),
       textBackground: Globais.corPrimaria,
       textColor: Globais.corTextoClaro,
       color: Globais.corPrimaria,
@@ -33,39 +40,34 @@ const actions = [
       name: "aluno",
       position: 3
     },
-    
+  
   ];
 
-const FabClasses = ()=>{
-
-    const {setModalAddPeriodo, setModalAddClasse,
-      setModalAddAluno, idPeriodoSelec, idClasseSelec} = useContext(Context);
-
-    return(
-        <View >
-            <FloatingAction
-            color={Globais.corPrimaria}
-            actions={actions}
-            floatingIcon={<Icon name={'plus'} size={18} color={'white'}></Icon>}
-            onPressItem={name => {
-                name=='periodo'?setModalAddPeriodo(true):null
-                if(idPeriodoSelec!=''){
-                  name=='classe'?setModalAddClasse(true):null
-                }else if(idPeriodoSelec!=''||name=='classe'){
-                  ToastAndroid.show(
-                    'Selecione um período primeiro!',
-                    ToastAndroid.SHORT)
-                }
-                if(idClasseSelec!=''){
-                  name=='aluno'?setModalAddAluno(true):null
-                }else if(idClasseSelec!=''||name=='aluno'){
-                    ToastAndroid.show(
-                      'Selecione uma classe primeiro!',
-                      ToastAndroid.SHORT)
-                }
-            }}/>
-        </View>
-    )
+  return (
+    <View >
+      <FloatingAction
+        color={Globais.corPrimaria}
+        actions={actions}
+        floatingIcon={<Icon name={'plus'} size={18} color={'white'}></Icon>}
+        onPressItem={name => {
+          name == 'periodo' ? setModalAddPeriodo(true) : null
+          if (idPeriodoSelec != '') {
+            name == 'classe' ? setModalAddClasse(true) : null
+          } else if (idPeriodoSelec != '' || name == 'classe') {
+            ToastAndroid.show(
+              t('msg_031'),
+              ToastAndroid.SHORT)
+          }
+          if (idClasseSelec != '') {
+            name == 'aluno' ? setModalAddAluno(true) : null
+          } else if (idClasseSelec != '' || name == 'aluno') {
+            ToastAndroid.show(
+              t('msg_032'),
+              ToastAndroid.SHORT)
+          }
+        }} />
+    </View>
+  )
 }
 
 export default FabClasses;

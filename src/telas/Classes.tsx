@@ -45,8 +45,8 @@ function Classes({ navigation }: any) {
 
   return (
     <View style={styles.container}>
-      <ConexaoInternet />
       <HeaderClasses title={t("Classes")} />
+      <ConexaoInternet />
       <FlatListAlunos
         ListHeaderComponent={renderHeader}
         data={[]}

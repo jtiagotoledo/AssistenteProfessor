@@ -4,6 +4,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import auth from '@react-native-firebase/auth';
 import { Context } from "../data/Provider";
 import firestore from '@react-native-firebase/firestore';
+import ConexaoInternet from "../componentes/ConexaoInternet";
 import Globais from '../data/Globais';
 import { useTranslation } from 'react-i18next';
 
@@ -59,59 +60,66 @@ const NovaConta = ({ navigation }: any) => {
     }
 
     return (
-        <ScrollView contentContainerStyle={styles.scrollContainer}>
-            <View style={styles.logoContainer}>
-                <Image
-                    source={require('../assets/logo.png')}
-                    style={styles.logo}
-                />
-            </View>
-            <TextInput
-                style={styles.textInput}
-                onChange={onChangeInputEmail}
-                keyboardType='email-address'
-                autoCapitalize='none'
-                autoCorrect={false}
-                placeholder={t('Digite um Email válido')}
-            />
-            <View style={styles.passwordContainer}>
-                <TextInput
-                    style={styles.textInputPassword}
-                    onChange={onChangeInputSenha}
-                    autoCapitalize='none'
-                    secureTextEntry={!senhaVisivel}
-                    autoCorrect={false}
-                    placeholder={t('Crie uma senha')}
-                />
-                <TouchableOpacity onPress={() => setSenhaVisivel(!senhaVisivel)}>
-                    <Icon
-                        name={senhaVisivel ? "eye-off" : "eye"}
-                        size={24}
-                        color={Globais.corPrimaria}
+        <ScrollView contentContainerStyle={styles.scrollContent}>
+            <ConexaoInternet />
+            <View style={styles.container}>
+                <View style={styles.logoContainer}>
+                    <Image
+                        source={require('../assets/logo.png')}
+                        style={styles.logo}
                     />
+                </View>
+                <TextInput
+                    style={styles.textInput}
+                    onChange={onChangeInputEmail}
+                    keyboardType='email-address'
+                    autoCapitalize='none'
+                    autoCorrect={false}
+                    placeholder={t('Digite um Email válido')}
+                />
+                <View style={styles.passwordContainer}>
+                    <TextInput
+                        style={styles.textInputPassword}
+                        onChange={onChangeInputSenha}
+                        autoCapitalize='none'
+                        secureTextEntry={!senhaVisivel}
+                        autoCorrect={false}
+                        placeholder={t('Crie uma senha')}
+                    />
+                    <TouchableOpacity onPress={() => setSenhaVisivel(!senhaVisivel)}>
+                        <Icon
+                            name={senhaVisivel ? "eye-off" : "eye"}
+                            size={24}
+                            color={Globais.corPrimaria}
+                        />
+                    </TouchableOpacity>
+                </View>
+                <TouchableOpacity
+                    style={styles.button}
+                    onPress={criarConta}>
+                    <Text style={styles.buttonText}>{t('Criar conta')}</Text>
                 </TouchableOpacity>
-            </View>
-            <TouchableOpacity
-                style={styles.button}
-                onPress={criarConta}>
-                <Text style={styles.buttonText}>{t('Criar conta')}</Text>
-            </TouchableOpacity>
-            <View style={styles.containerText}>
-                <Text style={styles.text} onPress={() => navigation.reset({
-                    index: 0,
-                    routes: [{ name: "Login" }]
-                })}>{t('Já possui uma conta?')}</Text>
+                <View style={styles.containerText}>
+                    <Text style={styles.text} onPress={() => navigation.reset({
+                        index: 0,
+                        routes: [{ name: "Login" }]
+                    })}>{t('Já possui uma conta?')}</Text>
+                </View>
             </View>
         </ScrollView>
     )
 }
 
 const styles = StyleSheet.create({
-    scrollContainer: {
-        flexGrow: 1,
+    container: {
+        flex: 1,
         justifyContent: 'center',
         marginLeft: 24,
         marginRight: 24,
+    },
+    scrollContent: {
+        flexGrow: 1,
+        justifyContent: 'center',
     },
     containerText: {
         alignItems: 'center'

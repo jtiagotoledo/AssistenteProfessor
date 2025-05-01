@@ -16,10 +16,8 @@ type HeaderComponentProps = {
 };
 
 const HeaderClasses: React.FunctionComponent<HeaderComponentProps> = ({ title }) => {
-  const {
-    setModalMenu, flagLongPressAluno, setModalDelClasse, setModalDelAluno,
-    flagLongPressClasse, setModalEditClasse, setModalEditAluno
-  } = useContext(Context);
+  const {setModalMenu, flagLongPressAluno, setModalDelClasse, setModalDelAluno,
+    flagLongPressClasse, setModalEditClasse, setModalEditAluno} = useContext(Context);
 
   const onPressBin = () => {
     if (flagLongPressClasse) setModalDelClasse(true);

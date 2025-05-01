@@ -2,8 +2,9 @@ import React, { useContext, useState, useEffect } from 'react';
 import { TextInput, View, Text, StyleSheet, ToastAndroid, NativeSyntheticEvent, TextInputChangeEventData, Image, TouchableOpacity, ScrollView } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
-import { GoogleSignin, SignInResponse } from '@react-native-google-signin/google-signin';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { Context } from "../data/Provider";
+import ConexaoInternet from "../componentes/ConexaoInternet";
 import Globais from "../data/Globais";
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Picker } from '@react-native-picker/picker';
@@ -33,7 +34,7 @@ const Login = ({ navigation }: any) => {
 
     const changeLanguage = (lng: string) => {
         i18n.changeLanguage(lng);
-        setSelectedLanguage(lng); 
+        setSelectedLanguage(lng);
     };
 
     const entrarConta = () => {
@@ -66,14 +67,14 @@ const Login = ({ navigation }: any) => {
 
                 //salvando credenciais no BD
                 firestore().collection(userCredential.user.email ?? '').
-                doc('DadosUsuario').set({
-                    nomeUsuario: userCredential.user.displayName,
-                    emailUsuario: userCredential.user.email,
-                    fotoUsuario: userCredential.user.photoURL,
-                    iudUsuario: userCredential.user.uid
-                })
+                    doc('DadosUsuario').set({
+                        nomeUsuario: userCredential.user.displayName,
+                        emailUsuario: userCredential.user.email,
+                        fotoUsuario: userCredential.user.photoURL,
+                        iudUsuario: userCredential.user.uid
+                    })
                 //cria Estados do App
-                firestore().collection(userCredential.user.email??'').doc('EstadosApp').set({
+                firestore().collection(userCredential.user.email ?? '').doc('EstadosApp').set({
                     idPeriodo: '',
                     periodo: '',
                     idClasse: '',
@@ -131,6 +132,7 @@ const Login = ({ navigation }: any) => {
 
     return (
         <ScrollView contentContainerStyle={styles.scrollContent}>
+            <ConexaoInternet />
             <View style={styles.container}>
                 <View style={styles.logoContainer}>
                     <Image
@@ -175,7 +177,7 @@ const Login = ({ navigation }: any) => {
                         />
                     </TouchableOpacity>
                 </View>
-                
+
                 <TouchableOpacity
                     style={styles.button}
                     onPress={entrarConta}>
@@ -183,7 +185,7 @@ const Login = ({ navigation }: any) => {
                 </TouchableOpacity>
                 <TouchableOpacity onPress={loginComGoogle} style={styles.googleButton}>
                     <Image
-                        source={require('../../assets/google_icon.png')} 
+                        source={require('../../assets/google_icon.png')}
                         style={styles.googleLogo}
                     />
                     <Text style={styles.googleButtonText}>{t('Entrar com Google')}</Text>
@@ -289,8 +291,8 @@ const styles = StyleSheet.create({
         color: '#000',
         fontWeight: 'bold',
     },
-    picker:{
-        marginTop:20,
+    picker: {
+        marginTop: 20,
         marginBottom: 20,
     }
 });

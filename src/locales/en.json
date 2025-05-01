@@ -29,6 +29,10 @@
     "msg_028": "The number provided already exists in the class",
     "msg_029": "The specified class already exists",
     "msg_030": "The class name field is required!",
+    "msg_031": "Please select a period first!",
+    "msg_032": "Please select a class first!",
+    "msg_033": "Add at least one student to the class!",
+    "msg_034": "Grades saved successfully!",
     "email": "Email",
     "senha": "Password",
     "entrar": "Login",
@@ -73,5 +77,11 @@
     "Edite o nome do aluno:": "Edit the student's name:",
     "Editar": "Edit",
     "Edite o nome da classe:": "Edit the class name:",
-    "Edite o nome do período:": "Edit the period name:"
+    "Edite o nome do período:": "Edit the period name:",
+    "Com internet": "Online",
+    "Sem internet": "Offline",
+    "Adicionar período": "Add period",
+    "Adicionar classe": "Add class",
+    "Adicionar aluno": "Add student",
+    "Adicionar data": "Add date"
 }

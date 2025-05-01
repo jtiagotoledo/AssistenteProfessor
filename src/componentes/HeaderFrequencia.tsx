@@ -16,11 +16,7 @@ type HeaderComponentProps = {
 };
 
 const HeaderFrequencia: React.FunctionComponent<HeaderComponentProps> = (props) => {
-  const {
-    setModalMenu,
-    flagLongPressDataFreq,
-    setModalDelDataFreq,
-  } = useContext(Context);
+  const { setModalMenu, flagLongPressDataFreq, setModalDelDataFreq } = useContext(Context);
 
   const onPressBin = () => {
     if (flagLongPressDataFreq) {

@@ -6,7 +6,7 @@ export default class Globais{
     static corSecundaria = 'skyblue';
     // static corTerciaria = 'powderblue';
     static corTerciaria = '#dee9f2';
-    static corAlerta = 'orange';
+    static corAlerta = '#f0ad4e';
     static corAlunoInativo = 'silver';
     static corTextoEscuro = 'black';
     static corTextoClaro = 'white';

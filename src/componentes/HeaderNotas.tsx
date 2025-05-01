@@ -8,6 +8,7 @@ import { atualizarNotas } from "../banco_dados/atualizarBD"
 
 import AntIcon from 'react-native-vector-icons/AntDesign';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
+import { useTranslation } from 'react-i18next';
 
 const { width } = Dimensions.get('window');
 
@@ -17,9 +18,9 @@ type HeaderComponentProps = {
 };
 
 const HeaderFrequencia: React.FunctionComponent<HeaderComponentProps> = (props) => {
-  const {
-    setModalMenu,flagLongPressDataNotas,setModalDelDataNotas,dataSelec,
-    listaNotas, idUsuario, idPeriodoSelec, idClasseSelec} = useContext(Context);
+  const { setModalMenu, flagLongPressDataNotas, setModalDelDataNotas, dataSelec,
+    listaNotas, idUsuario, idPeriodoSelec, idClasseSelec } = useContext(Context);
+  const { t } = useTranslation();
 
   const onPressBin = () => {
     if (flagLongPressDataNotas) {
@@ -29,7 +30,7 @@ const HeaderFrequencia: React.FunctionComponent<HeaderComponentProps> = (props) 
 
   const onPressSave = () => {
     atualizarNotas(listaNotas, idUsuario, idPeriodoSelec, idClasseSelec, dataSelec)
-    ToastAndroid.show('Notas salvas com sucesso...',ToastAndroid.SHORT)
+    ToastAndroid.show(t('msg_034'), ToastAndroid.SHORT)
   };
 
   return (
