@@ -15,7 +15,7 @@ const ModalAddAluno = () => {
   const [valueNome, setValueNome] = useState<string>('')
   const { idPeriodoSelec, idClasseSelec, modalAddAluno, setModalAddAluno,
     idUsuario, alunoInativo, setAlunoInativo, nomeClasseSelec } = useContext(Context)
-  const [fotoUri, setFotoUri] = useState<string | null>(null);
+  // const [fotoUri, setFotoUri] = useState<string | null>(null);
   const { t } = useTranslation();
 
   const onChangeInputNumero = (event: NativeSyntheticEvent<TextInputChangeEventData>) => {
@@ -25,7 +25,7 @@ const ModalAddAluno = () => {
     setValueNome(event.nativeEvent.text);
   }
 
-  const escolherImagem = async () => {
+  /* const escolherImagem = async () => {
     const result = await launchImageLibrary({ mediaType: 'photo' });
     if (result.didCancel || !result.assets?.[0]) return;
 
@@ -33,7 +33,7 @@ const ModalAddAluno = () => {
     if (imageUri) {
       setFotoUri(imageUri);
     }
-  };
+  }; */
 
   const onPressAddAluno = async () => {
     // consulta para verificar se o número do aluno já existe
@@ -51,16 +51,17 @@ const ModalAddAluno = () => {
     // inclusão do aluno no BD
     const addAluno = async () => {
       if (valueNumero != '' && valueNome != '') {
+        
         let urlFinal = null;
 
-        if (fotoUri) {
+        /* if (fotoUri) {
           try {
             urlFinal = await uploadToCloudinary(fotoUri, idUsuario, nomeClasseSelec, valueNumero, valueNome);
             console.log('urlFinal', urlFinal);
           } catch (error) {
             console.error('Erro ao enviar imagem:', error);
           }
-        }
+        } */
 
         setModalAddAluno(!modalAddAluno)
         const refDoc = firestore().collection(idUsuario).doc(idPeriodoSelec).collection('Classes').doc(idClasseSelec).collection('ListaAlunos')
@@ -78,7 +79,7 @@ const ModalAddAluno = () => {
         })
         setValueNome('')
         setValueNumero('')
-        setFotoUri(null);
+        // setFotoUri(null);
         setAlunoInativo(false)
       } else {
         ToastAndroid.show(
@@ -107,11 +108,11 @@ const ModalAddAluno = () => {
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
             <View style={styles.containerIcon}>
-              <TouchableOpacity onPress={() => [setModalAddAluno(!modalAddAluno), setAlunoInativo(false), setFotoUri(null)]}>
+              <TouchableOpacity onPress={() => [setModalAddAluno(!modalAddAluno), setAlunoInativo(false)/* , setFotoUri(null) */]}>
                 <MaterialIcon name="cancel" color="black" size={25}></MaterialIcon>
               </TouchableOpacity>
             </View>
-            <TouchableOpacity onPress={escolherImagem} style={{ alignSelf: 'center', marginBottom: 16 }}>
+            {/* <TouchableOpacity onPress={escolherImagem} style={{ alignSelf: 'center', marginBottom: 16 }}>
               {fotoUri ? (
                 <View style={{ borderRadius: 50, overflow: 'hidden', width: 100, height: 100 }}>
                   <Image
@@ -128,7 +129,7 @@ const ModalAddAluno = () => {
                   <MaterialIcon name="photo-camera" size={32} color="#666" />
                 </View>
               )}
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <Text style={styles.modalText}>{t('Adicione um novo aluno:')}</Text>
             <TextInput placeholder={t('Número')} onChange={onChangeInputNumero} style={styles.textInput} keyboardType='numeric'></TextInput>
             <TextInput placeholder={t('Nome')} onChange={onChangeInputNome} style={styles.textInput}></TextInput>
