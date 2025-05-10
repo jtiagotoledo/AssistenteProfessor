@@ -6,6 +6,7 @@ export const Context = createContext();
 export default function Provider ({children}){
 
     const[email,setEmail]=useState('');
+    const[nome,setNome]=useState('');
     const[idUsuario,setIdUsuario]=useState(auth().currentUser?.email);
     const[senha,setSenha]=useState('');
     const[modalAddPeriodo,setModalAddPeriodo]=useState(false);
@@ -66,6 +67,7 @@ export default function Provider ({children}){
 
     return(
         <Context.Provider value={{
+            nome,setNome,
             email,setEmail,
             senha,setSenha,
             idUsuario,setIdUsuario,

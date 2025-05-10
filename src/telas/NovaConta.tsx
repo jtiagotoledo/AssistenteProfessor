@@ -7,9 +7,10 @@ import firestore from '@react-native-firebase/firestore';
 import ConexaoInternet from "../componentes/ConexaoInternet";
 import Globais from '../data/Globais';
 import { useTranslation } from 'react-i18next';
+import { criarProfessor } from '../services/professores';
 
 const NovaConta = ({ navigation }: any) => {
-    const { email, setEmail, senha, setSenha, setIdUsuario } = useContext(Context);
+    const { nome, setNome, email, setEmail, senha, setSenha, setIdUsuario } = useContext(Context);
     const [senhaVisivel, setSenhaVisivel] = useState(false); // Estado para alternar a visibilidade da senha
     const { t } = useTranslation();
 
@@ -25,30 +26,38 @@ const NovaConta = ({ navigation }: any) => {
             })
     }
 
-    const criarConta = () => {
-        if (email && senha) {
-            auth()
-                .createUserWithEmailAndPassword(email, senha)
-                .then(() => {
-                    ToastAndroid.show(t('msg_014'), ToastAndroid.SHORT)
-                    navigation.reset({ index: 0, routes: [{ name: "App" }] })
-                    setIdUsuario(email)
-                    criarCaminhoSalvarEstados()
-                }).catch(error => {
+    const criarConta = async () => {
+    if (email && senha) {
+        try {
+            const userCredential = await auth().createUserWithEmailAndPassword(email, senha);
+            const uuid = userCredential.user.uid;
 
-                    if (error.code === 'auth/email-already-in-use') {
-                        ToastAndroid.show(t('msg_015'), ToastAndroid.SHORT)
-                    }
-                    if (error.code === 'auth/invalid-email') {
-                        ToastAndroid.show(t('msg_010'), ToastAndroid.SHORT)
-                    }
-                    if (error.code === 'auth/weak-password') {
-                        ToastAndroid.show(t('msg_016'), ToastAndroid.SHORT)
-                    }
-                });
-        } else {
-            ToastAndroid.show(t('msg_003'), ToastAndroid.SHORT)
+            ToastAndroid.show(t('msg_014'), ToastAndroid.SHORT);
+            navigation.reset({ index: 0, routes: [{ name: "App" }] });
+            setIdUsuario(email);
+            criarCaminhoSalvarEstados();
+            criarProfessor({ nome, email, uuid });
+
+        } catch (error:any) {
+            if (error.code === 'auth/email-already-in-use') {
+                ToastAndroid.show(t('msg_015'), ToastAndroid.SHORT);
+            } else if (error.code === 'auth/invalid-email') {
+                ToastAndroid.show(t('msg_010'), ToastAndroid.SHORT);
+            } else if (error.code === 'auth/weak-password') {
+                ToastAndroid.show(t('msg_016'), ToastAndroid.SHORT);
+            } else {
+                ToastAndroid.show(t('msg_001'), ToastAndroid.SHORT); // mensagem genérica
+                console.error("Erro ao criar conta:", error);
+            }
         }
+    } else {
+        ToastAndroid.show(t('msg_003'), ToastAndroid.SHORT);
+    }
+};
+
+
+    const onChangeInputNome = (event: NativeSyntheticEvent<TextInputChangeEventData>) => {
+        setNome(event.nativeEvent.text);
     }
 
     const onChangeInputEmail = (event: NativeSyntheticEvent<TextInputChangeEventData>) => {
@@ -69,6 +78,14 @@ const NovaConta = ({ navigation }: any) => {
                         style={styles.logo}
                     />
                 </View>
+                <TextInput
+                    style={styles.textInput}
+                    onChange={onChangeInputNome}
+                    keyboardType='default'
+                    autoCapitalize='none'
+                    autoCorrect={false}
+                    placeholder={t('Digite seu nome')}
+                />
                 <TextInput
                     style={styles.textInput}
                     onChange={onChangeInputEmail}

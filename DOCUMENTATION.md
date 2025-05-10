@@ -15,6 +15,7 @@ src/
 ├── modais/        # Telas de modais.
 ├── locales/       # Arquivos de tradução.
 ├── rotas/         # Rotas para as telas.
+├── services/      # Comunicação com a api backend.
 App.js             # Ponto de entrada da aplicação.
 
 # Banco de dados
@@ -24,7 +25,8 @@ Inicialmente usei o firebase e por conta da demanda migrei para o banco de dados
 # Api
 
 Registrado domínio como:
-assistente-professor.duckdns.org
+https://assistente-professor.duckdns.org
+Porta de acesso: 3000
 
 # Autor
 José Tiago Toledo da Silva 
