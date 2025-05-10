@@ -1,7 +1,7 @@
 {
     "msg_001": "This email is not registered or incorrect password",
     "msg_002": "Login error",
-    "msg_003": "Email and password must be filled in",
+    "msg_003": "Name, email and password must be filled in",
     "msg_004": "Google login with error: ID Token not found",
     "msg_005": "Google login canceled by user",
     "msg_006": "You have not granted sufficient permissions to Google",
@@ -33,6 +33,7 @@
     "msg_032": "Please select a class first!",
     "msg_033": "Add at least one student to the class!",
     "msg_034": "Grades saved successfully!",
+    "msg_035": "No internet connection",
     "email": "Email",
     "senha": "Password",
     "entrar": "Login",

@@ -1,7 +1,7 @@
 {
     "msg_001":"Este e-mail não está cadastrado ou senha incorreta",
     "msg_002":"Erro ao logar",
-    "msg_003":"Email e senha devem ser preenchidos",
+    "msg_003":"Nome, email e senha devem ser preenchidos",
     "msg_004":"Erro ao logar com Google: ID Token não encontrado",
     "msg_005":"Login com Google cancelado pelo usuário",
     "msg_006":"Você não concedeu permissões suficientes ao Google",
@@ -33,6 +33,7 @@
     "msg_032":"Selecione uma classe primeiro!",
     "msg_033":"Adicione pelo menos um aluno na classe!",
     "msg_034":"Notas salvas com sucesso!",
+    "msg_035":"Sem internet",
     "email":"Email",
     "senha":"Senha",
     "entrar":"Entrar",

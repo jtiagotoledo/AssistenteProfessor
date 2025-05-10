@@ -10,6 +10,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Picker } from '@react-native-picker/picker';
 import { useTranslation } from 'react-i18next';
 import i18n from '../../i18n';
+import { criarProfessor } from '../services/professores';
 
 const Login = ({ navigation }: any) => {
     const [senhaVisivel, setSenhaVisivel] = useState(false);
@@ -64,15 +65,23 @@ const Login = ({ navigation }: any) => {
                 const idToken = result.data.idToken;
                 const googleCredential = auth.GoogleAuthProvider.credential(idToken);
                 const userCredential = await auth().signInWithCredential(googleCredential);
+                const nome = userCredential.user.displayName
+                const email = userCredential.user.email
+                const foto = userCredential.user.photoURL
+                const uuid = userCredential.user.uid
 
-                //salvando credenciais no BD
+                //salvando credenciais no firebase
                 firestore().collection(userCredential.user.email ?? '').
                     doc('DadosUsuario').set({
-                        nomeUsuario: userCredential.user.displayName,
-                        emailUsuario: userCredential.user.email,
-                        fotoUsuario: userCredential.user.photoURL,
-                        iudUsuario: userCredential.user.uid
+                        nomeUsuario: nome,
+                        emailUsuario: email,
+                        fotoUsuario: foto,
+                        iudUsuario: uuid
                     })
+
+                //salvando credenciais no servidor próprio
+                criarProfessor({ nome, email, uuid, foto });
+
                 //cria Estados do App
                 firestore().collection(userCredential.user.email ?? '').doc('EstadosApp').set({
                     idPeriodo: '',

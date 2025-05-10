@@ -27,16 +27,17 @@ const NovaConta = ({ navigation }: any) => {
     }
 
     const criarConta = async () => {
-    if (email && senha) {
+    if (email && senha && nome) {
         try {
             const userCredential = await auth().createUserWithEmailAndPassword(email, senha);
             const uuid = userCredential.user.uid;
+            const foto = ''
 
             ToastAndroid.show(t('msg_014'), ToastAndroid.SHORT);
             navigation.reset({ index: 0, routes: [{ name: "App" }] });
             setIdUsuario(email);
             criarCaminhoSalvarEstados();
-            criarProfessor({ nome, email, uuid });
+            criarProfessor({ nome, email, uuid, foto }); //servidor ubuntu
 
         } catch (error:any) {
             if (error.code === 'auth/email-already-in-use') {
@@ -45,7 +46,9 @@ const NovaConta = ({ navigation }: any) => {
                 ToastAndroid.show(t('msg_010'), ToastAndroid.SHORT);
             } else if (error.code === 'auth/weak-password') {
                 ToastAndroid.show(t('msg_016'), ToastAndroid.SHORT);
-            } else {
+            } else if (error.code === 'auth/network-request-failed') {
+                ToastAndroid.show(t('msg_035'), ToastAndroid.SHORT);
+            }else {
                 ToastAndroid.show(t('msg_001'), ToastAndroid.SHORT); // mensagem genérica
                 console.error("Erro ao criar conta:", error);
             }
@@ -54,7 +57,6 @@ const NovaConta = ({ navigation }: any) => {
         ToastAndroid.show(t('msg_003'), ToastAndroid.SHORT);
     }
 };
-
 
     const onChangeInputNome = (event: NativeSyntheticEvent<TextInputChangeEventData>) => {
         setNome(event.nativeEvent.text);
