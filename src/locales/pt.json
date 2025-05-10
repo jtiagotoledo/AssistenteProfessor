@@ -34,6 +34,7 @@
     "msg_033":"Adicione pelo menos um aluno na classe!",
     "msg_034":"Notas salvas com sucesso!",
     "msg_035":"Sem internet",
+    "msg_036":"Este usuário já está cadastrado.",
     "email":"Email",
     "senha":"Senha",
     "entrar":"Entrar",

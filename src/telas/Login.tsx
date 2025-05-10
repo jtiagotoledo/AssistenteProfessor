@@ -80,7 +80,9 @@ const Login = ({ navigation }: any) => {
                     })
 
                 //salvando credenciais no servidor próprio
-                criarProfessor({ nome, email, uuid, foto });
+                if (userCredential.additionalUserInfo?.isNewUser) {
+                    await criarProfessor({ nome, email, uuid, foto });
+                }
 
                 //cria Estados do App
                 firestore().collection(userCredential.user.email ?? '').doc('EstadosApp').set({

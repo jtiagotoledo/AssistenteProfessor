@@ -34,6 +34,7 @@
     "msg_033": "Add at least one student to the class!",
     "msg_034": "Grades saved successfully!",
     "msg_035": "No internet connection",
+    "msg_036": "This user is already registered.",
     "email": "Email",
     "senha": "Password",
     "entrar": "Login",
