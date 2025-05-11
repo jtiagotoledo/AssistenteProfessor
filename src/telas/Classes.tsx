@@ -38,18 +38,21 @@ function Classes({ navigation }: any) {
   useEffect(() => {
     const registrar = async () => {
       const usuario = auth().currentUser;
-      console.log('id professor e email:', idProfessor, email);
-      if (usuario && idProfessor) {
-        const email = usuario.email ?? '';
-        console.log('Chamando registrarAcesso com:', idProfessor, email);
-        await registrarAcesso(idProfessor, email);
-      } else {
-        console.log('Usuário ou idProfessor indefinido');
+      if (!usuario) return;
+
+      const emailProfessor = usuario.email;
+      // TODO: trocar uid(firebase) para id_professor(mariadb)
+      const idProfessor = usuario.uid; 
+
+      if (emailProfessor && idProfessor) {
+        console.log(emailProfessor,idProfessor);
+        
+        await registrarAcesso(idProfessor, emailProfessor);
       }
     };
 
     registrar();
-  }, [email]);
+  }, []);
 
   const renderHeader = () => (
     <>

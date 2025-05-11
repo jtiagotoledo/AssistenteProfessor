@@ -28,6 +28,13 @@ Registrado domínio como:
 https://assistente-professor.duckdns.org
 Porta de acesso: 3000
 
+# versões 
+1.0.0 - versão inicial (rejeitada na play Store).
+1.1.0 - versão inicial.
+1.2.0 - login com google.
+1.3.0 - tradução para o Inglês.
+1.4.0 - banco de dados mariadb - ubuntu server.
+
 # Autor
 José Tiago Toledo da Silva 
 github.com/jtiagotoledo

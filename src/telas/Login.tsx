@@ -82,7 +82,6 @@ const Login = ({ navigation }: any) => {
                 //salvando credenciais no servidor próprio
                 if (userCredential.additionalUserInfo?.isNewUser) {
                     const professor = await criarProfessor({ nome, email, uuid, foto });
-                    setIdProfessor(professor.id)
                 }
 
                 //cria Estados do App
