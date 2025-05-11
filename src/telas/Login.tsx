@@ -14,7 +14,7 @@ import { criarProfessor } from '../services/professores';
 
 const Login = ({ navigation }: any) => {
     const [senhaVisivel, setSenhaVisivel] = useState(false);
-    const { email, setEmail, senha, setSenha, setIdUsuario, idUsuario } = useContext(Context);
+    const { email, setEmail, senha, setSenha, setIdUsuario, setIdProfessor, idProfessor } = useContext(Context);
     const [selectedLanguage, setSelectedLanguage] = useState(i18n.language)
     const { t } = useTranslation();
 
@@ -81,7 +81,8 @@ const Login = ({ navigation }: any) => {
 
                 //salvando credenciais no servidor próprio
                 if (userCredential.additionalUserInfo?.isNewUser) {
-                    await criarProfessor({ nome, email, uuid, foto });
+                    const professor = await criarProfessor({ nome, email, uuid, foto });
+                    setIdProfessor(professor.id)
                 }
 
                 //cria Estados do App

@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { View, StyleSheet, Text } from "react-native";
 import { Divider } from "react-native-paper";
 
@@ -24,14 +24,32 @@ import ModalMenu from "../modais/ModalMenu";
 
 import { useTranslation } from 'react-i18next';
 import { Context } from "../data/Provider";
+import { registrarAcesso } from '../services/acessos';
+import auth from '@react-native-firebase/auth';
 import React from "react";
 
 function Classes({ navigation }: any) {
-  const { nomePeriodoSelec } = useContext(Context);
+  const { nomePeriodoSelec, idProfessor, email } = useContext(Context);
   const { t } = useTranslation();
 
   consultasBD();
   atualizarBD();
+
+  useEffect(() => {
+    const registrar = async () => {
+      const usuario = auth().currentUser;
+      console.log('id professor e email:', idProfessor, email);
+      if (usuario && idProfessor) {
+        const email = usuario.email ?? '';
+        console.log('Chamando registrarAcesso com:', idProfessor, email);
+        await registrarAcesso(idProfessor, email);
+      } else {
+        console.log('Usuário ou idProfessor indefinido');
+      }
+    };
+
+    registrar();
+  }, [email]);
 
   const renderHeader = () => (
     <>
