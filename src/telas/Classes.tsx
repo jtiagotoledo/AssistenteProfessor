@@ -36,23 +36,15 @@ function Classes({ navigation }: any) {
   atualizarBD();
 
   useEffect(() => {
+    // contador de acessos do professor - mariadb tabela acessos.
     const registrar = async () => {
-      const usuario = auth().currentUser;
-      if (!usuario) return;
-
-      const emailProfessor = usuario.email;
-      // TODO: trocar uid(firebase) para id_professor(mariadb)
-      const idProfessor = usuario.uid; 
-
-      if (emailProfessor && idProfessor) {
-        console.log(emailProfessor,idProfessor);
-        
-        await registrarAcesso(idProfessor, emailProfessor);
+      if (email == '') return;
+      if (email && idProfessor) {
+        await registrarAcesso(idProfessor, email);
       }
     };
-
     registrar();
-  }, []);
+  }, [idProfessor]);
 
   const renderHeader = () => (
     <>

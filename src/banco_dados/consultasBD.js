@@ -1,16 +1,37 @@
 import { useEffect, useContext } from "react";
 import firestore from '@react-native-firebase/firestore';
 import { Context } from "../data/Provider";
+import { buscarProfessorPorId } from '../services/professores';
+import auth from '@react-native-firebase/auth';
 
 const consultasBD = () => {
 
-  const { idUsuario, setListaPeriodos, setIdPeriodoSelec, setIdClasseSelec,
+  const { setNome, setEmail, setIdProfessor, idUsuario, setListaPeriodos, setIdPeriodoSelec, setIdClasseSelec,
     setNomePeriodoSelec, idPeriodoSelec, setListaClasses, idClasseSelec, setListaAlunos,
     dataSelec, setListaFrequencia, setListaNotas, setTextoAtividades, setTextoTituloNotas } = useContext(Context)
 
   const listaAlunosRef = firestore().collection(idUsuario ? idUsuario : ' ')
     .doc(idPeriodoSelec).collection('Classes')
     .doc(idClasseSelec).collection('ListaAlunos')
+
+  useEffect(() => {
+    // recupera dados dos professor e inicia os estados.
+  const buscar = async () => {
+    const id = auth().currentUser?.uid;
+
+    if (id) {
+      try {
+        const result = await buscarProfessorPorId(id); 
+        setNome(result.nome)
+        setEmail(result.email)
+        setIdProfessor(result.id)
+      } catch (erro) {
+        console.error('Erro ao buscar professor:', erro);
+      }
+    }
+  };
+  buscar();
+}, []);
 
   useEffect(() => {
     //recuperar dados dos estados do app
