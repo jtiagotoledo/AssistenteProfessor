@@ -25,7 +25,6 @@ import ModalMenu from "../modais/ModalMenu";
 import { useTranslation } from 'react-i18next';
 import { Context } from "../data/Provider";
 import { registrarAcesso } from '../services/acessos';
-import auth from '@react-native-firebase/auth';
 import React from "react";
 
 function Classes({ navigation }: any) {

@@ -1,15 +1,16 @@
 import { Text, View, StyleSheet, Pressable, TextInput, Modal, NativeSyntheticEvent, TextInputChangeEventData, ToastAndroid, TouchableOpacity } from "react-native"
 import React, { useState, useContext } from 'react';
-import firestore from '@react-native-firebase/firestore';
 import { Context } from "../data/Provider";
 import Globais from "../data/Globais";
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import { useTranslation } from 'react-i18next';
+import { criarPeriodo } from '../services/periodos';
+
 
 const ModalAddPeriodo = () => {
 
   const [valuePeriodo, setValuePeriodo] = useState<string>('')
-  const { modalAddPeriodo, setModalAddPeriodo, idUsuario, setNomePeriodoSelec,
+  const { modalAddPeriodo, setModalAddPeriodo, idProfessor, setNomePeriodoSelec,
     setIdPeriodoSelec } = useContext(Context)
   const { t } = useTranslation();
 
@@ -18,43 +19,20 @@ const ModalAddPeriodo = () => {
   }
 
   const onPressAddPeriodo = async () => {
-    // consulta para verificar se o período já existe
-    firestore().collection(idUsuario)
-      .where('periodo', '==', valuePeriodo)
-      .get().then((snapshot) => {
-        snapshot.empty ? addPeriodo() :
-          ToastAndroid.show(
-            t('msg_025'),
-            ToastAndroid.SHORT)
-      })
-    const addPeriodo = async () => {
-      if (valuePeriodo != '') {
-        setNomePeriodoSelec(valuePeriodo)
-        const refDoc = firestore().collection(idUsuario);
-        const idPeriodo = (await refDoc.add({})).id
-        refDoc.doc(idPeriodo).set({
-          periodo: valuePeriodo,
-          idPeriodo: idPeriodo
-        })
-        await setIdPeriodoSelec(idPeriodo);
-        setModalAddPeriodo(!modalAddPeriodo);
-
-        //atualizando o estado do período
-        firestore().collection(idUsuario).
-          doc('EstadosApp').set({
-            idPeriodo: idPeriodo,
-            periodo: valuePeriodo,
-            idClasse: '',
-            classe: '',
-            data: '',
-            aba: 'Classes'
-          })
+    console.log(valuePeriodo,idProfessor);
+    
+    if (valuePeriodo !== '' && idProfessor) {
+      try {
+        setModalAddPeriodo(false);
+        const result = await criarPeriodo(valuePeriodo, idProfessor);
+        setIdPeriodoSelec(result.id);
+        setNomePeriodoSelec(result.nome);
+      } catch (error) {
+        console.error('Erro ao criar período:', error);
+        ToastAndroid.show(t('Erro ao criar período'), ToastAndroid.SHORT);
       }
-      else {
-        ToastAndroid.show(
-          t('msg_026'),
-          ToastAndroid.SHORT)
-      }
+    } else {
+      ToastAndroid.show(t('msg_026'), ToastAndroid.SHORT);
     }
   }
 
@@ -71,7 +49,7 @@ const ModalAddPeriodo = () => {
           <View style={styles.modalView}>
             <View style={styles.containerIcon}>
               <TouchableOpacity onPress={() => setModalAddPeriodo(!modalAddPeriodo)}>
-                <MaterialIcon name="cancel" color="black" size={25}/>
+                <MaterialIcon name="cancel" color="black" size={25} />
               </TouchableOpacity>
             </View>
             <Text style={styles.modalText}>{t('Crie um novo período:')}</Text>
