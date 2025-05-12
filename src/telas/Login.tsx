@@ -81,7 +81,8 @@ const Login = ({ navigation }: any) => {
 
                 //salvando credenciais no servidor próprio
                 if (userCredential.additionalUserInfo?.isNewUser) {
-                    const professor = await criarProfessor({ nome, email, uuid, foto });
+                    await criarProfessor({ nome, email, uuid, foto });
+                    ToastAndroid.show(t('msg_014'), ToastAndroid.SHORT);
                 }
 
                 //cria Estados do App
