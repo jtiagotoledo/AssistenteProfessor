@@ -2,11 +2,12 @@ import { useEffect, useContext } from "react";
 import firestore from '@react-native-firebase/firestore';
 import { Context } from "../data/Provider";
 import { buscarProfessorPorId } from '../services/professores';
+import { buscarPeriodosPorProfessor } from '../services/periodos';
 import auth from '@react-native-firebase/auth';
 
 const consultasBD = () => {
 
-  const { setNome, setEmail, setIdProfessor, idUsuario, setListaPeriodos, setIdPeriodoSelec, setIdClasseSelec,
+  const { setNome, setEmail, idProfessor, setIdProfessor, idUsuario, setListaPeriodos, setIdPeriodoSelec, setIdClasseSelec,
     setNomePeriodoSelec, idPeriodoSelec, setListaClasses, idClasseSelec, setListaAlunos,
     dataSelec, setListaFrequencia, setListaNotas, setTextoAtividades, setTextoTituloNotas } = useContext(Context)
 
@@ -16,22 +17,22 @@ const consultasBD = () => {
 
   useEffect(() => {
     // recupera dados dos professor e inicia os estados.
-  const buscar = async () => {
-    const id = auth().currentUser?.uid;
+    const buscar = async () => {
+      const id = auth().currentUser?.uid;
 
-    if (id) {
-      try {
-        const result = await buscarProfessorPorId(id); 
-        setNome(result.nome)
-        setEmail(result.email)
-        setIdProfessor(result.id)
-      } catch (erro) {
-        console.error('Erro ao buscar professor:', erro);
+      if (id) {
+        try {
+          const result = await buscarProfessorPorId(id);
+          setNome(result.nome)
+          setEmail(result.email)
+          setIdProfessor(result.id)
+        } catch (erro) {
+          console.error('Erro ao buscar professor:', erro);
+        }
       }
-    }
-  };
-  buscar();
-}, []);
+    };
+    buscar();
+  }, []);
 
   useEffect(() => {
     //recuperar dados dos estados do app
@@ -47,24 +48,24 @@ const consultasBD = () => {
   }, []);
 
   useEffect(() => {
-    //consulta da lista de períodos do DB.
-    const unsub = firestore().collection(idUsuario)
-      .where(firestore.FieldPath.documentId(), "!=", "EstadosApp")
-      .onSnapshot(querySnapshot => {
-        const periodos = [];
-        querySnapshot.forEach(documentSnapshot => {
-          let label = documentSnapshot.data().periodo
-          let value = documentSnapshot.data().periodo
-          let idPeriodo = documentSnapshot.data().idPeriodo
-          let periodo = documentSnapshot.data().periodo
-          periodos.push({ label: label, value: value, idPeriodo: idPeriodo, periodo: periodo });
-        });
-        setListaPeriodos(periodos)
-      });
-    return () => {
-      unsub();
+     // buscar todos os períodos do professor.
+    const carregarPeriodos = async () => {
+      try {
+        if (!idProfessor) return;
+        const periodos = await buscarPeriodosPorProfessor(idProfessor);
+        const periodosFormatados = periodos.map((p) => ({
+          label: p.nome,
+          value: p.nome,
+          idPeriodo: p.id,
+          periodo: p.nome
+        }));
+        setListaPeriodos(periodosFormatados);
+      } catch (error) {
+        console.error('Erro ao carregar períodos', error);
+      }
     };
-  }, []);
+    carregarPeriodos();
+  }, [idProfessor]);
 
   useEffect(() => {
     //consulta da lista de classes do DB.

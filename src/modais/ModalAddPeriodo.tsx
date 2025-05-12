@@ -11,7 +11,7 @@ const ModalAddPeriodo = () => {
 
   const [valuePeriodo, setValuePeriodo] = useState<string>('')
   const { modalAddPeriodo, setModalAddPeriodo, idProfessor, setNomePeriodoSelec,
-    setIdPeriodoSelec } = useContext(Context)
+    setIdPeriodoSelec, setListaPeriodos } = useContext(Context)
   const { t } = useTranslation();
 
   const onChangeInputPeriodo = (event: NativeSyntheticEvent<TextInputChangeEventData>) => {
@@ -19,17 +19,22 @@ const ModalAddPeriodo = () => {
   }
 
   const onPressAddPeriodo = async () => {
-    console.log(valuePeriodo,idProfessor);
-    
     if (valuePeriodo !== '' && idProfessor) {
       try {
         setModalAddPeriodo(false);
         const result = await criarPeriodo(valuePeriodo, idProfessor);
         setIdPeriodoSelec(result.id);
         setNomePeriodoSelec(result.nome);
+        // add novo período na lista de períodos.
+        const novoPeriodo = {
+          label: result.nome,
+          value: result.nome,
+          idPeriodo: result.id,
+          periodo: result.nome
+        };
+        setListaPeriodos((prev:any) => [...prev, novoPeriodo]);
       } catch (error) {
-        console.error('Erro ao criar período:', error);
-        ToastAndroid.show(t('Erro ao criar período'), ToastAndroid.SHORT);
+        ToastAndroid.show(t('msg_037'), ToastAndroid.SHORT);
       }
     } else {
       ToastAndroid.show(t('msg_026'), ToastAndroid.SHORT);
