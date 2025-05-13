@@ -36,6 +36,7 @@
     "msg_035": "No internet connection",
     "msg_036": "This user is already registered.",
     "msg_037": "Failed to create period!",
+    "msg_038":"Failed to create class!",
     "email": "Email",
     "senha": "Password",
     "entrar": "Login",

@@ -5,6 +5,8 @@ import { Context } from "../data/Provider";
 import Globais from "../data/Globais";
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import { useTranslation } from 'react-i18next';
+import { criarClasse } from '../services/classes';
+
 
 const ModalAddClasse = () => {
 
@@ -17,47 +19,26 @@ const ModalAddClasse = () => {
     setValueClasse(event.nativeEvent.text);
   }
 
+  // inclusão da classe no BD
   const onPressAddClasse = async () => {
-    // consulta para verificar se a classe já existe
-    firestore().collection(idUsuario)
-      .doc(idPeriodoSelec).collection('Classes')
-      .where('classe', '==', valueClasse)
-      .get().then((snapshot) => {
-        snapshot.empty ? addClasse() :
-          ToastAndroid.show(
-            t('msg_023'),
-            ToastAndroid.SHORT)
-      })
-
-    // inclusão da classe no BD
-    const addClasse = async () => {
-      if (valueClasse != '') {
+    if (valueClasse != '' && idPeriodoSelec) {
+      try {
+        setModalAddClasse(false);
+        const result = await criarClasse(valueClasse, idPeriodoSelec);
         setNomeClasseSelec(valueClasse)
-        const refDoc = firestore().collection(idUsuario).doc(idPeriodoSelec).collection('Classes');
-        const idClasse = (await refDoc.add({})).id
-        refDoc.doc(idClasse).set({
-          classe: valueClasse,
-          idClasse: idClasse
-        })
-        await setIdClasseSelec(idClasse);
-        setModalAddClasse(!modalAddClasse);
-
-        //atualizando o estado da classe
-        firestore().collection(idUsuario).
-          doc('EstadosApp').set({
-            idPeriodo: idPeriodoSelec,
-            periodo: nomePeriodoSelec,
-            idClasse: idClasse,
-            classe: valueClasse,
-            data: '',
-            aba: 'Classes'
-          })
-        setValueClasse('')
-      } else {
-        ToastAndroid.show(
-          t('msg_024'),
-          ToastAndroid.SHORT)
+        await setIdClasseSelec(result.id);
+        // add nova classe na lista de classes.
+        /* const novaClasse = {
+         
+        };
+        setListaClasses((prev: any) => [...prev, novaClasse]); */
+      } catch (error) {
+        ToastAndroid.show(t('msg_037'), ToastAndroid.SHORT);
       }
+    } else {
+      ToastAndroid.show(
+        t('msg_024'),
+        ToastAndroid.SHORT)
     }
   }
 
@@ -74,14 +55,14 @@ const ModalAddClasse = () => {
           <View style={styles.modalView}>
             <View style={styles.containerIcon}>
               <TouchableOpacity onPress={() => setModalAddClasse(!modalAddClasse)}>
-                <MaterialIcon name="cancel" color="black" size={25}/>
+                <MaterialIcon name="cancel" color="black" size={25} />
               </TouchableOpacity>
             </View>
             <Text style={styles.modalText}>{t("Crie uma nova classe:")}</Text>
-            <TextInput placeholder={t('Nome da classe')}onChange={onChangeInputClasse} style={styles.textInput}></TextInput>
+            <TextInput placeholder={t('Nome da classe')} onChange={onChangeInputClasse} style={styles.textInput}></TextInput>
             <Pressable
               style={[styles.button, styles.buttonClose]}
-              onPress={() =>onPressAddClasse()}>
+              onPress={() => onPressAddClasse()}>
               <Text style={styles.textStyle}>{t('Criar')}</Text>
             </Pressable>
           </View>

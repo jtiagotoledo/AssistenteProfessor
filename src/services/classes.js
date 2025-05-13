@@ -1,0 +1,26 @@
+import api from './api';
+
+// Buscar todas as classes de um período
+export const buscarClassesPorPeriodo = async (id_periodo) => {
+  try {
+    const resposta = await api.get(`/classes/${id_periodo}`);
+    return resposta.data;
+  } catch (erro) {
+    console.error('Erro ao buscar classes do período:', erro);
+    throw erro;
+  }
+};
+
+// Criar nova classe
+export const criarClasse = async (nome, id_periodo) => {
+  try {
+    const resposta = await api.post('/classes', {
+      nome,
+      id_periodo
+    });
+    return resposta.data;
+  } catch (erro) {
+    console.error('Erro ao criar nova classe:', erro);
+    throw erro;
+  }
+};
