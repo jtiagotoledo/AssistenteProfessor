@@ -5,12 +5,14 @@ import { Context } from "../data/Provider";
 import Globais from "../data/Globais";
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import { useTranslation } from 'react-i18next';
+import { atualizarPeriodo } from '../services/periodos';
+
 
 const ModalEditPeriodo = () => {
 
   const [valuePeriodo, setValuePeriodo] = useState<string>('')
   const { modalEditPeriodo, setModalEditPeriodo, idPeriodoSelec,
-    idUsuario, setIdClasseSelec, nomePeriodoSelec } = useContext(Context)
+    idUsuario, setRecarregarPeriodos, setNomePeriodoSelec, setIdPeriodoSelec, nomePeriodoSelec } = useContext(Context)
   const { t } = useTranslation();
 
   const onChangeInputPeriodo = (event: NativeSyntheticEvent<TextInputChangeEventData>) => {
@@ -19,23 +21,20 @@ const ModalEditPeriodo = () => {
 
   const onPressEditPeriodo = async () => {
     if (valuePeriodo != '') {
-      firestore().collection(idUsuario)
-        .doc(idPeriodoSelec).update({
-          periodo: valuePeriodo
-        })
-      setIdClasseSelec(valuePeriodo);
-      setModalEditPeriodo(!modalEditPeriodo);
+      setModalEditPeriodo(false);
+      try {
+        await atualizarPeriodo(idPeriodoSelec, valuePeriodo);
+        setRecarregarPeriodos((prev:any)=>!prev)
+        setIdPeriodoSelec(idPeriodoSelec)
+        setNomePeriodoSelec(valuePeriodo);
+      } catch (error) {
+        console.log('Erro', 'Não foi possível atualizar.');
+      }
     } else {
       ToastAndroid.show(
-        'O campo nome do período é obrigatório!',
+        t('msg_026'),
         ToastAndroid.SHORT)
     }
-
-    //atualizando o estado da classe
-    firestore().collection(idUsuario).
-      doc('EstadosApp').update({
-        periodo: valuePeriodo
-      })
   }
 
   return (

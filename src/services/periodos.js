@@ -24,3 +24,14 @@ export const criarPeriodo = async (nome, id_professor) => {
     throw erro;
   }
 };
+
+// Atualizar um período
+export const atualizarPeriodo = async (id, nome) => {
+  try {
+    const resposta = await api.put(`/periodos/${id}`, { nome });
+    return resposta.data;
+  } catch (erro) {
+    console.error('Erro ao atualizar período:', erro);
+    throw erro;
+  }
+};

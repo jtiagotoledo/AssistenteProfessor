@@ -3,12 +3,13 @@ import firestore from '@react-native-firebase/firestore';
 import { Context } from "../data/Provider";
 import { buscarProfessorPorId } from '../services/professores';
 import { buscarPeriodosPorProfessor } from '../services/periodos';
+import { buscarClassesPorPeriodo } from '../services/classes';
 import auth from '@react-native-firebase/auth';
 
 const consultasBD = () => {
 
   const { setNome, setEmail, idProfessor, setIdProfessor, idUsuario, setListaPeriodos, setIdPeriodoSelec, setIdClasseSelec,
-    setNomePeriodoSelec, idPeriodoSelec, setListaClasses, idClasseSelec, setListaAlunos,
+    setNomePeriodoSelec, idPeriodoSelec, setListaClasses, idClasseSelec, setListaAlunos, recarregarPeriodos,
     dataSelec, setListaFrequencia, setListaNotas, setTextoAtividades, setTextoTituloNotas } = useContext(Context)
 
   const listaAlunosRef = firestore().collection(idUsuario ? idUsuario : ' ')
@@ -65,7 +66,28 @@ const consultasBD = () => {
       }
     };
     carregarPeriodos();
-  }, [idProfessor]);
+  }, [idProfessor,recarregarPeriodos]);
+
+  useEffect(() => {
+  // buscar todas as classes do período selecionado
+  const carregarClasses = async () => {
+    try {
+      if (!idPeriodoSelec) return;
+      const classes = await buscarClassesPorPeriodo(idPeriodoSelec);
+      console.log('classes',classes);
+      const classesFormatadas = classes.map((c) => ({
+        idClasse: c.id,
+        classe: c.nome,
+        idPeriodo: c.id_periodo,
+      }));
+      setListaClasses(classesFormatadas);
+    } catch (error) {
+      console.error('Erro ao carregar classes', error);
+    }
+  };
+
+  carregarClasses();
+}, [idPeriodoSelec]);
 
   useEffect(() => {
     //consulta da lista de classes do DB.

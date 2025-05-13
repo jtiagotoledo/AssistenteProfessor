@@ -11,7 +11,7 @@ const ModalAddPeriodo = () => {
 
   const [valuePeriodo, setValuePeriodo] = useState<string>('')
   const { modalAddPeriodo, setModalAddPeriodo, idProfessor, setNomePeriodoSelec,
-    setIdPeriodoSelec, setListaPeriodos } = useContext(Context)
+    setIdPeriodoSelec, setRecarregarPeriodos } = useContext(Context)
   const { t } = useTranslation();
 
   const onChangeInputPeriodo = (event: NativeSyntheticEvent<TextInputChangeEventData>) => {
@@ -25,14 +25,7 @@ const ModalAddPeriodo = () => {
         const result = await criarPeriodo(valuePeriodo, idProfessor);
         setIdPeriodoSelec(result.id);
         setNomePeriodoSelec(result.nome);
-        // add novo período na lista de períodos.
-        const novoPeriodo = {
-          label: result.nome,
-          value: result.nome,
-          idPeriodo: result.id,
-          periodo: result.nome
-        };
-        setListaPeriodos((prev:any) => [...prev, novoPeriodo]);
+        setRecarregarPeriodos((prev:any)=>!prev)
       } catch (error) {
         ToastAndroid.show(t('msg_037'), ToastAndroid.SHORT);
       }

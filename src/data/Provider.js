@@ -37,6 +37,7 @@ export default function Provider({ children }) {
     const [flagLongPressDataFreq, setFlagLongPressDataFreq] = useState(false);
     const [flagLongPressDataNotas, setFlagLongPressDataNotas] = useState(false);
     const [recarregarFrequencia, setRecarregarFrequencia] = useState('');
+    const [recarregarPeriodos, setRecarregarPeriodos] = useState('');
     const [recarregarNotas, setRecarregarNotas] = useState('');
     const [recarregarCalendarioFreq, setRecarregarCalendarioFreq] = useState('');
     const [recarregarCalendarioNotas, setRecarregarCalendarioNotas] = useState('');
@@ -100,6 +101,7 @@ export default function Provider({ children }) {
             flagLongPressDataFreq, setFlagLongPressDataFreq,
             flagLongPressDataNotas, setFlagLongPressDataNotas,
             recarregarFrequencia, setRecarregarFrequencia,
+            recarregarPeriodos, setRecarregarPeriodos,
             recarregarNotas, setRecarregarNotas,
             recarregarCalendarioFreq, setRecarregarCalendarioFreq,
             recarregarCalendarioNotas, setRecarregarCalendarioNotas,
