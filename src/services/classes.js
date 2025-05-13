@@ -24,3 +24,17 @@ export const criarClasse = async (nome, id_periodo) => {
     throw erro;
   }
 };
+
+// Atualizar uma classe
+export const atualizarClasse = async (id, nome, id_periodo) => {
+  try {
+    const resposta = await api.put(`/classes/${id}`, {
+      nome,
+      id_periodo
+    });
+    return resposta.data; 
+  } catch (erro) {
+    console.error('Erro ao atualizar classe:', erro);
+    throw erro; 
+  }
+};

@@ -12,7 +12,7 @@ const ModalAddClasse = () => {
 
   const [valueClasse, setValueClasse] = useState<string>('')
   const { modalAddClasse, setModalAddClasse, idPeriodoSelec, idUsuario, setIdClasseSelec,
-    nomePeriodoSelec, setNomeClasseSelec, setListaClasses } = useContext(Context)
+    nomePeriodoSelec, setNomeClasseSelec, setRecarregarClasses } = useContext(Context)
   const { t } = useTranslation();
 
   const onChangeInputClasse = (event: NativeSyntheticEvent<TextInputChangeEventData>) => {
@@ -27,13 +27,7 @@ const ModalAddClasse = () => {
         const result = await criarClasse(valueClasse, idPeriodoSelec);
         setNomeClasseSelec(valueClasse)
         await setIdClasseSelec(result.id);
-        // add nova classe na lista de classes.
-        const novaClasse = {
-          idClasse: result.id,
-          classe: result.nome,
-          idPeriodo: result.id_periodo
-        };
-        setListaClasses((prev: any) => [...prev, novaClasse]);
+        setRecarregarClasses((prev: any) => !prev)
       } catch (error) {
         ToastAndroid.show(t('msg_037'), ToastAndroid.SHORT);
       }

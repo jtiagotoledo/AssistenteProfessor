@@ -10,7 +10,7 @@ const consultasBD = () => {
 
   const { setNome, setEmail, idProfessor, setIdProfessor, idUsuario, setListaPeriodos, setIdPeriodoSelec, setIdClasseSelec,
     setNomePeriodoSelec, idPeriodoSelec, setListaClasses, idClasseSelec, setListaAlunos, recarregarPeriodos,
-    dataSelec, setListaFrequencia, setListaNotas, setTextoAtividades, setTextoTituloNotas } = useContext(Context)
+    dataSelec, setListaFrequencia, setListaNotas, setTextoAtividades, setTextoTituloNotas, recarregarClasses } = useContext(Context)
 
   const listaAlunosRef = firestore().collection(idUsuario ? idUsuario : ' ')
     .doc(idPeriodoSelec).collection('Classes')
@@ -49,7 +49,7 @@ const consultasBD = () => {
   }, []);
 
   useEffect(() => {
-     // buscar todos os períodos do professor.
+    // buscar todos os períodos do professor.
     const carregarPeriodos = async () => {
       try {
         if (!idProfessor) return;
@@ -66,44 +66,27 @@ const consultasBD = () => {
       }
     };
     carregarPeriodos();
-  }, [idProfessor,recarregarPeriodos]);
+  }, [idProfessor, recarregarPeriodos]);
 
   useEffect(() => {
-  // buscar todas as classes do período selecionado
-  const carregarClasses = async () => {
-    try {
-      if (!idPeriodoSelec) return;
-      const classes = await buscarClassesPorPeriodo(idPeriodoSelec);
-      console.log('classes',classes);
-      const classesFormatadas = classes.map((c) => ({
-        idClasse: c.id,
-        classe: c.nome,
-        idPeriodo: c.id_periodo,
-      }));
-      setListaClasses(classesFormatadas);
-    } catch (error) {
-      console.error('Erro ao carregar classes', error);
-    }
-  };
-
-  carregarClasses();
-}, [idPeriodoSelec]);
-
-  useEffect(() => {
-    //consulta da lista de classes do DB.
-    const unsub = firestore().collection(idUsuario).doc(idPeriodoSelec)
-      .collection('Classes').orderBy('classe')
-      .onSnapshot(docSnapshot => {
-        const classes = [];
-        docSnapshot.forEach((item) => {
-          classes.push(item.data())
-        });
-        setListaClasses(classes);
-      });
-    return () => {
-      unsub();
+    // buscar todas as classes do período selecionado
+    const carregarClasses = async () => {
+      try {
+        if (!idPeriodoSelec) return;
+        const classes = await buscarClassesPorPeriodo(idPeriodoSelec);
+        console.log('classes', classes);
+        const classesFormatadas = classes.map((c) => ({
+          idClasse: c.id,
+          classe: c.nome,
+          idPeriodo: c.id_periodo,
+        }));
+        setListaClasses(classesFormatadas);
+      } catch (error) {
+        console.error('Erro ao carregar classes', error);
+      }
     };
-  }, [idPeriodoSelec]);
+    carregarClasses();
+  }, [idPeriodoSelec, recarregarClasses]);
 
   useEffect(() => {
     setListaAlunos([])

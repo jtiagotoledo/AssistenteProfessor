@@ -25,7 +25,6 @@ const ModalEditPeriodo = () => {
       try {
         await atualizarPeriodo(idPeriodoSelec, valuePeriodo);
         setRecarregarPeriodos((prev:any)=>!prev)
-        setIdPeriodoSelec(idPeriodoSelec)
         setNomePeriodoSelec(valuePeriodo);
       } catch (error) {
         console.log('Erro', 'Não foi possível atualizar.');

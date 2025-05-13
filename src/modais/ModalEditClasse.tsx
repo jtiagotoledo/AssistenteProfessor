@@ -5,12 +5,14 @@ import { Context } from "../data/Provider";
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import Globais from "../data/Globais";
 import { useTranslation } from 'react-i18next';
+import { atualizarClasse } from '../services/classes';
+
 
 const ModalEditClasse = () => {
 
   const [valueClasse, setValueClasse] = useState<string>('')
-  const { modalEditClasse, setModalEditClasse, idPeriodoSelec, idUsuario, setIdClasseSelec, idClasseSelec,
-    nomeClasseSelec, setFlagLongPressClasse } = useContext(Context)
+  const { modalEditClasse, setModalEditClasse, idPeriodoSelec, idClasseSelec,
+    nomeClasseSelec, setFlagLongPressClasse, setNomeClasseSelec, setRecarregarClasses } = useContext(Context)
   const { t } = useTranslation();
 
   const onChangeInputClasse = (event: NativeSyntheticEvent<TextInputChangeEventData>) => {
@@ -18,42 +20,17 @@ const ModalEditClasse = () => {
   }
 
   const onPressEditClasse = async () => {
-
-    // consulta para verificar se a classe já existe
-    firestore().collection(idUsuario)
-      .doc(idPeriodoSelec).collection('Classes')
-      .where('classe', '==', valueClasse)
-      .get().then((snapshot) => {
-        snapshot.empty ? editarAluno() :
-          ToastAndroid.show(
-            t('msg_029'),
-            ToastAndroid.SHORT)
-      })
-
     // edição da classe no BD
-    const editarAluno = () => {
-      if (valueClasse != '') {
-        firestore().collection(idUsuario)
-          .doc(idPeriodoSelec).collection('Classes')
-          .doc(idClasseSelec).update({
-            classe: valueClasse
-          })
-        setIdClasseSelec(idClasseSelec);
-        setModalEditClasse(!modalEditClasse);
-        setFlagLongPressClasse(false)
-
-        //atualizando o estado da classe
-        firestore().collection(idUsuario).
-          doc('EstadosApp').set({
-            classe: valueClasse
-          })
-        setValueClasse('')
-
-      } else {
-        ToastAndroid.show(
-          t('msg_030'),
-          ToastAndroid.SHORT)
-      }
+    if (valueClasse != '') {
+      setModalEditClasse(false);
+      await atualizarClasse(idClasseSelec, valueClasse, idPeriodoSelec)
+      setFlagLongPressClasse(false)
+      setNomeClasseSelec(valueClasse);
+      setRecarregarClasses((prev: any) => !prev)
+    } else {
+      ToastAndroid.show(
+        t('msg_030'),
+        ToastAndroid.SHORT)
     }
   }
 
@@ -70,7 +47,7 @@ const ModalEditClasse = () => {
           <View style={styles.modalView}>
             <View style={styles.containerIcon}>
               <TouchableOpacity onPress={() => setModalEditClasse(!modalEditClasse)}>
-                <MaterialIcon name="cancel" color="black" size={25}/>
+                <MaterialIcon name="cancel" color="black" size={25} />
               </TouchableOpacity>
             </View>
             <Text style={styles.modalText}>{t('Edite o nome da classe:')}</Text>
@@ -82,7 +59,7 @@ const ModalEditClasse = () => {
             </TextInput>
             <Pressable
               style={[styles.button, styles.buttonClose]}
-              onPress={() =>onPressEditClasse()}>
+              onPress={() => onPressEditClasse()}>
               <Text style={styles.textStyle}>{t('Editar')}</Text>
             </Pressable>
           </View>
