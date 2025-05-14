@@ -14,7 +14,7 @@ import { criarProfessor } from '../services/professores';
 
 const Login = ({ navigation }: any) => {
     const [senhaVisivel, setSenhaVisivel] = useState(false);
-    const { email, setEmail, senha, setSenha, setIdUsuario, setIdProfessor, idProfessor } = useContext(Context);
+    const { email, setEmail, senha, setSenha, setIdUsuario, setRecarregarDadosProfessor } = useContext(Context);
     const [selectedLanguage, setSelectedLanguage] = useState(i18n.language)
     const { t } = useTranslation();
 
@@ -82,6 +82,7 @@ const Login = ({ navigation }: any) => {
                 //salvando credenciais no servidor próprio
                 if (userCredential.additionalUserInfo?.isNewUser) {
                     await criarProfessor({ nome, email, uuid, foto });
+                    setRecarregarDadosProfessor((prev: any) => !prev)
                     ToastAndroid.show(t('msg_014'), ToastAndroid.SHORT);
                 }
 

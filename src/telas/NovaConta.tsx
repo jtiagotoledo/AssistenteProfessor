@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { TextInput, View, Text, StyleSheet, ToastAndroid, NativeSyntheticEvent, TextInputChangeEventData, Image, TouchableOpacity, ScrollView } from 'react-native';
+import { TextInput, View, Text, StyleSheet, ToastAndroid, NativeSyntheticEvent, TextInputChangeEventData, Image, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import auth from '@react-native-firebase/auth';
 import { Context } from "../data/Provider";
@@ -10,8 +10,9 @@ import { useTranslation } from 'react-i18next';
 import { criarProfessor } from '../services/professores';
 
 const NovaConta = ({ navigation }: any) => {
-    const { nome, setNome, email, setEmail, senha, setSenha, setIdUsuario } = useContext(Context);
+    const { nome, setNome, email, setEmail, senha, setSenha, setIdUsuario, setRecarregarDadosProfessor } = useContext(Context);
     const [senhaVisivel, setSenhaVisivel] = useState(false); // Estado para alternar a visibilidade da senha
+    const [loading, setLoading] = useState(false);
     const { t } = useTranslation();
 
     const criarCaminhoSalvarEstados = () => {
@@ -27,36 +28,40 @@ const NovaConta = ({ navigation }: any) => {
     }
 
     const criarConta = async () => {
-    if (email && senha && nome) {
-        try {
-            const userCredential = await auth().createUserWithEmailAndPassword(email, senha);
-            const uuid = userCredential.user.uid;
-            const foto = ''
+        if (email && senha && nome) {
+            try {
+                setLoading(true);
+                const userCredential = await auth().createUserWithEmailAndPassword(email, senha);
+                const uuid = userCredential.user.uid;
+                const foto = ''
 
-            ToastAndroid.show(t('msg_014'), ToastAndroid.SHORT);
-            navigation.reset({ index: 0, routes: [{ name: "App" }] });
-            setIdUsuario(email);
-            criarCaminhoSalvarEstados();
-            criarProfessor({ nome, email, uuid, foto }); //servidor ubuntu
+                setIdUsuario(email);
+                criarCaminhoSalvarEstados();
+                const result = await criarProfessor({ nome, email, uuid, foto }); //servidor ubuntu
+                setRecarregarDadosProfessor((prev: any) => !prev)
+                navigation.reset({ index: 0, routes: [{ name: "App" }] });
 
-        } catch (error:any) {
-            if (error.code === 'auth/email-already-in-use') {
-                ToastAndroid.show(t('msg_015'), ToastAndroid.SHORT);
-            } else if (error.code === 'auth/invalid-email') {
-                ToastAndroid.show(t('msg_010'), ToastAndroid.SHORT);
-            } else if (error.code === 'auth/weak-password') {
-                ToastAndroid.show(t('msg_016'), ToastAndroid.SHORT);
-            } else if (error.code === 'auth/network-request-failed') {
-                ToastAndroid.show(t('msg_035'), ToastAndroid.SHORT);
-            }else {
-                ToastAndroid.show(t('msg_001'), ToastAndroid.SHORT); // mensagem genérica
-                console.error("Erro ao criar conta:", error);
+                ToastAndroid.show(t('msg_014'), ToastAndroid.SHORT);
+            } catch (error: any) {
+                if (error.code === 'auth/email-already-in-use') {
+                    ToastAndroid.show(t('msg_015'), ToastAndroid.SHORT);
+                } else if (error.code === 'auth/invalid-email') {
+                    ToastAndroid.show(t('msg_010'), ToastAndroid.SHORT);
+                } else if (error.code === 'auth/weak-password') {
+                    ToastAndroid.show(t('msg_016'), ToastAndroid.SHORT);
+                } else if (error.code === 'auth/network-request-failed') {
+                    ToastAndroid.show(t('msg_035'), ToastAndroid.SHORT);
+                } else {
+                    ToastAndroid.show(t('msg_001'), ToastAndroid.SHORT); // mensagem genérica
+                    console.error("Erro ao criar conta:", error);
+                }
+            } finally {
+                setLoading(false);
             }
+        } else {
+            ToastAndroid.show(t('msg_003'), ToastAndroid.SHORT);
         }
-    } else {
-        ToastAndroid.show(t('msg_003'), ToastAndroid.SHORT);
-    }
-};
+    };
 
     const onChangeInputNome = (event: NativeSyntheticEvent<TextInputChangeEventData>) => {
         setNome(event.nativeEvent.text);
@@ -124,6 +129,11 @@ const NovaConta = ({ navigation }: any) => {
                         routes: [{ name: "Login" }]
                     })}>{t('Já possui uma conta?')}</Text>
                 </View>
+                {loading ? (
+                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                        <ActivityIndicator size="large" color="#0000ff" />
+                    </View>
+                ) : null}
             </View>
         </ScrollView>
     )

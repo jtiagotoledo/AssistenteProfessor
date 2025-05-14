@@ -19,6 +19,8 @@ const ModalAddPeriodo = () => {
   }
 
   const onPressAddPeriodo = async () => {
+    console.log('idProfessor', idProfessor);
+    
     if (valuePeriodo !== '' && idProfessor) {
       try {
         setModalAddPeriodo(false);

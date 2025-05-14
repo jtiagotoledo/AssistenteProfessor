@@ -10,7 +10,7 @@ const consultasBD = () => {
 
   const { setNome, setEmail, idProfessor, setIdProfessor, idUsuario, setListaPeriodos, setIdPeriodoSelec, setIdClasseSelec,
     setNomePeriodoSelec, idPeriodoSelec, setListaClasses, idClasseSelec, setListaAlunos, recarregarPeriodos,
-    dataSelec, setListaFrequencia, setListaNotas, setTextoAtividades, setTextoTituloNotas, recarregarClasses } = useContext(Context)
+    dataSelec, setListaFrequencia, setListaNotas, setTextoAtividades, setTextoTituloNotas, recarregarClasses, recarregarDadosProfessor } = useContext(Context)
 
   const listaAlunosRef = firestore().collection(idUsuario ? idUsuario : ' ')
     .doc(idPeriodoSelec).collection('Classes')
@@ -33,7 +33,7 @@ const consultasBD = () => {
       }
     };
     buscar();
-  }, []);
+  }, [recarregarDadosProfessor]);
 
   useEffect(() => {
     //recuperar dados dos estados do app
