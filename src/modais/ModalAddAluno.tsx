@@ -6,8 +6,8 @@ import Globais from "../data/Globais";
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import FontIstoIcon from 'react-native-vector-icons/Fontisto';
 import { useTranslation } from 'react-i18next';
-import { launchImageLibrary } from 'react-native-image-picker';
-import { uploadToCloudinary } from '../utils/cloudinary';
+import { criarAluno } from '../services/alunos';
+
 
 const ModalAddAluno = () => {
 
@@ -36,56 +36,30 @@ const ModalAddAluno = () => {
   }; */
 
   const onPressAddAluno = async () => {
-    // consulta para verificar se o número do aluno já existe
-    firestore().collection(idUsuario)
-      .doc(idPeriodoSelec).collection('Classes')
-      .doc(idClasseSelec).collection('ListaAlunos')
-      .where('numero', '==', parseInt(valueNumero))
-      .get().then((snapshot) => {
-        snapshot.empty ? addAluno() :
-          ToastAndroid.show(
-            t('msg_021'),
-            ToastAndroid.SHORT)
-      })
-
-    // inclusão do aluno no BD
-    const addAluno = async () => {
-      if (valueNumero != '' && valueNome != '') {
-        
-        let urlFinal = null;
-
-        /* if (fotoUri) {
-          try {
-            urlFinal = await uploadToCloudinary(fotoUri, idUsuario, nomeClasseSelec, valueNumero, valueNome);
-            console.log('urlFinal', urlFinal);
-          } catch (error) {
-            console.error('Erro ao enviar imagem:', error);
-          }
-        } */
-
-        setModalAddAluno(!modalAddAluno)
-        const refDoc = firestore().collection(idUsuario).doc(idPeriodoSelec).collection('Classes').doc(idClasseSelec).collection('ListaAlunos')
-        const idAluno = (await refDoc.add({})).id
-        await refDoc.doc(idAluno).set({
-          numero: parseInt(valueNumero),
+    if (valueNumero != '' && valueNome != '' && idClasseSelec) {
+      try {
+        setModalAddAluno(false);
+        const novoAluno = {
           nome: valueNome,
-          inativo: alunoInativo,
-          idAluno: idAluno,
-          porcFreq: '...',
-          mediaNotas: '...',
-          frequencias: [],
-          notas: [],
-          foto: urlFinal || null
-        })
-        setValueNome('')
-        setValueNumero('')
-        // setFotoUri(null);
+          numero: valueNumero,
+          media_notas: null,
+          porc_frequencia: null,
+          inativo: false,
+          id_classe: idClasseSelec
+        };
+        console.log('novoaluno',novoAluno);
+        
+        const result = await criarAluno(novoAluno);
+        console.log('result criar aluno', result);
+        
         setAlunoInativo(false)
-      } else {
-        ToastAndroid.show(
-          t('msg_022'),
-          ToastAndroid.SHORT)
+      } catch (error) {
+        ToastAndroid.show(t('msg_039'), ToastAndroid.SHORT);
       }
+    } else {
+      ToastAndroid.show(
+        t('msg_022'),
+        ToastAndroid.SHORT)
     }
   }
 
