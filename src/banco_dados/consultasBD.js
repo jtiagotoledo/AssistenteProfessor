@@ -4,12 +4,13 @@ import { Context } from "../data/Provider";
 import { buscarProfessorPorId } from '../services/professores';
 import { buscarPeriodosPorProfessor } from '../services/periodos';
 import { buscarClassesPorPeriodo } from '../services/classes';
+import { buscarAlunosPorClasse } from '../services/alunos';
 import auth from '@react-native-firebase/auth';
 
 const consultasBD = () => {
 
   const { setNome, setEmail, idProfessor, setIdProfessor, idUsuario, setListaPeriodos, setIdPeriodoSelec, setIdClasseSelec,
-    setNomePeriodoSelec, idPeriodoSelec, setListaClasses, idClasseSelec, setListaAlunos, recarregarPeriodos,
+    setNomePeriodoSelec, idPeriodoSelec, setListaClasses, idClasseSelec, setListaAlunos, recarregarPeriodos,  recarregarAlunos,
     dataSelec, setListaFrequencia, setListaNotas, setTextoAtividades, setTextoTituloNotas, recarregarClasses, recarregarDadosProfessor } = useContext(Context)
 
   const listaAlunosRef = firestore().collection(idUsuario ? idUsuario : ' ')
@@ -88,25 +89,35 @@ const consultasBD = () => {
     carregarClasses();
   }, [idPeriodoSelec, recarregarClasses]);
 
+
   useEffect(() => {
-    setListaAlunos([])
-    //consulta da lista de alunos do DB.
-    const unsub = firestore().collection(idUsuario)
-      .doc(idPeriodoSelec).collection('Classes')
-      .doc(idClasseSelec).collection('ListaAlunos')
-      .orderBy('numero').
-      onSnapshot(docSnapshot => {
-        const alunos = [];
-        docSnapshot.forEach(item => {
-          (docSnapshot.size, 'dentro do consultaAlunos');
-          alunos.push(item.data())
-        })
-        setListaAlunos(alunos)
-      });
-    return () => {
-      unsub();
+    // buscar todos os alunos do período selecionado
+    const carregarAlunos = async () => {
+      try {
+        if (!idClasseSelec) return;
+        const alunos = await buscarAlunosPorClasse(idClasseSelec);
+        console.log('alunos', alunos);
+
+        const alunosFormatados = alunos.map((a) => ({
+          idAluno: a.id,
+          nome: a.nome,
+          numero: a.numero,
+          mediaNotas: a.media_notas,
+          porcFreq: a.porc_frequencia,
+          inativo: a.inativo,
+          idClasseSelec: a.id_classe,
+        }));
+
+        setListaAlunos(alunosFormatados);
+      } catch (error) {
+        console.error('Erro ao carregar alunos', error);
+      }
     };
-  }, [idClasseSelec]);
+
+    carregarAlunos();
+  }, [idClasseSelec, recarregarAlunos]);
+
+  
 
   useEffect(() => {
     //consulta ao BD retorna a lista de alunos com nome, num, frequencias e id

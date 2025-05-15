@@ -39,6 +39,7 @@ export default function Provider({ children }) {
     const [recarregarDadosProfessor, setRecarregarDadosProfessor] = useState(false);
     const [recarregarPeriodos, setRecarregarPeriodos] = useState('');
     const [recarregarClasses, setRecarregarClasses] = useState('');
+    const [recarregarAlunos, setRecarregarAlunos] = useState('');
     const [recarregarFrequencia, setRecarregarFrequencia] = useState('');
     const [recarregarNotas, setRecarregarNotas] = useState('');
     const [recarregarCalendarioFreq, setRecarregarCalendarioFreq] = useState('');
@@ -105,6 +106,7 @@ export default function Provider({ children }) {
             recarregarDadosProfessor, setRecarregarDadosProfessor,
             recarregarPeriodos, setRecarregarPeriodos,
             recarregarClasses, setRecarregarClasses,
+            recarregarAlunos, setRecarregarAlunos,
             recarregarFrequencia, setRecarregarFrequencia,
             recarregarNotas, setRecarregarNotas,
             recarregarCalendarioFreq, setRecarregarCalendarioFreq,

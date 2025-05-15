@@ -14,7 +14,7 @@ const ModalAddAluno = () => {
   const [valueNumero, setValueNumero] = useState<string>('')
   const [valueNome, setValueNome] = useState<string>('')
   const { idPeriodoSelec, idClasseSelec, modalAddAluno, setModalAddAluno,
-    idUsuario, alunoInativo, setAlunoInativo, nomeClasseSelec } = useContext(Context)
+    idUsuario, alunoInativo, setAlunoInativo, setRecarregarAlunos } = useContext(Context)
   // const [fotoUri, setFotoUri] = useState<string | null>(null);
   const { t } = useTranslation();
 
@@ -48,10 +48,9 @@ const ModalAddAluno = () => {
           id_classe: idClasseSelec
         };
         console.log('novoaluno',novoAluno);
-        
         const result = await criarAluno(novoAluno);
         console.log('result criar aluno', result);
-        
+        setRecarregarAlunos((prev: any) => !prev)
         setAlunoInativo(false)
       } catch (error) {
         ToastAndroid.show(t('msg_039'), ToastAndroid.SHORT);
