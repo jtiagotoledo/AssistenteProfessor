@@ -33,8 +33,8 @@ const FlatListAlunos = (props: any) => {
         <Text style={[styles.title, { color: textColor, flex: 1 }]}>{item.nome}</Text>
       </View>
       <View style={styles.itemFooter}>
-        <Text style={styles.smallText}>{t('Média')+": "+item.mediaNotas || '...'}</Text>
-        <Text style={styles.smallText}>{t('Frequência')+": "+item.porcFreq+"%" || '...'}</Text>
+        <Text style={styles.smallText}>{t('Média') + ": " + (item.mediaNotas != null ? item.mediaNotas : '...')}</Text>
+        <Text style={styles.smallText}>{t('Frequência') + ": " + (item.porcFreq != null ? item.porcFreq + "%" : '...')}</Text>
       </View>
     </TouchableOpacity>
   );
