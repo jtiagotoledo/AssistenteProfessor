@@ -1,16 +1,24 @@
 import { Text, View, StyleSheet, Pressable, TextInput, Modal, NativeSyntheticEvent, TextInputChangeEventData, ToastAndroid, TouchableOpacity } from "react-native"
 import React, { useState, useContext, useEffect } from 'react';
-import firestore from '@react-native-firebase/firestore';
 import { Context } from "../data/Provider";
 import Globais from "../data/Globais";
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import FontIstoIcon from 'react-native-vector-icons/Fontisto';
 import { useTranslation } from 'react-i18next';
+import { atualizarAluno } from '../services/alunos';
+
+type AlunoData = {
+  numero: number;
+  nome: string;
+  inativo: boolean;
+  id_classe: string;
+  media_notas?: number;
+  porc_frequencia?: number;
+};
 
 const ModalEditAluno = () => {
-
-  const { modalEditAluno, setModalEditAluno, idPeriodoSelec, idUsuario, idClasseSelec, numAlunoSelec,
-    nomeAlunoSelec, alunoInativo, setAlunoInativo, setFlagLongPressAluno, idAlunoSelec } = useContext(Context)
+  const { modalEditAluno, setModalEditAluno, setIdAlunoSelec, idUsuario, idClasseSelec, numAlunoSelec,
+    nomeAlunoSelec, alunoInativo, setAlunoInativo, setFlagLongPressAluno, idAlunoSelec, setRecarregarAlunos } = useContext(Context)
   const [valueNomeAluno, setValueNomeAluno] = useState<string>('')
   const [valueNumAluno, setValueNumAluno] = useState<string>('')
   const { t } = useTranslation();
@@ -29,46 +37,33 @@ const ModalEditAluno = () => {
     setValueNumAluno(event.nativeEvent.text);
   }
 
-  // edição do aluno no BD
-  const editarAluno = () => {
+  const onPressEditAluno = async () => {
+    if (valueNomeAluno.trim() !== '' && valueNumAluno.trim() !== '' && idClasseSelec) {
+      try {
+        setModalEditAluno(false);
 
-    if (valueNomeAluno != '' && valueNumAluno != '') {
-      firestore().collection(idUsuario)
-        .doc(idPeriodoSelec).collection('Classes')
-        .doc(idClasseSelec).collection('ListaAlunos')
-        .doc(idAlunoSelec).update({
+        const alunoAtualizado: AlunoData = {
           nome: valueNomeAluno,
-          numero: parseInt(valueNumAluno),
-          inativo: alunoInativo
-        })
-      setValueNomeAluno('')
-      setValueNumAluno('')
-      setAlunoInativo(false)
-      setModalEditAluno(!modalEditAluno)
+          numero: parseInt(valueNumAluno, 10),
+          inativo: alunoInativo,
+          id_classe: idClasseSelec,
+        };
+
+        await atualizarAluno(idAlunoSelec, alunoAtualizado);
+
+        setAlunoInativo(false)
+        setFlagLongPressAluno(false);
+        setRecarregarAlunos((prev: boolean) => !prev);
+      } catch (error) {
+        ToastAndroid.show(t('msg_040'), ToastAndroid.SHORT);
+        console.error('Erro ao editar aluno:', error);
+      }
     } else {
       ToastAndroid.show(
         t('msg_027'),
         ToastAndroid.SHORT)
     }
-  }
-
-  const onPressEditAluno = async () => {
-    if (valueNumAluno === numAlunoSelec) {
-      editarAluno()
-    } else {
-      // consulta para verificar se o número do aluno já existe
-      firestore().collection(idUsuario)
-        .doc(idPeriodoSelec).collection('Classes')
-        .doc(idClasseSelec).collection('ListaAlunos')
-        .where('numero', '==', parseInt(valueNumAluno))
-        .get().then((snapshot) => {
-          snapshot.empty ? editarAluno() :
-            ToastAndroid.show(
-              t('msg_028'),
-              ToastAndroid.SHORT)
-        })
-    }
-  }
+  };
 
   const renderIconCheck = () => {
     return (

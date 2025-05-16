@@ -38,6 +38,7 @@
     "msg_037": "Failed to create period!",
     "msg_038":"Failed to create class!",
     "msg_039": "Error adding student!",
+    "msg_040": "Error editing student!",
     "email": "Email",
     "senha": "Password",
     "entrar": "Login",

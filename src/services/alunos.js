@@ -29,23 +29,31 @@ export const criarAluno = async ({ numero, nome, media_notas, porc_frequencia, i
   }
 };
 
-// Atualizar aluno
-export const atualizarAluno = async (id, { numero, nome, media_notas, porc_frequencia, inativo, id_classe }) => {
+export const atualizarAluno = async (id, dados) => {
   try {
-    const resposta = await api.put(`/alunos/${id}`, {
-      numero,
-      nome,
-      media_notas,
-      porc_frequencia,
-      inativo,
-      id_classe
-    });
+    const corpoRequisicao = {
+      numero: dados.numero,
+      nome: dados.nome,
+      inativo: dados.inativo,
+      id_classe: dados.id_classe,
+    };
+
+    if (dados.media_notas !== undefined) {
+      corpoRequisicao.media_notas = dados.media_notas;
+    }
+    if (dados.porc_frequencia !== undefined) {
+      corpoRequisicao.porc_frequencia = dados.porc_frequencia;
+    }
+
+    const resposta = await api.put(`/alunos/${id}`, corpoRequisicao);
     return resposta.data;
   } catch (erro) {
     console.error('Erro ao atualizar aluno:', erro);
     throw erro;
   }
 };
+
+
 
 // Deletar aluno
 export const deletarAluno = async (id) => {
