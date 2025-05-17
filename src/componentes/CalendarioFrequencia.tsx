@@ -6,6 +6,8 @@ import Globais from '../data/Globais';
 import { useTranslation } from 'react-i18next';
 import i18n from '../../i18n';
 import { criarDataFrequencia } from '../services/datasFrequencia';
+import { buscarAlunosPorClasse } from '../services/alunos';
+import { criarFrequencia } from '../services/frequencia';
 
 
 const { width, height } = Dimensions.get('window'); // Captura a largura e altura da tela
@@ -46,19 +48,30 @@ const CalendarioFrequencia = () => {
     if (dataSelec && idClasseSelec) {
       try {
         setModalCalendarioFreq(false);
-        const novaData = await criarDataFrequencia({
-          data: dataSelec,
-          id_classe: idClasseSelec,
-        });
+        // Cria a data da frequência
+        const novaData = await criarDataFrequencia({ data: dataSelec, id_classe: idClasseSelec });
+
+        // Busca os alunos da classe
+        const alunos = await buscarAlunosPorClasse(idClasseSelec);
+
+        // Para cada aluno, cria um registro de frequência com "presente: true"
+        await Promise.all(
+          alunos.map((aluno:any) =>
+            criarFrequencia({
+              id_data_frequencia: novaData.id,
+              id_aluno: aluno.id,
+              presente: true 
+            })
+          )
+        );
         setRecarregarCalendarioFreq((prev: any) => !prev);
-        ToastAndroid.show('Data de frequência criada!', ToastAndroid.SHORT);
+        ToastAndroid.show('Data criada!', ToastAndroid.SHORT);
       } catch (error) {
-        ToastAndroid.show('Erro ao criar data de frequência.', ToastAndroid.SHORT);
-        console.error('Erro ao adicionar data de frequência:', error);
+        ToastAndroid.show('Erro ao criar data!', ToastAndroid.SHORT);
       }
     };
   }
-  
+
   const renderCarregamento = () => {
     if (idClasseSelec != '') {
       return (

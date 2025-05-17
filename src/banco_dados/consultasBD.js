@@ -37,19 +37,6 @@ const consultasBD = () => {
   }, [recarregarDadosProfessor]);
 
   useEffect(() => {
-    //recuperar dados dos estados do app
-    const unsub = firestore().collection(idUsuario)
-      .doc('EstadosApp').onSnapshot(snapShot => {
-        setIdPeriodoSelec(snapShot.data()?.idPeriodo)
-        setNomePeriodoSelec(snapShot.data()?.periodo)
-        setIdClasseSelec(snapShot.data()?.idClasse)
-      })
-    return () => {
-      unsub();
-    };
-  }, []);
-
-  useEffect(() => {
     // buscar todos os períodos do professor.
     const carregarPeriodos = async () => {
       try {
@@ -91,7 +78,7 @@ const consultasBD = () => {
 
 
   useEffect(() => {
-    // buscar todos os alunos do período selecionado
+    // buscar todos os alunos da classe selecionada
     const carregarAlunos = async () => {
       try {
         if (!idClasseSelec) return;
