@@ -1,6 +1,5 @@
 import { Text, View, StyleSheet, Pressable, TextInput, Modal, NativeSyntheticEvent, TextInputChangeEventData, ToastAndroid, TouchableOpacity } from "react-native"
 import React, { useState, useContext } from 'react';
-import firestore from '@react-native-firebase/firestore';
 import { Context } from "../data/Provider";
 import Globais from "../data/Globais";
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
@@ -11,8 +10,8 @@ import { criarClasse } from '../services/classes';
 const ModalAddClasse = () => {
 
   const [valueClasse, setValueClasse] = useState<string>('')
-  const { modalAddClasse, setModalAddClasse, idPeriodoSelec, idUsuario, setIdClasseSelec,
-    nomePeriodoSelec, setNomeClasseSelec, setRecarregarClasses } = useContext(Context)
+  const { modalAddClasse, setModalAddClasse, idPeriodoSelec, setIdClasseSelec,
+     setNomeClasseSelec, setRecarregarClasses } = useContext(Context)
   const { t } = useTranslation();
 
   const onChangeInputClasse = (event: NativeSyntheticEvent<TextInputChangeEventData>) => {
