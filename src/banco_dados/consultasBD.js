@@ -6,11 +6,12 @@ import { buscarPeriodosPorProfessor } from '../services/periodos';
 import { buscarClassesPorPeriodo } from '../services/classes';
 import { buscarAlunosPorClasse } from '../services/alunos';
 import { buscarFrequenciasPorClasseEData } from '../services/frequencia';
+import { buscarNotasPorClasseEData } from '../services/nota';
 import auth from '@react-native-firebase/auth';
 
 const consultasBD = () => {
 
-  const { setNome, setEmail, idProfessor, setIdProfessor, idUsuario, setListaPeriodos, setIdPeriodoSelec, setIdClasseSelec,
+  const { setNome, setEmail, idProfessor, setIdProfessor, idUsuario, setListaPeriodos, recarregarNotas, setIdClasseSelec,
     recarregarFrequencia, idPeriodoSelec, setListaClasses, idClasseSelec, setListaAlunos, recarregarPeriodos, recarregarAlunos,
     dataSelec, setListaFrequencia, setListaNotas, setTextoAtividades, setTextoTituloNotas, recarregarClasses, recarregarDadosProfessor } = useContext(Context)
 
@@ -123,25 +124,23 @@ const consultasBD = () => {
 
 
   useEffect(() => {
-    //consulta ao BD retorna a lista de alunos com nome, num, notas e id
-    const unsub = listaAlunosRef.orderBy('numero').onSnapshot(docSnapshot => {
-      const alunos = []
-      docSnapshot.forEach((docSnapshot) => {
-        let notas = docSnapshot.data().notas
-        if (dataSelec != '') {
-          let idx = notas.findIndex((item) => item.data == dataSelec)
-          if (idx != -1) {
-            let nota = notas[idx].nota
-            alunos.push({ ...docSnapshot.data(), nota });
-          }
-        }
-      });
-      setListaNotas(alunos);
-    })
-    return () => {
-      unsub();
-    };
-  }, [idPeriodoSelec, idClasseSelec, dataSelec]);
+  // Buscar as notas dos alunos por classe e data
+  if (!idClasseSelec || !dataSelec) return;
+
+  const carregarNotas = async () => {
+    try {
+      const dados = await buscarNotasPorClasseEData(idClasseSelec, dataSelec);
+      console.log('notas', dados);
+
+      setListaNotas(dados);
+    } catch (erro) {
+      setError('Erro ao buscar notas');
+    }
+  };
+
+  carregarNotas();
+}, [idClasseSelec, dataSelec, recarregarNotas]);
+
 
   useEffect(() => {
     //consulta ao BD retorna o texto das atividades desenvolvidas na data escolhida

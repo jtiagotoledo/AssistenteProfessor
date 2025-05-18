@@ -24,17 +24,17 @@ const FlatListFrequencia = (props: any) => {
     listaFrequencia, setFlagLongPressDataFreq } = useContext(Context)
 
   const onPressItemFreq = async (item: any) => {
-  setSelectedId(item.idAluno);
-  setNumAlunoSelec(item.numero.toString());
-  setFlagLongPressDataFreq(false);
+    setSelectedId(item.idAluno);
+    setNumAlunoSelec(item.numero.toString());
+    setFlagLongPressDataFreq(false);
 
-  try {
-    await atualizarFrequencia(item.id, !item.presente);
-    setRecarregarFrequencia((prev: any) => !prev);
-  } catch (erro) {
-    console.error('Erro ao atualizar frequência:', erro);
-  }
-};
+    try {
+      await atualizarFrequencia(item.id, !item.presente);
+      setRecarregarFrequencia((prev: any) => !prev);
+    } catch (erro) {
+      console.error('Erro ao atualizar frequência:', erro);
+    }
+  };
 
   const Item = ({ item, onPress, backgroundColor, textColor }: ItemProps) => (
     <View style={styles.containerItem}>
@@ -46,7 +46,7 @@ const FlatListFrequencia = (props: any) => {
           <Text style={[styles.titleNome]}>{item.nome}</Text>
         </View>
         <TouchableOpacity onPress={onPress} style={[styles.item]}>
-          <Text style={[styles.titleFrequencia]}>{item.presente==1?'P':'A'}</Text>
+          <Text style={[styles.titleFrequencia]}>{item.presente == 1 ? 'P' : 'A'}</Text>
         </TouchableOpacity>
       </View>
     </View>

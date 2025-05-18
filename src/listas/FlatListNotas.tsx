@@ -4,8 +4,11 @@ import { Context } from "../data/Provider";
 import Globais from '../data/Globais';
 import { atualizarNotas } from "../banco_dados/atualizarBD"
 import { useTranslation } from 'react-i18next';
+import { atualizarNota } from "../services/nota"
+
 
 type ItemData = {
+  id: string,
   nome: string;
   numero: string;
   nota: string;
@@ -16,10 +19,11 @@ const FlatListNotas = (props: any) => {
   const flatListRef = useRef<FlatList>(null);
   const listaNotasRef = useRef({})
   const textInputRefs = useRef<TextInput[]>([]);
+  const [notasEditadas, setNotasEditadas] = useState<Record<string, string>>({});
   const [selection, setSelection] = useState({ start: 0, end: 0 });
   const [textNota, setTextNota] = useState('');
-  const { idClasseSelec, dataSelec, listaNotas, setTecladoAtivo,
-    idUsuario, idPeriodoSelec, setValueNota } = useContext(Context)
+  const { idClasseSelec, dataSelec, listaNotas, setRecarregarNotas,
+    idUsuario, idPeriodoSelec, setValueNota, valueNota } = useContext(Context)
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -41,17 +45,31 @@ const FlatListNotas = (props: any) => {
     };
   }, []);
 
-  const onChangeNota = (item: ItemData, nota: string) => {
+ /*  const onChangeNota = (item: ItemData, nota: string) => {
     const index = listaNotas.findIndex((el: any) => el.idAluno === item.idAluno);
     listaNotas[index].nota = nota
     setTextNota(nota)
     setValueNota(nota)
-  }
+  } */
 
-  const salvarNota = () => {
-    //ao desfocar o campo de notas, salva a nota
-    atualizarNotas(listaNotas, idUsuario, idPeriodoSelec, idClasseSelec, dataSelec)
-  }
+  const handleNotaChange = (idItem:string, valor:string) => {
+    setNotasEditadas((prev) => ({
+      ...prev,
+      [idItem]: valor,
+    }));
+  };
+
+  const salvarNota = async (item: any) => {
+    const notaDigitada = notasEditadas[item.id];
+    const notaConvertida = parseFloat(notaDigitada);
+    try {
+      console.log(item.id, valueNota);
+      await atualizarNota(item.id, notaConvertida);
+      setRecarregarNotas((prev: any) => !prev);
+    } catch (erro) {
+      console.error('Erro ao atualizar nota:', erro);
+    }
+  };
 
 
   const renderItem = ({ item }: { item: ItemData }) => {
@@ -90,11 +108,12 @@ const FlatListNotas = (props: any) => {
             style={styles.itemNota}
             placeholder={t('Nota')}
             inputMode='numeric'
-            onChangeText={(text) => onChangeNota(item, text)}
+            value={notasEditadas[item.id]?.toString() ?? item.nota?.toString() ?? ''}
+            onChangeText={(texto) => handleNotaChange(item.id, texto)}
             defaultValue={item.nota}
-            onBlur={() => salvarNota()}
+            onBlur={() => salvarNota(item)}
             onFocus={() => [scrollToItem(item.idAluno, item.numero)]}
-            onSubmitEditing={() => nextItem(item.idAluno)}
+            // onSubmitEditing={() => nextItem(item.idAluno)}
             selection={selection}
             onSelectionChange={(syntheticEvent) => onSelectionChange(syntheticEvent)}>
           </TextInput>

@@ -101,7 +101,7 @@ const CalendarioNota = () => {
         )
       );
 
-      setRecarregarCalendarioNotas((prev: any) => !prev);
+      setRecarregarNotas((prev: any) => !prev);
       ToastAndroid.show('Data de nota criada!', ToastAndroid.SHORT);
     } catch (error) {
       ToastAndroid.show('Erro ao criar data de nota!', ToastAndroid.SHORT);
