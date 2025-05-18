@@ -110,6 +110,8 @@ const consultasBD = () => {
     const carregarFrequencias = async () => {
       try {
         const dados = await buscarFrequenciasPorClasseEData(idClasseSelec, dataSelec);
+        console.log('dados',dados);
+        
         setListaFrequencia(dados);
       } catch (erro) {
         setError('Erro ao buscar frequências');

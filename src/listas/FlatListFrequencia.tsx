@@ -2,12 +2,12 @@ import React, { useContext, useState } from 'react'
 import { SafeAreaView, FlatList, View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import { Context } from "../data/Provider";
 import Globais from '../data/Globais';
-import { atualizarFrequencia } from "../banco_dados/atualizarBD"
+import { atualizarFrequencia } from "../services/frequencia"
 
 type ItemData = {
   nome: string;
   numero: string;
-  frequencia: string;
+  presente: number;
   idAluno: string;
 };
 
@@ -18,25 +18,23 @@ type ItemProps = {
   textColor: string;
 };
 
-
-
 const FlatListFrequencia = (props: any) => {
-  const [statusFreq, setStatusFreq] = useState('');
   const [selectedId, setSelectedId] = useState<string>();
-  const { idClasseSelec, setNumAlunoSelec, dataSelec,
-    listaFrequencia, idUsuario, idPeriodoSelec, setFlagLongPressDataFreq } = useContext(Context)
+  const { setRecarregarFrequencia, setNumAlunoSelec, dataSelec,
+    listaFrequencia, setFlagLongPressDataFreq } = useContext(Context)
 
-  const onPressItemFreq = (item: any) => {
-    const idAluno = item.idAluno;
-    const index = listaFrequencia.findIndex((el: any) => el.idAluno === idAluno);
-    setStatusFreq(item.frequencia == 'P' ? 'A' : 'P')
-    let _statusFrequencia = item.frequencia == 'P' ? 'A' : 'P'
-    listaFrequencia[index].frequencia = _statusFrequencia
-    setSelectedId(item.idAluno);
-    setNumAlunoSelec(item.numero.toString());
-    setFlagLongPressDataFreq(false)
-    atualizarFrequencia(listaFrequencia, idUsuario, idPeriodoSelec, idClasseSelec, dataSelec)
+  const onPressItemFreq = async (item: any) => {
+  setSelectedId(item.idAluno);
+  setNumAlunoSelec(item.numero.toString());
+  setFlagLongPressDataFreq(false);
+
+  try {
+    await atualizarFrequencia(item.id, !item.presente);
+    setRecarregarFrequencia((prev: any) => !prev);
+  } catch (erro) {
+    console.error('Erro ao atualizar frequência:', erro);
   }
+};
 
   const Item = ({ item, onPress, backgroundColor, textColor }: ItemProps) => (
     <View style={styles.containerItem}>
@@ -48,7 +46,7 @@ const FlatListFrequencia = (props: any) => {
           <Text style={[styles.titleNome]}>{item.nome}</Text>
         </View>
         <TouchableOpacity onPress={onPress} style={[styles.item]}>
-          <Text style={[styles.titleFrequencia]}>{item.frequencia}</Text>
+          <Text style={[styles.titleFrequencia]}>{item.presente==1?'P':'A'}</Text>
         </TouchableOpacity>
       </View>
     </View>

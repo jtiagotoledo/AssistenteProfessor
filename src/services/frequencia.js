@@ -24,3 +24,13 @@ export const buscarFrequenciasPorClasseEData = async (id_classe, data) => {
     throw erro;
   }
 };
+
+export const atualizarFrequencia = async (id, presente) => {
+  try {
+    const resposta = await api.put(`/frequencias/${id}`, { presente });
+    return resposta.data;
+  } catch (erro) {
+    console.error('Erro ao atualizar frequência:', erro);
+    throw erro;
+  }
+};

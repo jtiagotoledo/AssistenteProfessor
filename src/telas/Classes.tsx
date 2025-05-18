@@ -32,7 +32,7 @@ function Classes({ navigation }: any) {
   const { t } = useTranslation();
 
   consultasBD();
-  atualizarBD();
+  // atualizarBD();
 
   useEffect(() => {
     // contador de acessos do professor - mariadb tabela acessos.
