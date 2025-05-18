@@ -1,11 +1,14 @@
 import React, { useContext, useEffect } from 'react';
-import { ScrollView, Pressable, StyleSheet, Text, View, Dimensions } from 'react-native';
+import { ScrollView, Pressable, StyleSheet, Text, View, Dimensions, ToastAndroid } from 'react-native';
 import { Calendar, LocaleConfig } from 'react-native-calendars';
 import { Context } from "../data/Provider";
 import Globais from '../data/Globais';
 import firestore from '@react-native-firebase/firestore';
 import { useTranslation } from 'react-i18next';
 import i18n from '../../i18n';
+import { criarDataNota } from '../services/datasNotas';
+import { buscarAlunosPorClasse } from '../services/alunos';
+import { criarNota } from '../services/nota';
 
 const { width, height } = Dimensions.get('window'); // Captura a largura e altura da tela
 
@@ -32,12 +35,9 @@ const CalendarioNota = () => {
   let datasMarcadas: any = {}
   const datas: any[] = [];
 
-  const { idPeriodoSelec, idClasseSelec, dataSelec,
-    setDataSelec, modalCalendarioNota, setModalCalendarioNota,
-    flagLoadCalendarioNotas, setflagLoadCalendarioNotas, setFlagLoadNotas,
-    listaDatasNotas, setListaDatasNotas, setRecarregarNotas, recarregarCalendarioNotas,
-    setRecarregarCalendarioNotas, listaDatasMarcadasNotas, setListaDatasMarcadasNotas,
-    idUsuario, nomePeriodoSelec, nomeClasseSelec } = useContext(Context)
+  const { idPeriodoSelec, idClasseSelec, dataSelec,setDataSelec, modalCalendarioNota, setModalCalendarioNota,
+    setflagLoadCalendarioNotas,listaDatasNotas, setListaDatasNotas, setRecarregarNotas, recarregarCalendarioNotas,
+    setRecarregarCalendarioNotas, listaDatasMarcadasNotas, setListaDatasMarcadasNotas, idUsuario, nomePeriodoSelec, nomeClasseSelec } = useContext(Context)
 
   let listaAlunosRef = firestore().collection(idUsuario)
     .doc(idPeriodoSelec).collection('Classes')
@@ -80,36 +80,35 @@ const CalendarioNota = () => {
   }, [idClasseSelec, recarregarCalendarioNotas]);
 
   const onPressAddData = async () => {
+  if (dataSelec && idClasseSelec) {
+    try {
+      setModalCalendarioNota(false); // Fecha modal do calendário de notas
 
-    setModalCalendarioNota(!modalCalendarioNota);
-    setflagLoadCalendarioNotas('inicio')
+      // Cria a data da nota
+      const novaDataNota = await criarDataNota({ data: dataSelec, id_classe: idClasseSelec });
 
-    //adiciona data na lista de notas
-    datasNotasRef.doc(dataSelec).set({})
+      // Busca os alunos da classe
+      const alunos = await buscarAlunosPorClasse(idClasseSelec);
 
-    //adiciona notas na lista de alunos
-    listaAlunosRef.get().then((snapshot) => {
-      snapshot.forEach((docSnapshot) => {
-        listaAlunosRef.doc(docSnapshot.data().idAluno).update({
-          notas: firestore.FieldValue.arrayUnion({
-            data: dataSelec,
-            nota: ''
+      // Para cada aluno, cria um registro de nota inicial 
+      await Promise.all(
+        alunos.map((aluno: any) =>
+          criarNota({
+            id_data_nota: novaDataNota.id,
+            id_aluno: aluno.id,
+            nota: null 
           })
-        })
-      })
-    })
+        )
+      );
 
-    //atualizando o estado da data
-    firestore().collection(idUsuario).
-      doc('EstadosApp').update({
-        idPeriodo: idPeriodoSelec,
-        periodo: nomePeriodoSelec,
-        idClasse: idClasseSelec,
-        classe: nomeClasseSelec,
-        data: dataSelec
-      })
-    setRecarregarNotas('recarregarNotas');
+      setRecarregarCalendarioNotas((prev: any) => !prev);
+      ToastAndroid.show('Data de nota criada!', ToastAndroid.SHORT);
+    } catch (error) {
+      ToastAndroid.show('Erro ao criar data de nota!', ToastAndroid.SHORT);
+    }
   }
+};
+
 
   const renderCarregamento = () => {
     if (idClasseSelec != '') {
