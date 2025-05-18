@@ -5,12 +5,13 @@ import { buscarProfessorPorId } from '../services/professores';
 import { buscarPeriodosPorProfessor } from '../services/periodos';
 import { buscarClassesPorPeriodo } from '../services/classes';
 import { buscarAlunosPorClasse } from '../services/alunos';
+import { buscarFrequenciasPorClasseEData } from '../services/frequencia';
 import auth from '@react-native-firebase/auth';
 
 const consultasBD = () => {
 
   const { setNome, setEmail, idProfessor, setIdProfessor, idUsuario, setListaPeriodos, setIdPeriodoSelec, setIdClasseSelec,
-    setNomePeriodoSelec, idPeriodoSelec, setListaClasses, idClasseSelec, setListaAlunos, recarregarPeriodos,  recarregarAlunos,
+    recarregarFrequencia, idPeriodoSelec, setListaClasses, idClasseSelec, setListaAlunos, recarregarPeriodos, recarregarAlunos,
     dataSelec, setListaFrequencia, setListaNotas, setTextoAtividades, setTextoTituloNotas, recarregarClasses, recarregarDadosProfessor } = useContext(Context)
 
   const listaAlunosRef = firestore().collection(idUsuario ? idUsuario : ' ')
@@ -62,7 +63,6 @@ const consultasBD = () => {
       try {
         if (!idPeriodoSelec) return;
         const classes = await buscarClassesPorPeriodo(idPeriodoSelec);
-        console.log('classes', classes);
         const classesFormatadas = classes.map((c) => ({
           idClasse: c.id,
           classe: c.nome,
@@ -83,7 +83,6 @@ const consultasBD = () => {
       try {
         if (!idClasseSelec) return;
         const alunos = await buscarAlunosPorClasse(idClasseSelec);
-        console.log('alunos', alunos);
 
         const alunosFormatados = alunos.map((a) => ({
           idAluno: a.id,
@@ -104,28 +103,22 @@ const consultasBD = () => {
     carregarAlunos();
   }, [idClasseSelec, recarregarAlunos]);
 
-  
-
   useEffect(() => {
-    //consulta ao BD retorna a lista de alunos com nome, num, frequencias e id
-    const unsub = listaAlunosRef.orderBy('numero').onSnapshot(docSnapshot => {
-      const alunos = []
-      docSnapshot.forEach((docSnapshot) => {
-        let frequencias = docSnapshot.data().frequencias
-        if (dataSelec != '') {
-          let idx = frequencias.findIndex((item) => item.data == dataSelec)
-          if (idx != -1) {
-            let frequencia = frequencias[idx].freq
-            alunos.push({ ...docSnapshot.data(), frequencia });
-          }
-        }
-      });
-      setListaFrequencia(alunos)
-    })
-    return () => {
-      unsub();
+    // buscar as frequencias dos alunos por classe e data
+    if (!idClasseSelec || !dataSelec) return;
+
+    const carregarFrequencias = async () => {
+      try {
+        const dados = await buscarFrequenciasPorClasseEData(idClasseSelec, dataSelec);
+        setListaFrequencia(dados);
+      } catch (erro) {
+        setError('Erro ao buscar frequências');
+      }
     };
-  }, [idPeriodoSelec, idClasseSelec, dataSelec])
+
+    carregarFrequencias();
+  }, [idClasseSelec, dataSelec, recarregarFrequencia]);
+
 
   useEffect(() => {
     //consulta ao BD retorna a lista de alunos com nome, num, notas e id

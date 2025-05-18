@@ -24,7 +24,6 @@ const Login = ({ navigation }: any) => {
                 GoogleSignin.configure({
                     webClientId: '1000578379733-ahmcfl9ot3gn7p87c1ed4v3ejinhvkii.apps.googleusercontent.com',
                 });
-                console.log('GoogleSignin configurado com sucesso!');
             } catch (error: any) {
                 console.error('Erro ao configurar GoogleSignin:', error.message);
             }

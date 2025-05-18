@@ -47,9 +47,7 @@ const ModalAddAluno = () => {
           inativo: false,
           id_classe: idClasseSelec
         };
-        console.log('novoaluno',novoAluno);
         const result = await criarAluno(novoAluno);
-        console.log('result criar aluno', result);
         setRecarregarAlunos((prev: any) => !prev)
         setAlunoInativo(false)
       } catch (error) {

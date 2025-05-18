@@ -64,7 +64,7 @@ const CalendarioFrequencia = () => {
             })
           )
         );
-        setRecarregarCalendarioFreq((prev: any) => !prev);
+        setRecarregarFrequencia((prev: any) => !prev);
         ToastAndroid.show('Data criada!', ToastAndroid.SHORT);
       } catch (error) {
         ToastAndroid.show('Erro ao criar data!', ToastAndroid.SHORT);
