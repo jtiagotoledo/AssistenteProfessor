@@ -29,11 +29,7 @@ LocaleConfig.locales.en = {
 const CalendarioFrequencia = () => {
   const { t } = useTranslation();
 
-  let datasMarcadas: any = {}
-  const datas: any[] = [];
-
-  const { setRecarregarCalendarioFreq, idClasseSelec, dataSelec,
-    setDataSelec, modalCalendarioFreq, setModalCalendarioFreq,
+  const { idClasseSelec, dataSelec, setDataSelec, modalCalendarioFreq, setModalCalendarioFreq,
     setflagLoadCalendarioFreq, listaDatasFreq, setRecarregarFrequencia, listaDatasMarcadasFreq } = useContext(Context)
 
   useEffect(() => {
