@@ -10,7 +10,7 @@ import { buscarAlunosPorClasse } from '../services/alunos';
 import { criarFrequencia } from '../services/frequencia';
 
 
-const { width, height } = Dimensions.get('window'); // Captura a largura e altura da tela
+const { width } = Dimensions.get('window'); // Captura a largura e altura da tela
 
 LocaleConfig.locales.br = {
   monthNames: ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"],
@@ -30,7 +30,7 @@ const CalendarioFrequencia = () => {
   const { t } = useTranslation();
 
   const { idClasseSelec, dataSelec, setDataSelec, modalCalendarioFreq, setModalCalendarioFreq,
-    setflagLoadCalendarioFreq, listaDatasFreq, setRecarregarFrequencia, listaDatasMarcadasFreq } = useContext(Context)
+    setflagLoadCalendarioFreq, setRecarregarDatasMarcadasFreq, setRecarregarFrequencia, listaDatasMarcadasFreq } = useContext(Context)
 
   useEffect(() => {
     if (i18n.language === 'pt') {
@@ -52,11 +52,11 @@ const CalendarioFrequencia = () => {
 
         // Para cada aluno, cria um registro de frequência com "presente: true"
         await Promise.all(
-          alunos.map((aluno:any) =>
+          alunos.map((aluno: any) =>
             criarFrequencia({
               id_data_frequencia: novaData.id,
               id_aluno: aluno.id,
-              presente: true 
+              presente: true
             })
           )
         );
@@ -78,15 +78,15 @@ const CalendarioFrequencia = () => {
               onDayPress={(day: any) => {
                 setDataSelec(day.dateString);
                 setRecarregarFrequencia('recarregarFrequencia');
-                if (listaDatasFreq.includes(day.dateString)) {
-                  setModalCalendarioFreq(!modalCalendarioFreq)
+                if (listaDatasMarcadasFreq[day.dateString]?.selected) {
+                  setModalCalendarioFreq(!modalCalendarioFreq);
                 }
               }}
               markedDates={listaDatasMarcadasFreq}
             />
             <Pressable
               style={[styles.button, styles.buttonClose]}
-              onPress={() => [onPressAddData(), setflagLoadCalendarioFreq('carregando')]}>
+              onPress={() => [onPressAddData(), setRecarregarDatasMarcadasFreq((prev: any) => !prev)]}>
               <Text style={styles.textStyle}>{t('Criar data')}</Text>
             </Pressable>
           </View>

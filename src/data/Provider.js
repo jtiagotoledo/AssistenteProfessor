@@ -42,8 +42,8 @@ export default function Provider({ children }) {
     const [recarregarAlunos, setRecarregarAlunos] = useState('');
     const [recarregarFrequencia, setRecarregarFrequencia] = useState('');
     const [recarregarNotas, setRecarregarNotas] = useState('');
-    const [recarregarCalendarioFreq, setRecarregarCalendarioFreq] = useState('');
-    const [recarregarCalendarioNotas, setRecarregarCalendarioNotas] = useState('');
+    const [recarregarDatasMarcadasFreq, setRecarregarDatasMarcadasFreq] = useState(false);
+    const [recarregarDatasMarcadasNotas, setRecarregarDatasMarcadasNotas] = useState(false);
     const [idPeriodoSelec, setIdPeriodoSelec] = useState('');
     const [nomePeriodoSelec, setNomePeriodoSelec] = useState('');
     const [idClasseSelec, setIdClasseSelec] = useState('');
@@ -109,8 +109,8 @@ export default function Provider({ children }) {
             recarregarAlunos, setRecarregarAlunos,
             recarregarFrequencia, setRecarregarFrequencia,
             recarregarNotas, setRecarregarNotas,
-            recarregarCalendarioFreq, setRecarregarCalendarioFreq,
-            recarregarCalendarioNotas, setRecarregarCalendarioNotas,
+            recarregarDatasMarcadasFreq, setRecarregarDatasMarcadasFreq,
+            recarregarDatasMarcadasNotas, setRecarregarDatasMarcadasNotas,
             idPeriodoSelec, setIdPeriodoSelec,
             nomePeriodoSelec, setNomePeriodoSelec,
             idClasseSelec, setIdClasseSelec,

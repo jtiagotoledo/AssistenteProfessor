@@ -3,14 +3,13 @@ import { ScrollView, Pressable, StyleSheet, Text, View, Dimensions, ToastAndroid
 import { Calendar, LocaleConfig } from 'react-native-calendars';
 import { Context } from "../data/Provider";
 import Globais from '../data/Globais';
-import firestore from '@react-native-firebase/firestore';
 import { useTranslation } from 'react-i18next';
 import i18n from '../../i18n';
 import { criarDataNota } from '../services/datasNotas';
 import { buscarAlunosPorClasse } from '../services/alunos';
 import { criarNota } from '../services/nota';
 
-const { width, height } = Dimensions.get('window'); // Captura a largura e altura da tela
+const { width } = Dimensions.get('window'); // Captura a largura e altura da tela
 
 LocaleConfig.locales.br = {
   monthNames: ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"],
@@ -31,21 +30,8 @@ if (i18n.language == 'en') LocaleConfig.defaultLocale = "en";
 
 const CalendarioNota = () => {
   const { t } = useTranslation();
-
-  let datasMarcadas: any = {}
-  const datas: any[] = [];
-
-  const { idPeriodoSelec, idClasseSelec, dataSelec,setDataSelec, modalCalendarioNota, setModalCalendarioNota,
-    setflagLoadCalendarioNotas,listaDatasNotas, setListaDatasNotas, setRecarregarNotas, recarregarCalendarioNotas,
-    setRecarregarCalendarioNotas, listaDatasMarcadasNotas, setListaDatasMarcadasNotas, idUsuario, nomePeriodoSelec, nomeClasseSelec } = useContext(Context)
-
-  let listaAlunosRef = firestore().collection(idUsuario)
-    .doc(idPeriodoSelec).collection('Classes')
-    .doc(idClasseSelec).collection('ListaAlunos')
-
-  let datasNotasRef = firestore().collection(idUsuario)
-    .doc(idPeriodoSelec).collection('Classes')
-    .doc(idClasseSelec).collection('DatasNotas')
+  const {  idClasseSelec, dataSelec,setDataSelec, modalCalendarioNota, setModalCalendarioNota,
+     setRecarregarDatasMarcadasNotas, setRecarregarNotas, listaDatasMarcadasNotas } = useContext(Context)
 
   useEffect(() => {
     if (i18n.language === 'pt') {
@@ -55,29 +41,7 @@ const CalendarioNota = () => {
     }
   }, [i18n.language]);
 
-  useEffect(() => {
-    const data = async () => {
-      setListaDatasNotas('');
-      setListaDatasMarcadasNotas({})
-      setRecarregarCalendarioNotas('');
-
-      datasNotasRef.get().then(snapshot => {
-        if (snapshot.empty) {
-          setflagLoadCalendarioNotas('carregado');
-        }
-        snapshot.forEach((documentSnapshot, index) => {
-          datas.push(documentSnapshot.id);
-          datasMarcadas[documentSnapshot.id] = { selected: true }
-          if (snapshot.size - index == 1) {
-            setflagLoadCalendarioNotas('carregado')
-          }
-        });
-      })
-      setListaDatasNotas(datas);
-      setListaDatasMarcadasNotas(datasMarcadas)
-    }
-    data()
-  }, [idClasseSelec, recarregarCalendarioNotas]);
+ 
 
   const onPressAddData = async () => {
   if (dataSelec && idClasseSelec) {
@@ -116,29 +80,19 @@ const CalendarioNota = () => {
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           <View style={styles.container}>
             <Calendar
-              style={styles.calendar} // Estilo ajustado para responsividade
+              style={styles.calendar} 
               onDayPress={(day: any) => {
                 setDataSelec(day.dateString);
                 setRecarregarNotas('recarregarNotas');
-                if (listaDatasNotas.includes(day.dateString)) {
+                if (listaDatasMarcadasNotas[day.dateString]?.selected) {
                   setModalCalendarioNota(!modalCalendarioNota)
-
-                  //atualizando o estado da data
-                  firestore().collection(idUsuario).
-                    doc('EstadosApp').update({
-                      idPeriodo: idPeriodoSelec,
-                      periodo: nomePeriodoSelec,
-                      idClasse: idClasseSelec,
-                      classe: nomeClasseSelec,
-                      data: day.dateString
-                    })
                 }
               }}
               markedDates={listaDatasMarcadasNotas}
             />
             <Pressable
               style={[styles.button, styles.buttonClose]}
-              onPress={() => [onPressAddData(), setflagLoadCalendarioNotas('carregando')]}>
+              onPress={() => [onPressAddData(), setRecarregarDatasMarcadasNotas((prev: any) => !prev)]}>
               <Text style={styles.textStyle}>{t('Criar data')}</Text>
             </Pressable>
           </View>

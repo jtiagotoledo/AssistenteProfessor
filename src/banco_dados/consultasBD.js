@@ -1,23 +1,24 @@
 import { useEffect, useContext } from "react";
 import firestore from '@react-native-firebase/firestore';
 import { Context } from "../data/Provider";
+import Globais from "../data/Globais";
 import { buscarProfessorPorId } from '../services/professores';
 import { buscarPeriodosPorProfessor } from '../services/periodos';
 import { buscarClassesPorPeriodo } from '../services/classes';
 import { buscarAlunosPorClasse } from '../services/alunos';
 import { buscarFrequenciasPorClasseEData } from '../services/frequencia';
 import { buscarNotasPorClasseEData } from '../services/nota';
+import { buscarDatasFrequenciaPorClasse } from '../services/datasFrequencia';
+import { buscarDatasNotaPorClasse } from '../services/datasNotas';
+import { buscarAtividadePorDataEClasse } from '../services/datasFrequencia';
+import { buscarTituloPorDataEClasse } from '../services/datasNotas';
 import auth from '@react-native-firebase/auth';
 
 const consultasBD = () => {
 
-  const { setNome, setEmail, idProfessor, setIdProfessor, idUsuario, setListaPeriodos, recarregarNotas, setIdClasseSelec,
-    recarregarFrequencia, idPeriodoSelec, setListaClasses, idClasseSelec, setListaAlunos, recarregarPeriodos, recarregarAlunos,
-    dataSelec, setListaFrequencia, setListaNotas, setTextoAtividades, setTextoTituloNotas, recarregarClasses, recarregarDadosProfessor } = useContext(Context)
-
-  const listaAlunosRef = firestore().collection(idUsuario ? idUsuario : ' ')
-    .doc(idPeriodoSelec).collection('Classes')
-    .doc(idClasseSelec).collection('ListaAlunos')
+  const { setNome, setEmail, idProfessor, setIdProfessor, setListaPeriodos, recarregarNotas, setListaDatasMarcadasFreq, recarregarDatasMarcadasNotas,
+    recarregarFrequencia, idPeriodoSelec, setListaClasses, idClasseSelec, setListaAlunos, recarregarPeriodos, recarregarAlunos, setListaDatasMarcadasNotas,
+    dataSelec, setListaFrequencia, setListaNotas, setTextoAtividades, setTextoTituloNotas, recarregarClasses, recarregarDadosProfessor, recarregarDatasMarcadasFreq } = useContext(Context)
 
   useEffect(() => {
     // recupera dados dos professor e inicia os estados.
@@ -111,8 +112,6 @@ const consultasBD = () => {
     const carregarFrequencias = async () => {
       try {
         const dados = await buscarFrequenciasPorClasseEData(idClasseSelec, dataSelec);
-        console.log('dados',dados);
-        
         setListaFrequencia(dados);
       } catch (erro) {
         setError('Erro ao buscar frequências');
@@ -124,57 +123,122 @@ const consultasBD = () => {
 
 
   useEffect(() => {
-  // Buscar as notas dos alunos por classe e data
-  if (!idClasseSelec || !dataSelec) return;
+    // Buscar as notas dos alunos por classe e data
+    if (!idClasseSelec || !dataSelec) return;
 
-  const carregarNotas = async () => {
-    try {
-      const dados = await buscarNotasPorClasseEData(idClasseSelec, dataSelec);
-      console.log('notas', dados);
+    const carregarNotas = async () => {
+      try {
+        const dados = await buscarNotasPorClasseEData(idClasseSelec, dataSelec);
+        setListaNotas(dados);
+      } catch (erro) {
+        setError('Erro ao buscar notas');
+      }
+    };
 
-      setListaNotas(dados);
-    } catch (erro) {
-      setError('Erro ao buscar notas');
-    }
-  };
-
-  carregarNotas();
-}, [idClasseSelec, dataSelec, recarregarNotas]);
-
+    carregarNotas();
+  }, [idClasseSelec, dataSelec, recarregarNotas]);
 
   useEffect(() => {
-    //consulta ao BD retorna o texto das atividades desenvolvidas na data escolhida
-    const unsub = firestore().collection(idUsuario)
-      .doc(idPeriodoSelec).collection('Classes')
-      .doc(idClasseSelec).collection('DatasFrequencias')
-      .onSnapshot(docSnapshot => {
-        docSnapshot.forEach((docSnapshot) => {
-          if (docSnapshot.id == dataSelec) {
-            setTextoAtividades(docSnapshot.data().atividade)
-          }
-        });
-      })
-    return () => {
-      unsub();
+    // Buscar as notas dos alunos por classe e data
+    if (!idClasseSelec || !dataSelec) return;
+
+    const carregarNotas = async () => {
+      try {
+        const dados = await buscarNotasPorClasseEData(idClasseSelec, dataSelec);
+        setListaNotas(dados);
+      } catch (erro) {
+        setError('Erro ao buscar notas');
+      }
     };
-  }, [dataSelec]);
+
+    carregarNotas();
+  }, [idClasseSelec, dataSelec, recarregarNotas]);
+
+  useEffect(() => {
+    // Buscar todas as datas de frequencias por classe.
+    if (!idClasseSelec) return;
+
+    const buscarDatasFreq = async () => {
+      try {
+        const result = await buscarDatasFrequenciaPorClasse(idClasseSelec);
+        const datas = result.map(item => item.data.substring(0, 10));
+        const markedDates = datas.reduce((acc, date) => {
+          acc[date] = {
+            selected: true,
+            selectedColor: Globais.corPrimaria,
+          };
+          return acc;
+        }, {});
+        setListaDatasMarcadasFreq(markedDates);
+      } catch (err) {
+        console.error('Erro ao buscar datas de frequência:', err);
+      }
+    };
+
+    buscarDatasFreq();
+  }, [idClasseSelec, recarregarDatasMarcadasFreq]);
+
+  useEffect(() => {
+    // Buscar todas as datas de notas por classe.
+    if (!idClasseSelec) return;
+
+    const buscarDatasNotas = async () => {
+      try {
+        const result = await buscarDatasNotaPorClasse(idClasseSelec);
+        const datas = result.map(item => item.data.substring(0, 10));
+        const markedDates = datas.reduce((acc, date) => {
+          acc[date] = {
+            selected: true,
+            selectedColor: Globais.corPrimaria,
+          };
+          return acc;
+        }, {});
+        setListaDatasMarcadasNotas(markedDates);
+      } catch (err) {
+        console.error('Erro ao buscar datas de nota:', err);
+      }
+    };
+
+    buscarDatasNotas();
+  }, [idClasseSelec, recarregarDatasMarcadasNotas]);
+
+  useEffect(() => {
+    // retorna o texto das atividades desenvolvidas na data escolhida
+    if (!idClasseSelec || !dataSelec) return;
+
+    const buscarAtividade = async () => {
+      try {
+        const atividade = await buscarAtividadePorDataEClasse(dataSelec, idClasseSelec);
+        setTextoAtividades(atividade);
+        console.log('atividade', atividade);
+
+      } catch (err) {
+        console.error('Erro ao buscar atividade:', err);
+      }
+    };
+
+    buscarAtividade();
+  }, [idClasseSelec, dataSelec]);
 
   useEffect(() => {
     //consulta ao BD retorna o texto do título da nota na data escolhida
-    const unsub = firestore().collection(idUsuario)
-      .doc(idPeriodoSelec).collection('Classes')
-      .doc(idClasseSelec).collection('DatasNotas')
-      .onSnapshot(docSnapshot => {
-        docSnapshot.forEach((docSnapshot) => {
-          if (docSnapshot.id == dataSelec) {
-            setTextoTituloNotas(docSnapshot.data().tituloNota)
-          }
-        });
-      })
-    return () => {
-      unsub();
+    if (!idClasseSelec || !dataSelec) return;
+
+    const buscarTituloNota = async () => {
+      try {
+        const titulo = await buscarTituloPorDataEClasse(dataSelec, idClasseSelec);
+        setTextoTituloNotas(titulo);
+        console.log('titulo', titulo);
+
+      } catch (err) {
+        console.error('Erro ao buscar título notas:', err);
+      }
     };
-  }, [dataSelec]);
+
+    buscarTituloNota();
+  }, [idClasseSelec, dataSelec]);
+
+
 }
 
 export default consultasBD
