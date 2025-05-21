@@ -9,6 +9,8 @@ export default function Provider({ children }) {
     const [nome, setNome] = useState('');
     const [idUsuario, setIdUsuario] = useState(auth().currentUser?.email);
     const [idProfessor, setIdProfessor] = useState('');
+    const [idDataFreq, setIdDataFreq] = useState('');
+    const [idDataNota, setIdDataNota] = useState('');
     const [senha, setSenha] = useState('');
     const [modalAddPeriodo, setModalAddPeriodo] = useState(false);
     const [modalAddClasse, setModalAddClasse] = useState(false);
@@ -77,6 +79,8 @@ export default function Provider({ children }) {
             senha, setSenha,
             idUsuario, setIdUsuario,
             idProfessor, setIdProfessor,
+            idDataFreq, setIdDataFreq,
+            idDataNota, setIdDataNota,
             modalAddPeriodo, setModalAddPeriodo,
             modalAddClasse, setModalAddClasse,
             modalAddAluno, setModalAddAluno,

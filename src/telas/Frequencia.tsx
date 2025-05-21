@@ -15,12 +15,14 @@ import ConexaoInternet from "../componentes/ConexaoInternet";
 import { atualizarAtividades } from "../banco_dados/atualizarBD"
 import { useTranslation } from 'react-i18next';
 import i18n from '../../i18n';
+import { atualizarAtividade } from '../services/datasFrequencia';
 
 const Frequencia = () => {
     const dataTempRef = useRef('')
     const textoAtividadesRef = useRef('')
+    const [textoAtiv, setTextoAtiv] = useState('');
     const { dataSelec, setModalCalendarioFreq, idUsuario, idPeriodoSelec, idClasseSelec,
-        nomePeriodoSelec, setFlagLongPressDataFreq, setDataSelec, textoAtividades } = useContext(Context);
+        nomePeriodoSelec, setFlagLongPressDataFreq, setDataSelec, idDataFreq } = useContext(Context);
     const { t } = useTranslation();
 
     useFocusEffect(
@@ -46,26 +48,31 @@ const Frequencia = () => {
         };
     }, []);
 
+    useEffect(() => {
+        setTextoAtiv('');
+    }, [dataSelec]);
+
     function onChangeAtividades(text: string) {
         // mantem cópia do texto e dataSelec para salvar quando troca de aba
-        textoAtividadesRef.current = text
-        dataTempRef.current = dataSelec
+        // textoAtividadesRef.current = text
+        // dataTempRef.current = dataSelec
+        setTextoAtiv(text)
     }
 
     function formatarData(data: String) {
         if (typeof data === "string" && data.includes("-")) {
             const [ano, mes, dia] = data.split("-");
-            if(i18n.language=='pt') return `${dia}/${mes}/${ano}`;
-            if(i18n.language=='en') return `${mes}/${dia}/${ano}`;
+            if (i18n.language == 'pt') return `${dia}/${mes}/${ano}`;
+            if (i18n.language == 'en') return `${mes}/${dia}/${ano}`;
         } else {
-            return t("Selecione uma data")+'...'
+            return t("Selecione uma data") + '...'
         }
     }
 
     const renderHeader = () => (
         <TouchableOpacity onPress={() => setFlagLongPressDataFreq(false)} activeOpacity={1}>
             <Text style={styles.textLoad}>
-                {nomePeriodoSelec != undefined ? t("Período") + ": " + nomePeriodoSelec: t('Selecione um período')+"..."}
+                {nomePeriodoSelec != undefined ? t("Período") + ": " + nomePeriodoSelec : t('Selecione um período') + "..."}
             </Text>
             <FlatListClasses />
             <Divider style={styles.divider} />
@@ -84,21 +91,26 @@ const Frequencia = () => {
                     <View style={styles.inputWrapper}>
                         <TextInput
                             multiline
-                            placeholder={t("Descreva as atividades")+"..."}
+                            placeholder={t("Descreva as atividades") + "..."}
                             onChangeText={(text) => onChangeAtividades(text)}
-                            defaultValue={textoAtividades}
+                            defaultValue={textoAtiv}
                             style={styles.textInput}
                         />
                         <TouchableOpacity
                             style={styles.saveButtonInside}
-                            onPress={() => {
-                                if (textoAtividadesRef.current.trim() === '') {
+                            onPress={async () => {
+                                if (textoAtiv.trim() === '') {
                                     ToastAndroid.show(t("msg_017"), ToastAndroid.SHORT);
                                 } else {
-                                    atualizarAtividades(
-                                        textoAtividadesRef.current, idUsuario, idPeriodoSelec, idClasseSelec, dataTempRef.current
-                                    );
-                                    ToastAndroid.show(t("msg_018"), ToastAndroid.SHORT);
+                                    try {
+                                        console.log("textoAtiv", textoAtiv);
+
+                                        const resultado = await atualizarAtividade(idDataFreq, textoAtiv);
+                                        console.log('Atividade atualizada:', resultado);
+                                        ToastAndroid.show(t("msg_018"), ToastAndroid.SHORT);
+                                    } catch (erro) {
+                                        console.error('Erro ao atualizar atividade:', erro);
+                                    }
                                 }
                             }}
                         >

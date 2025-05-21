@@ -30,7 +30,7 @@ const CalendarioFrequencia = () => {
   const { t } = useTranslation();
 
   const { idClasseSelec, dataSelec, setDataSelec, modalCalendarioFreq, setModalCalendarioFreq,
-    setflagLoadCalendarioFreq, setRecarregarDatasMarcadasFreq, setRecarregarFrequencia, listaDatasMarcadasFreq } = useContext(Context)
+    setRecarregarDatasMarcadasFreq, setRecarregarFrequencia, listaDatasMarcadasFreq, setIdDataFreq } = useContext(Context)
 
   useEffect(() => {
     if (i18n.language === 'pt') {
@@ -47,6 +47,8 @@ const CalendarioFrequencia = () => {
         // Cria a data da frequência
         const novaData = await criarDataFrequencia({ data: dataSelec, id_classe: idClasseSelec });
 
+        setIdDataFreq(novaData.id)
+        
         // Busca os alunos da classe
         const alunos = await buscarAlunosPorClasse(idClasseSelec);
 

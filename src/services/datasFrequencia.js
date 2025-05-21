@@ -37,3 +37,14 @@ export const buscarAtividadePorDataEClasse = async (data, id_classe) => {
     throw erro;
   }
 };
+
+// Atualizar atividade
+export const atualizarAtividade = async (id, atividade) => {
+  try {
+    const resposta = await api.put(`/datas-frequencia/${id}`, { atividade });
+    return resposta.data;
+  } catch (erro) {
+    console.error('Erro ao atualizar atividade:', erro);
+    throw erro;
+  }
+};
