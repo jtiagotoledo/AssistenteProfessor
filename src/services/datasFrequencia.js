@@ -49,7 +49,7 @@ export const atualizarAtividade = async (id, atividade) => {
   }
 };
 
-// Buscar ID específico por data e classe
+// Buscar ID e atividade por data e classe
 export const buscarIdAtivPorDataEClasse = async (data, id_classe) => {
   try {
     const resposta = await api.get('/datas-frequencia/buscar-id-atividade', {

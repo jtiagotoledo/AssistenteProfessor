@@ -8,6 +8,7 @@ import i18n from '../../i18n';
 import { criarDataNota } from '../services/datasNotas';
 import { buscarAlunosPorClasse } from '../services/alunos';
 import { criarNota } from '../services/nota';
+import { buscarIdTituloPorDataEClasse } from '../services/datasNotas';
 
 const { width } = Dimensions.get('window'); // Captura a largura e altura da tela
 
@@ -30,8 +31,8 @@ if (i18n.language == 'en') LocaleConfig.defaultLocale = "en";
 
 const CalendarioNota = () => {
   const { t } = useTranslation();
-  const {  idClasseSelec, dataSelec,setDataSelec, modalCalendarioNota, setModalCalendarioNota,
-     setRecarregarDatasMarcadasNotas, setRecarregarNotas, listaDatasMarcadasNotas } = useContext(Context)
+  const { idClasseSelec, dataSelec, setDataSelec, modalCalendarioNota, setModalCalendarioNota,
+    setRecarregarDatasMarcadasNotas, setRecarregarNotas, listaDatasMarcadasNotas, setIdDataNota, setTextoTituloNotas } = useContext(Context)
 
   useEffect(() => {
     if (i18n.language === 'pt') {
@@ -41,37 +42,36 @@ const CalendarioNota = () => {
     }
   }, [i18n.language]);
 
- 
-
   const onPressAddData = async () => {
-  if (dataSelec && idClasseSelec) {
-    try {
-      setModalCalendarioNota(false); // Fecha modal do calendário de notas
+    if (dataSelec && idClasseSelec) {
+      try {
+        setModalCalendarioNota(false); // Fecha modal do calendário de notas
 
-      // Cria a data da nota
-      const novaDataNota = await criarDataNota({ data: dataSelec, id_classe: idClasseSelec });
+        // Cria a data da nota
+        const novaDataNota = await criarDataNota({ data: dataSelec, id_classe: idClasseSelec });
+        setIdDataNota(novaDataNota.id)
 
-      // Busca os alunos da classe
-      const alunos = await buscarAlunosPorClasse(idClasseSelec);
+        // Busca os alunos da classe
+        const alunos = await buscarAlunosPorClasse(idClasseSelec);
 
-      // Para cada aluno, cria um registro de nota inicial 
-      await Promise.all(
-        alunos.map((aluno: any) =>
-          criarNota({
-            id_data_nota: novaDataNota.id,
-            id_aluno: aluno.id,
-            nota: null 
-          })
-        )
-      );
+        // Para cada aluno, cria um registro de nota inicial 
+        await Promise.all(
+          alunos.map((aluno: any) =>
+            criarNota({
+              id_data_nota: novaDataNota.id,
+              id_aluno: aluno.id,
+              nota: null
+            })
+          )
+        );
 
-      setRecarregarNotas((prev: any) => !prev);
-      ToastAndroid.show('Data de nota criada!', ToastAndroid.SHORT);
-    } catch (error) {
-      ToastAndroid.show('Erro ao criar data de nota!', ToastAndroid.SHORT);
+        setRecarregarNotas((prev: any) => !prev);
+        ToastAndroid.show('Data de nota criada!', ToastAndroid.SHORT);
+      } catch (error) {
+        ToastAndroid.show('Erro ao criar data de nota!', ToastAndroid.SHORT);
+      }
     }
-  }
-};
+  };
 
 
   const renderCarregamento = () => {
@@ -80,13 +80,25 @@ const CalendarioNota = () => {
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           <View style={styles.container}>
             <Calendar
-              style={styles.calendar} 
+              style={styles.calendar}
               onDayPress={(day: any) => {
                 setDataSelec(day.dateString);
-                setRecarregarNotas('recarregarNotas');
-                if (listaDatasMarcadasNotas[day.dateString]?.selected) {
-                  setModalCalendarioNota(!modalCalendarioNota)
-                }
+                const verificarId = async () => {
+                  if (listaDatasMarcadasNotas[day.dateString]?.selected) {
+                    setRecarregarNotas((prev: any) => !prev);
+                    try {
+                      const resposta = await buscarIdTituloPorDataEClasse(day.dateString, idClasseSelec);
+                      console.log('ID encontrado:', resposta);
+                      setIdDataNota(resposta.id);
+                      setTextoTituloNotas(resposta.titulo);
+                      setModalCalendarioNota(!modalCalendarioNota);
+                    } catch (erro) {
+                      console.log('Data não encontrada ou erro:', erro);
+                    }
+                  }
+                };
+
+                verificarId();
               }}
               markedDates={listaDatasMarcadasNotas}
             />

@@ -37,3 +37,27 @@ export const buscarTituloPorDataEClasse = async (data, id_classe) => {
     throw erro;
   }
 };
+
+// Atualizar título
+export const atualizarTitulo = async (id, titulo) => {
+  try {
+    const resposta = await api.put(`/datas-notas/${id}`, { titulo });
+    return resposta.data;
+  } catch (erro) {
+    console.error('Erro ao atualizar título:', erro);
+    throw erro;
+  }
+};
+
+// Buscar ID e título por data e classe
+export const buscarIdTituloPorDataEClasse = async (data, id_classe) => {
+  try {
+    const resposta = await api.get('/datas-notas/buscar-id-titulo', {
+      params: { data, id_classe }
+    });
+    return resposta.data;  // { id: '...', titulo: '...' }
+  } catch (erro) {
+    console.error('Erro ao buscar ID e título por data e classe:', erro);
+    throw erro;
+  }
+};

@@ -12,59 +12,22 @@ import FlatListClasses from "../listas/FlatListClasses";
 import FabNotas from "../componentes/FabNotas";
 import HeaderNotas from "../componentes/HeaderNotas";
 import ConexaoInternet from "../componentes/ConexaoInternet";
-import { atualizarNotas } from "../banco_dados/atualizarBD"
-import { atualizarTituloNotas } from "../banco_dados/atualizarBD"
 import { useTranslation } from 'react-i18next';
 import i18n from '../../i18n';
+import { atualizarTitulo } from '../services/datasNotas';
 
 const Notas = () => {
-    const dataTempRef = useRef('')
-    const textoTituloNotasRef = useRef('')
-    const listaNotasRef = useRef({})
-    const [dataTemp, setDataTemp] = useState()
-    const { dataSelec, setModalCalendarioNota, setDataSelec,
-        nomePeriodoSelec, setFlagLongPressDataNotas, textoTituloNotas,
-        listaNotas, idUsuario, idPeriodoSelec, idClasseSelec, valueNota } = useContext(Context);
+    const { dataSelec, setModalCalendarioNota, nomePeriodoSelec, setFlagLongPressDataNotas,
+        textoTituloNotas, setTextoTituloNotas, idDataNota } = useContext(Context);
     const { t } = useTranslation();
-
-    const onPressFab = () => {
-        atualizarNotas(listaNotas, idUsuario, idPeriodoSelec, idClasseSelec, dataSelec)
-    }
+    let titulo = ''
 
     useEffect(() => {
-        //mantem uma cópia da lista de notas para salvar quando a aba é trocada
-        listaNotasRef.current = listaNotas
-    }, [valueNota])
-
-    useFocusEffect(
-        useCallback(() => {
-            setDataTemp(dataSelec)
-            return () => {
-                atualizarNotas(listaNotasRef.current, idUsuario, idPeriodoSelec, idClasseSelec, dataTemp)
-                atualizarTituloNotas(textoTituloNotasRef.current, idUsuario, idPeriodoSelec, idClasseSelec, dataTempRef.current)
-                setDataSelec('')
-            };
-        }, [])
-    );
-
-    useEffect(() => {
-        //monitoramento do app, se fechado ele chama a função para salvar o título das notas.
-        const handleAppStateChange = (nextAppState: any) => {
-            if (nextAppState === 'background' && textoTituloNotasRef.current !== undefined) {
-                atualizarTituloNotas(textoTituloNotasRef.current, idUsuario, idPeriodoSelec, idClasseSelec, dataTempRef.current)
-            }
-        };
-        const subscription = AppState.addEventListener('change', handleAppStateChange);
-
-        return () => {
-            subscription.remove();
-        };
-    }, []);
+        setTextoTituloNotas('')
+    }, [dataSelec]);
 
     function onChangeTituloNotas(text: string) {
-        // mantem cópia do texto e dataSelec para salvar quando troca de aba
-        textoTituloNotasRef.current = text
-        dataTempRef.current = dataSelec
+        titulo = text
     }
 
     function formatarData(data: String) {
@@ -99,20 +62,27 @@ const Notas = () => {
                     <View style={styles.inputWrapper}>
                         <TextInput
                             multiline
-                            placeholder={t('Título da avaliação')+"..."}
+                            placeholder={t('Título da avaliação') + "..."}
                             onChangeText={(text) => onChangeTituloNotas(text)}
                             defaultValue={textoTituloNotas}
                             style={styles.textInput}
                         />
                         <TouchableOpacity
                             style={styles.saveButtonInside}
-                            onPress={() => {
-                                if (textoTituloNotasRef.current.trim() === '') {
+                            onPress={async () => {
+                                if (titulo.trim() === '') {
                                     ToastAndroid.show(t('msg_019'), ToastAndroid.SHORT);
                                 } else {
-                                    atualizarTituloNotas(
-                                        textoTituloNotasRef.current, idUsuario, idPeriodoSelec, idClasseSelec, dataSelec
-                                    );
+                                    try {
+                                        console.log('idDataNota',idDataNota,'titulo',titulo);
+                                        
+                                        const resultado = await atualizarTitulo(idDataNota, titulo);
+                                        console.log('Atividade atualizada:', resultado);
+                                        ToastAndroid.show(t("msg_018"), ToastAndroid.SHORT);
+                                    } catch (erro) {
+                                        console.error('Erro ao atualizar atividade:', erro);
+                                    }
+
                                     ToastAndroid.show(t('msg_020'), ToastAndroid.SHORT);
                                 }
                             }}
@@ -137,7 +107,7 @@ const Notas = () => {
             />
             <ModalCalendarioNota />
             <ModalDelDataNotas />
-            <FabNotas onPress={() => onPressFab()} />
+            <FabNotas onPress={() => null} />
         </View>
     );
 };

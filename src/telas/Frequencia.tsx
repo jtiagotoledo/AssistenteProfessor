@@ -12,51 +12,21 @@ import FlatListFrequencia from "../listas/FlatListFrequencia";
 import FlatListClasses from "../listas/FlatListClasses";
 import FabFrequencia from "../componentes/FabFrequencia";
 import ConexaoInternet from "../componentes/ConexaoInternet";
-import { atualizarAtividades } from "../banco_dados/atualizarBD"
 import { useTranslation } from 'react-i18next';
 import i18n from '../../i18n';
 import { atualizarAtividade } from '../services/datasFrequencia';
 
 const Frequencia = () => {
-    const dataTempRef = useRef('')
-    const textoAtividadesRef = useRef('')
-    const { dataSelec, setModalCalendarioFreq, idUsuario, idPeriodoSelec, idClasseSelec,
-        nomePeriodoSelec, setFlagLongPressDataFreq, setDataSelec, idDataFreq, textoAtividades, setTextoAtividades} = useContext(Context);
+    const { dataSelec, setModalCalendarioFreq, nomePeriodoSelec, setFlagLongPressDataFreq, idDataFreq, 
+        textoAtividades, setTextoAtividades} = useContext(Context);
     const { t } = useTranslation();
     let atividades = ''
-
-    useFocusEffect(
-        useCallback(() => {
-            return () => {
-                atualizarAtividades(textoAtividadesRef.current, idUsuario, idPeriodoSelec, idClasseSelec, dataTempRef.current)
-                setDataSelec('')
-            };
-        }, [])
-    );
-
-    useEffect(() => {
-        //monitoramento do app, se fechado ele chama a função para salvar as atividades.
-        const handleAppStateChange = (nextAppState: any) => {
-            if (nextAppState === 'background' && textoAtividadesRef.current !== undefined) {
-                atualizarAtividades(textoAtividadesRef.current, idUsuario, idPeriodoSelec, idClasseSelec, dataTempRef.current)
-            }
-        };
-        const subscription = AppState.addEventListener('change', handleAppStateChange);
-
-        return () => {
-            subscription.remove();
-        };
-    }, []);
 
     useEffect(() => {
         setTextoAtividades('')
     }, [dataSelec]);
 
     function onChangeAtividades(text: string) {
-        // mantem cópia do texto e dataSelec para salvar quando troca de aba
-        // textoAtividadesRef.current = text
-        // dataTempRef.current = dataSelec
-        // setTextoAtiv(text)
         atividades = text
     }
 
