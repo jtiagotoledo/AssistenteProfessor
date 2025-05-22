@@ -18,7 +18,7 @@ const consultasBD = () => {
 
   const { setNome, setEmail, idProfessor, setIdProfessor, setListaPeriodos, recarregarNotas, setListaDatasMarcadasFreq, recarregarDatasMarcadasNotas,
     recarregarFrequencia, idPeriodoSelec, setListaClasses, idClasseSelec, setListaAlunos, recarregarPeriodos, recarregarAlunos, setListaDatasMarcadasNotas,
-    dataSelec, setListaFrequencia, setListaNotas, setTextoAtividades, setTextoTituloNotas, recarregarClasses, recarregarDadosProfessor, recarregarDatasMarcadasFreq } = useContext(Context)
+    dataSelec, setListaFrequencia, setListaNotas, dataFreqSelec, dataNotaSelec, recarregarClasses, recarregarDadosProfessor, recarregarDatasMarcadasFreq, idDataFreq, idDataNota } = useContext(Context)
 
   useEffect(() => {
     // recupera dados dos professor e inicia os estados.
@@ -119,7 +119,7 @@ const consultasBD = () => {
     };
 
     carregarFrequencias();
-  }, [idClasseSelec, dataSelec, recarregarFrequencia]);
+  }, [recarregarFrequencia]);
 
 
   useEffect(() => {
@@ -136,23 +136,7 @@ const consultasBD = () => {
     };
 
     carregarNotas();
-  }, [idClasseSelec, dataSelec, recarregarNotas]);
-
-  useEffect(() => {
-    // Buscar as notas dos alunos por classe e data
-    if (!idClasseSelec || !dataSelec) return;
-
-    const carregarNotas = async () => {
-      try {
-        const dados = await buscarNotasPorClasseEData(idClasseSelec, dataSelec);
-        setListaNotas(dados);
-      } catch (erro) {
-        setError('Erro ao buscar notas');
-      }
-    };
-
-    carregarNotas();
-  }, [idClasseSelec, dataSelec, recarregarNotas]);
+  }, [recarregarNotas]);
 
   useEffect(() => {
     // Buscar todas as datas de frequencias por classe.
@@ -202,23 +186,22 @@ const consultasBD = () => {
     buscarDatasNotas();
   }, [idClasseSelec, recarregarDatasMarcadasNotas]);
 
-  useEffect(() => {
+/*   useEffect(() => {
     // retorna o texto das atividades desenvolvidas na data escolhida
     if (!idClasseSelec || !dataSelec) return;
 
     const buscarAtividade = async () => {
       try {
         const atividade = await buscarAtividadePorDataEClasse(dataSelec, idClasseSelec);
-        setTextoAtividades(atividade);
+        setTextoAtividades(atividade.atividade);
         console.log('atividade', atividade);
-
       } catch (err) {
         console.error('Erro ao buscar atividade:', err);
       }
     };
 
     buscarAtividade();
-  }, [idClasseSelec, dataSelec]);
+  }, [idDataFreq]);
 
   useEffect(() => {
     //consulta ao BD retorna o texto do título da nota na data escolhida
@@ -236,7 +219,7 @@ const consultasBD = () => {
     };
 
     buscarTituloNota();
-  }, [idClasseSelec, dataSelec]);
+  }, [idDataNota]); */
 
 
 }

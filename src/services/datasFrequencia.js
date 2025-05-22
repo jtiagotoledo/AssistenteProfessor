@@ -48,3 +48,16 @@ export const atualizarAtividade = async (id, atividade) => {
     throw erro;
   }
 };
+
+// Buscar ID específico por data e classe
+export const buscarIdAtivPorDataEClasse = async (data, id_classe) => {
+  try {
+    const resposta = await api.get('/datas-frequencia/buscar-id-atividade', {
+      params: { data, id_classe }
+    });
+    return resposta.data;  // { id: '...' }
+  } catch (erro) {
+    console.error('Erro ao buscar ID por data e classe:', erro);
+    throw erro;
+  }
+};

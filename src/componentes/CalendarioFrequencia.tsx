@@ -8,6 +8,7 @@ import i18n from '../../i18n';
 import { criarDataFrequencia } from '../services/datasFrequencia';
 import { buscarAlunosPorClasse } from '../services/alunos';
 import { criarFrequencia } from '../services/frequencia';
+import { buscarIdAtivPorDataEClasse } from '../services/datasFrequencia';
 
 
 const { width } = Dimensions.get('window'); // Captura a largura e altura da tela
@@ -29,8 +30,8 @@ LocaleConfig.locales.en = {
 const CalendarioFrequencia = () => {
   const { t } = useTranslation();
 
-  const { idClasseSelec, dataSelec, setDataSelec, modalCalendarioFreq, setModalCalendarioFreq,
-    setRecarregarDatasMarcadasFreq, setRecarregarFrequencia, listaDatasMarcadasFreq, setIdDataFreq } = useContext(Context)
+  const { idClasseSelec, dataSelec, setDataSelec, modalCalendarioFreq, setModalCalendarioFreq, setDataFreqSelec,
+    setRecarregarDatasMarcadasFreq, setRecarregarFrequencia, listaDatasMarcadasFreq, setIdDataFreq, setTextoAtividades } = useContext(Context)
 
   useEffect(() => {
     if (i18n.language === 'pt') {
@@ -46,9 +47,8 @@ const CalendarioFrequencia = () => {
         setModalCalendarioFreq(false);
         // Cria a data da frequência
         const novaData = await criarDataFrequencia({ data: dataSelec, id_classe: idClasseSelec });
-
         setIdDataFreq(novaData.id)
-        
+
         // Busca os alunos da classe
         const alunos = await buscarAlunosPorClasse(idClasseSelec);
 
@@ -79,10 +79,22 @@ const CalendarioFrequencia = () => {
               style={styles.calendar}
               onDayPress={(day: any) => {
                 setDataSelec(day.dateString);
-                setRecarregarFrequencia('recarregarFrequencia');
-                if (listaDatasMarcadasFreq[day.dateString]?.selected) {
-                  setModalCalendarioFreq(!modalCalendarioFreq);
-                }
+                const verificarId = async () => {
+                  if (listaDatasMarcadasFreq[day.dateString]?.selected) {
+                    setRecarregarFrequencia((prev: any) => !prev);
+                    try {
+                      const resposta = await buscarIdAtivPorDataEClasse(day.dateString, idClasseSelec);
+                      console.log('ID encontrado:', resposta);
+                      setIdDataFreq(resposta.id);
+                      setTextoAtividades(resposta.atividade);
+                      setModalCalendarioFreq(!modalCalendarioFreq);
+                    } catch (erro) {
+                      console.log('Data não encontrada ou erro:', erro);
+                    }
+                  }
+                };
+
+                verificarId();
               }}
               markedDates={listaDatasMarcadasFreq}
             />

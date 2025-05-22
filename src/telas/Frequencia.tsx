@@ -20,10 +20,10 @@ import { atualizarAtividade } from '../services/datasFrequencia';
 const Frequencia = () => {
     const dataTempRef = useRef('')
     const textoAtividadesRef = useRef('')
-    const [textoAtiv, setTextoAtiv] = useState('');
     const { dataSelec, setModalCalendarioFreq, idUsuario, idPeriodoSelec, idClasseSelec,
-        nomePeriodoSelec, setFlagLongPressDataFreq, setDataSelec, idDataFreq } = useContext(Context);
+        nomePeriodoSelec, setFlagLongPressDataFreq, setDataSelec, idDataFreq, textoAtividades, setTextoAtividades} = useContext(Context);
     const { t } = useTranslation();
+    let atividades = ''
 
     useFocusEffect(
         useCallback(() => {
@@ -49,14 +49,15 @@ const Frequencia = () => {
     }, []);
 
     useEffect(() => {
-        setTextoAtiv('');
+        setTextoAtividades('')
     }, [dataSelec]);
 
     function onChangeAtividades(text: string) {
         // mantem cópia do texto e dataSelec para salvar quando troca de aba
         // textoAtividadesRef.current = text
         // dataTempRef.current = dataSelec
-        setTextoAtiv(text)
+        // setTextoAtiv(text)
+        atividades = text
     }
 
     function formatarData(data: String) {
@@ -93,19 +94,17 @@ const Frequencia = () => {
                             multiline
                             placeholder={t("Descreva as atividades") + "..."}
                             onChangeText={(text) => onChangeAtividades(text)}
-                            defaultValue={textoAtiv}
+                            defaultValue={textoAtividades}
                             style={styles.textInput}
                         />
                         <TouchableOpacity
                             style={styles.saveButtonInside}
                             onPress={async () => {
-                                if (textoAtiv.trim() === '') {
+                                if (atividades.trim() === '') {
                                     ToastAndroid.show(t("msg_017"), ToastAndroid.SHORT);
                                 } else {
                                     try {
-                                        console.log("textoAtiv", textoAtiv);
-
-                                        const resultado = await atualizarAtividade(idDataFreq, textoAtiv);
+                                        const resultado = await atualizarAtividade(idDataFreq, atividades);
                                         console.log('Atividade atualizada:', resultado);
                                         ToastAndroid.show(t("msg_018"), ToastAndroid.SHORT);
                                     } catch (erro) {

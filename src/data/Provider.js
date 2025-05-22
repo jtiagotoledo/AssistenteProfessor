@@ -56,6 +56,8 @@ export default function Provider({ children }) {
     const [selectedIdAluno, setSelectedIdAluno] = useState('');
     const [alunoInativo, setAlunoInativo] = useState(false);
     const [dataSelec, setDataSelec] = useState('');
+    const [dataFreqSelec, setDataFreqSelec] = useState('');
+    const [dataNotaSelec, setDataNotaSelec] = useState('');
     const [abaSelec, setAbaSelec] = useState('');
     const [listaPeriodos, setListaPeriodos] = useState([{ label: '', value: '', periodo: '', idPeriodo: '' }]);
     const [listaClasses, setListaClasses] = useState([{ classe: '', idClasse: '' }]);
@@ -125,6 +127,8 @@ export default function Provider({ children }) {
             selectedIdAluno, setSelectedIdAluno,
             alunoInativo, setAlunoInativo,
             dataSelec, setDataSelec,
+            dataFreqSelec, setDataFreqSelec,
+            dataNotaSelec, setDataNotaSelec,
             abaSelec, setAbaSelec,
             listaPeriodos, setListaPeriodos,
             listaClasses, setListaClasses,
