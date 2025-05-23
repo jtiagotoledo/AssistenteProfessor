@@ -35,3 +35,13 @@ export const atualizarNota = async (id, nota) => {
   }
 };
 
+export const buscarNotasPorClasse = async (idClasse) => {
+  try {
+    const resposta = await api.get(`/notas/classe/${idClasse}/todas`);
+    return resposta.data;  // deve retornar array de { id_aluno, nota, id_data_nota }
+  } catch (erro) {
+    console.error('Erro ao buscar notas da classe:', erro);
+    return [];  // retorna array vazio em caso de erro, para evitar quebrar o map
+  }
+};
+

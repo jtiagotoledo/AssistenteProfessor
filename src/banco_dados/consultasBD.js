@@ -10,8 +10,8 @@ import { buscarFrequenciasPorClasseEData } from '../services/frequencia';
 import { buscarNotasPorClasseEData } from '../services/nota';
 import { buscarDatasFrequenciaPorClasse } from '../services/datasFrequencia';
 import { buscarDatasNotaPorClasse } from '../services/datasNotas';
-import { buscarAtividadePorDataEClasse } from '../services/datasFrequencia';
-import { buscarTituloPorDataEClasse } from '../services/datasNotas';
+import { buscarFrequenciasPorClasse } from '../services/frequencia';
+import { buscarNotasPorClasse } from '../services/nota';
 import auth from '@react-native-firebase/auth';
 
 const consultasBD = () => {
@@ -80,30 +80,64 @@ const consultasBD = () => {
 
 
   useEffect(() => {
-    // buscar todos os alunos da classe selecionada
-    const carregarAlunos = async () => {
+    const carregarAlunosFrequenciasENotas = async () => {
       try {
         if (!idClasseSelec) return;
-        const alunos = await buscarAlunosPorClasse(idClasseSelec);
 
-        const alunosFormatados = alunos.map((a) => ({
+        // 1. Buscar alunos da classe
+        const alunos = await buscarAlunosPorClasse(idClasseSelec);
+        const alunosFormatados = alunos.map(a => ({
           idAluno: a.id,
           nome: a.nome,
           numero: a.numero,
-          mediaNotas: a.media_notas,
-          porcFreq: a.porc_frequencia,
+          mediaNotas: 0,  // será calculado
+          porcFreq: 0,    // será calculado
           inativo: a.inativo,
           idClasseSelec: a.id_classe,
         }));
 
-        setListaAlunos(alunosFormatados);
-      } catch (error) {
-        console.error('Erro ao carregar alunos', error);
+        // 2. Buscar todas as frequências da classe
+        const todasFreqs = await buscarFrequenciasPorClasse(idClasseSelec);
+
+        // 3. Buscar todas as notas da classe
+        const todasNotas = await buscarNotasPorClasse(idClasseSelec);
+
+        // 4. Para cada aluno, calcular porcentagem de frequência e média de notas
+        const alunosComDados = alunosFormatados.map(aluno => {
+          // Frequências
+          const freqAluno = todasFreqs.filter(f => f.id_aluno === aluno.idAluno);
+          const totalFreq = freqAluno.length;
+          const presencas = freqAluno.filter(f => f.presente).length;
+          const porcFreq = totalFreq === 0 ? 0 : ((presencas / totalFreq) * 100).toFixed(2);
+
+          // Notas
+          const notasAluno = todasNotas.filter(n => n.id_aluno === aluno.idAluno);
+          const notasValidas = notasAluno.filter(n => n.nota !== null && !isNaN(parseFloat(n.nota)));
+
+          const totalNotas = notasValidas.length;
+          const somaNotas = notasValidas.reduce((sum, n) => sum + parseFloat(n.nota), 0);
+
+          const mediaNotas = totalNotas === 0 ? 0 : (somaNotas / totalNotas).toFixed(2);
+
+          return {
+            ...aluno,
+            porcFreq,
+            mediaNotas
+          };
+        });
+
+        console.log('alunosComDados', alunosComDados);
+
+        setListaAlunos(alunosComDados);
+
+      } catch (erro) {
+        console.error('Erro ao carregar dados de alunos:', erro);
       }
     };
 
-    carregarAlunos();
+    carregarAlunosFrequenciasENotas();
   }, [idClasseSelec, recarregarAlunos]);
+
 
   useEffect(() => {
     // buscar as frequencias dos alunos por classe e data
@@ -186,40 +220,40 @@ const consultasBD = () => {
     buscarDatasNotas();
   }, [idClasseSelec, recarregarDatasMarcadasNotas]);
 
-/*   useEffect(() => {
-    // retorna o texto das atividades desenvolvidas na data escolhida
-    if (!idClasseSelec || !dataSelec) return;
-
-    const buscarAtividade = async () => {
-      try {
-        const atividade = await buscarAtividadePorDataEClasse(dataSelec, idClasseSelec);
-        setTextoAtividades(atividade.atividade);
-        console.log('atividade', atividade);
-      } catch (err) {
-        console.error('Erro ao buscar atividade:', err);
-      }
-    };
-
-    buscarAtividade();
-  }, [idDataFreq]);
-
-  useEffect(() => {
-    //consulta ao BD retorna o texto do título da nota na data escolhida
-    if (!idClasseSelec || !dataSelec) return;
-
-    const buscarTituloNota = async () => {
-      try {
-        const titulo = await buscarTituloPorDataEClasse(dataSelec, idClasseSelec);
-        setTextoTituloNotas(titulo);
-        console.log('titulo', titulo);
-
-      } catch (err) {
-        console.error('Erro ao buscar título notas:', err);
-      }
-    };
-
-    buscarTituloNota();
-  }, [idDataNota]); */
+  /*   useEffect(() => {
+      // retorna o texto das atividades desenvolvidas na data escolhida
+      if (!idClasseSelec || !dataSelec) return;
+  
+      const buscarAtividade = async () => {
+        try {
+          const atividade = await buscarAtividadePorDataEClasse(dataSelec, idClasseSelec);
+          setTextoAtividades(atividade.atividade);
+          console.log('atividade', atividade);
+        } catch (err) {
+          console.error('Erro ao buscar atividade:', err);
+        }
+      };
+  
+      buscarAtividade();
+    }, [idDataFreq]);
+  
+    useEffect(() => {
+      //consulta ao BD retorna o texto do título da nota na data escolhida
+      if (!idClasseSelec || !dataSelec) return;
+  
+      const buscarTituloNota = async () => {
+        try {
+          const titulo = await buscarTituloPorDataEClasse(dataSelec, idClasseSelec);
+          setTextoTituloNotas(titulo);
+          console.log('titulo', titulo);
+  
+        } catch (err) {
+          console.error('Erro ao buscar título notas:', err);
+        }
+      };
+  
+      buscarTituloNota();
+    }, [idDataNota]); */
 
 
 }
