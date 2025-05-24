@@ -61,3 +61,14 @@ export const buscarIdTituloPorDataEClasse = async (data, id_classe) => {
     throw erro;
   }
 };
+
+// Deletar data de nota pelo ID
+export const deletarDataNota = async (id) => {
+  try {
+    const resposta = await api.delete(`/datas-notas/${id}`);
+    return resposta.data;
+  } catch (erro) {
+    console.error('Erro ao deletar data de nota:', erro);
+    throw erro;
+  }
+};

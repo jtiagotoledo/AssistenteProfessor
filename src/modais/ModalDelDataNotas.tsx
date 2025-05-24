@@ -1,34 +1,32 @@
 import { Text, View, StyleSheet, Pressable, Modal, TouchableOpacity } from "react-native"
 import React, { useContext } from 'react';
-import firestore from '@react-native-firebase/firestore';
 import { Context } from "../data/Provider";
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import Globais from "../data/Globais";
-import { deleteDataNotas } from "../banco_dados/deletarBD";
 import { useTranslation } from 'react-i18next';
+import { deletarDataNota } from "../services/datasNotas";
 
 const ModalDelDataNotas = () => {
 
-  const { idPeriodoSelec, idClasseSelec, idUsuario, dataSelec, modalDelDataNotas, setValueNota, setListaNotas,
-    setModalDelDataNotas, setFlagLongPressDataNotas, setDataSelec, setIdClasseSelec } = useContext(Context);
+  const { idDataNota, setIdDataNota, modalDelDataNotas, setModalDelDataNotas, setFlagLongPressDataNotas,
+    setDataSelec, setRecarregarNotas, setRecarregarDatasMarcadasNotas } = useContext(Context);
   const { t } = useTranslation();
 
   const deletarData = async () => {
-    await deleteDataNotas(idUsuario, idPeriodoSelec, idClasseSelec, dataSelec)
-    setListaNotas('')
-    setValueNota('')
-    setDataSelec('')
-    setIdClasseSelec('')
-    setModalDelDataNotas(!modalDelDataNotas)
-    setFlagLongPressDataNotas(false)
-
-
-    //deletando o estado da data
-    firestore().collection(idUsuario).
-      doc('EstadosApp').update({
-        data: ''
-      })
-  }
+      try {
+        const resultado = await deletarDataNota(idDataNota);
+        console.log(resultado.mensagem); 
+        setDataSelec(null)
+        setIdDataNota(null)
+        setRecarregarNotas((prev:any)=>!prev)
+        setRecarregarDatasMarcadasNotas((prev:any)=>!prev)
+        setModalDelDataNotas(!modalDelDataNotas)
+        setFlagLongPressDataNotas(false)
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  
 
   return (
     <View>

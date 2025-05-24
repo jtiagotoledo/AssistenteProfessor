@@ -28,10 +28,10 @@ const HeaderFrequencia: React.FunctionComponent<HeaderComponentProps> = (props) 
     }
   };
 
-  const onPressSave = () => {
+  /* const onPressSave = () => {
     atualizarNotas(listaNotas, idUsuario, idPeriodoSelec, idClasseSelec, dataSelec)
     ToastAndroid.show(t('msg_034'), ToastAndroid.SHORT)
-  };
+  }; */
 
   return (
     <HeaderRNE
@@ -54,14 +54,14 @@ const HeaderFrequencia: React.FunctionComponent<HeaderComponentProps> = (props) 
               size={24}
             />
           </TouchableWithoutFeedback>
-          <TouchableWithoutFeedback onPress={onPressSave}>
+         {/*  <TouchableWithoutFeedback onPress={onPressSave}>
             <FontAwesomeIcon
               style={styles.icon}
               name="save"
               color={dataSelec ? 'rgba(255,255,255,1)' : 'rgba(255,255,255,0.6)'}
               size={24}
             />
-          </TouchableWithoutFeedback>
+          </TouchableWithoutFeedback> */}
         </View>
       }
       centerComponent={

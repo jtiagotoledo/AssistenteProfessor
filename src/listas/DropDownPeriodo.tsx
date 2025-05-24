@@ -1,7 +1,6 @@
 import React, { useState, useContext } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import { Dropdown } from 'react-native-element-dropdown';
-import firestore from '@react-native-firebase/firestore';
 import AntIcon from 'react-native-vector-icons/AntDesign';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import { Context } from "../data/Provider";
@@ -23,17 +22,6 @@ const DropDownPeriodo = () => {
     setFlagLongPressClasse(false)
     setFlagLongPressAluno(false)
     setModalMenu(false);
-
-    //Salvando estado do período
-    firestore().collection(idUsuario).
-      doc('EstadosApp').set({
-        idPeriodo: item.idPeriodo,
-        periodo: item.periodo,
-        idClasse: '',
-        classe: '',
-        data: '',
-        aba: 'Classes'
-      })
   }
 
   const renderLabel = () => {

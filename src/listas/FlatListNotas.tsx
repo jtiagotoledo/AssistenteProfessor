@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
-import { Keyboard, SafeAreaView, FlatList, View, Text, StyleSheet, AppState, TextInput } from 'react-native'
+import { SafeAreaView, FlatList, View, Text, StyleSheet, AppState, TextInput } from 'react-native'
 import { Context } from "../data/Provider";
 import Globais from '../data/Globais';
 import { atualizarNotas } from "../banco_dados/atualizarBD"

@@ -4,19 +4,28 @@ import firestore from '@react-native-firebase/firestore';
 import { Context } from "../data/Provider";
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import Globais from "../data/Globais";
-import { deleteDataFreq } from "../banco_dados/deletarBD";
+import { deletarDataFrequencia } from "../services/datasFrequencia";
 import { useTranslation } from 'react-i18next';
 
 const ModalDelDataFreq = () => {
 
-  const { modalDelDataFreq, setModalDelDataFreq, setFlagLongPressDataFreq, setDataSelec, idDataFreq, setIdDataFreq } = useContext(Context);
+  const { modalDelDataFreq, setModalDelDataFreq, setFlagLongPressDataFreq, setDataSelec, idDataFreq, setIdDataFreq,
+    setRecarregarFrequencia, setRecarregarDatasMarcadasFreq} = useContext(Context);
   const { t } = useTranslation();
 
   const deletarData = async () => {
-    setDataSelec(null)
-    setIdDataFreq(null)
-    setModalDelDataFreq(!modalDelDataFreq)
-    setFlagLongPressDataFreq(false)
+    try {
+      const resultado = await deletarDataFrequencia(idDataFreq);
+      console.log(resultado.mensagem); 
+      setDataSelec(null)
+      setIdDataFreq(null)
+      setRecarregarFrequencia((prev:any)=>!prev)
+      setRecarregarDatasMarcadasFreq((prev:any)=>!prev)
+      setModalDelDataFreq(!modalDelDataFreq)
+      setFlagLongPressDataFreq(false)
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   return (

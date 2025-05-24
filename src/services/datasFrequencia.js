@@ -61,3 +61,14 @@ export const buscarIdAtivPorDataEClasse = async (data, id_classe) => {
     throw erro;
   }
 };
+
+// Deletar data de frequência pelo ID
+export const deletarDataFrequencia = async (id) => {
+  try {
+    const resposta = await api.delete(`/datas-frequencia/${id}`);
+    return resposta.data;
+  } catch (erro) {
+    console.error('Erro ao deletar data de frequência:', erro);
+    throw erro;
+  }
+};

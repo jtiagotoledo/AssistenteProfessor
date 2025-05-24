@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { SafeAreaView, FlatList, Text, StyleSheet, StatusBar, TouchableOpacity, View, Dimensions } from 'react-native';
+import { SafeAreaView, FlatList, Text, StyleSheet, TouchableOpacity, View, Dimensions } from 'react-native';
 import { Context } from "../data/Provider";
 import Globais from '../data/Globais';
 import { useTranslation } from 'react-i18next';

@@ -1,6 +1,5 @@
 import React, { useContext} from 'react'
 import { SafeAreaView, FlatList, Text, StyleSheet, TouchableOpacity, View } from 'react-native'
-import firestore from '@react-native-firebase/firestore';
 import { Context } from "../data/Provider";
 import Globais from '../data/Globais';
 
@@ -37,16 +36,6 @@ const FlatListClasses = () => {
     setSelectedIdAluno('')
     setNumAlunoSelec('')
     setDataSelec('')
-
-    //salvando estado da classe
-    firestore().collection(idUsuario).
-      doc('EstadosApp').update({
-        idPeriodo: idPeriodoSelec,
-        periodo: nomePeriodoSelec,
-        idClasse: item.idClasse,
-        classe: item.classe,
-        data: ''
-      })
   }
 
   const onLongPressItem = (item: any) => {
