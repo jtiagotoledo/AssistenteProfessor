@@ -9,22 +9,14 @@ import { useTranslation } from 'react-i18next';
 
 const ModalDelDataFreq = () => {
 
-  const { idPeriodoSelec, idClasseSelec, idUsuario, setIdClasseSelec, dataSelec, modalDelDataFreq,
-    setModalDelDataFreq, setFlagLongPressDataFreq, setDataSelec } = useContext(Context);
+  const { modalDelDataFreq, setModalDelDataFreq, setFlagLongPressDataFreq, setDataSelec, idDataFreq, setIdDataFreq } = useContext(Context);
   const { t } = useTranslation();
 
   const deletarData = async () => {
-    await deleteDataFreq(idUsuario, idPeriodoSelec, idClasseSelec, dataSelec)
-    setDataSelec('')
-    setIdClasseSelec('')
+    setDataSelec(null)
+    setIdDataFreq(null)
     setModalDelDataFreq(!modalDelDataFreq)
     setFlagLongPressDataFreq(false)
-
-    //deletando o estado da data
-    firestore().collection(idUsuario).
-      doc('EstadosApp').update({
-        data: ''
-      })
   }
 
   return (

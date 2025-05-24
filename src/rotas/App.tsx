@@ -5,9 +5,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import Classes from '../telas/Classes';
 import Frequencia from '../telas/Frequencia';
 import Notas from '../telas/Notas';
-import Provider from "../data/Provider";
 import Globais from '../data/Globais';
-import firestore from '@react-native-firebase/firestore';
 import { Context } from "../data/Provider";
 import { useTranslation } from 'react-i18next';
 
@@ -16,28 +14,12 @@ const Tab = createBottomTabNavigator();
 type RouteNames = 'Classes' | 'Frequencia' | 'Notas' ;
 
 const App = ({ navigation }: any) => {
-  const { idUsuario, dataSelec, setDataSelec } = useContext(Context);
-  const [currentTab, setCurrentTab] = useState<RouteNames>('Classes');
+  const { setDataSelec, setRecarregarAlunos, setRecarregarFrequencia, setRecarregarNotas } = useContext(Context);
   const { t } = useTranslation();
 
-  const estadosAppRef = firestore().collection(idUsuario ? idUsuario : ' ').doc('EstadosApp');
-
-  useEffect(() => {
-    const unsubscribe = estadosAppRef.onSnapshot(snapshot => {
-      const tab = snapshot.data()?.aba;
-      if (tab!=='') setCurrentTab(tab);
-    });
-    return () => unsubscribe();
-  }, []);
-
-  const atualizarAba = (aba: RouteNames): void => {
-    estadosAppRef.update({ aba })
-  };
-
+ 
   return (
-    <Provider>
       <Tab.Navigator
-        initialRouteName={currentTab}
         screenOptions={({ route }) => {
 
           const icons: Record<RouteNames, string> = {
@@ -66,7 +48,7 @@ const App = ({ navigation }: any) => {
               <TouchableOpacity
                 {...props}
                 onPress={(e) => {
-                  atualizarAba('Classes'); 
+                  setRecarregarAlunos((prev:any)=>!prev)
                   if (props.onPress) props.onPress(e); 
                 }}
               />
@@ -82,7 +64,8 @@ const App = ({ navigation }: any) => {
               <TouchableOpacity
                 {...props}
                 onPress={(e) => {
-                  atualizarAba('Frequencia'); // Atualiza Firestore
+                  setDataSelec(null)
+                  setRecarregarFrequencia((prev:any)=>!prev)
                   if (props.onPress) props.onPress(e); // Chama comportamento padrão
                 }}
               />
@@ -98,7 +81,8 @@ const App = ({ navigation }: any) => {
               <TouchableOpacity
                 {...props}
                 onPress={(e) => {
-                  atualizarAba('Notas'); // Atualiza Firestore
+                  setDataSelec(null)
+                  setRecarregarNotas((prev:any)=>!prev)
                   if (props.onPress) props.onPress(e); // Chama comportamento padrão
                 }}
               />
@@ -106,7 +90,6 @@ const App = ({ navigation }: any) => {
           }}
         />
       </Tab.Navigator>
-    </Provider>
   );
 };
 

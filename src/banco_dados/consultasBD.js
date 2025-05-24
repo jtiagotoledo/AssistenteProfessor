@@ -80,6 +80,7 @@ const consultasBD = () => {
 
 
   useEffect(() => {
+    // carregar flatList alunos
     const carregarAlunosFrequenciasENotas = async () => {
       try {
         if (!idClasseSelec) return;
@@ -125,9 +126,6 @@ const consultasBD = () => {
             mediaNotas
           };
         });
-
-        console.log('alunosComDados', alunosComDados);
-
         setListaAlunos(alunosComDados);
 
       } catch (erro) {
@@ -141,8 +139,10 @@ const consultasBD = () => {
 
   useEffect(() => {
     // buscar as frequencias dos alunos por classe e data
-    if (!idClasseSelec || !dataSelec) return;
-
+    if (!idClasseSelec || !dataSelec) {
+      setListaFrequencia({});
+      return;
+    }
     const carregarFrequencias = async () => {
       try {
         const dados = await buscarFrequenciasPorClasseEData(idClasseSelec, dataSelec);
@@ -158,7 +158,10 @@ const consultasBD = () => {
 
   useEffect(() => {
     // Buscar as notas dos alunos por classe e data
-    if (!idClasseSelec || !dataSelec) return;
+    if (!idClasseSelec || !dataSelec){
+      setListaNotas({});
+      return;
+    } 
 
     const carregarNotas = async () => {
       try {
@@ -219,42 +222,6 @@ const consultasBD = () => {
 
     buscarDatasNotas();
   }, [idClasseSelec, recarregarDatasMarcadasNotas]);
-
-  /*   useEffect(() => {
-      // retorna o texto das atividades desenvolvidas na data escolhida
-      if (!idClasseSelec || !dataSelec) return;
-  
-      const buscarAtividade = async () => {
-        try {
-          const atividade = await buscarAtividadePorDataEClasse(dataSelec, idClasseSelec);
-          setTextoAtividades(atividade.atividade);
-          console.log('atividade', atividade);
-        } catch (err) {
-          console.error('Erro ao buscar atividade:', err);
-        }
-      };
-  
-      buscarAtividade();
-    }, [idDataFreq]);
-  
-    useEffect(() => {
-      //consulta ao BD retorna o texto do título da nota na data escolhida
-      if (!idClasseSelec || !dataSelec) return;
-  
-      const buscarTituloNota = async () => {
-        try {
-          const titulo = await buscarTituloPorDataEClasse(dataSelec, idClasseSelec);
-          setTextoTituloNotas(titulo);
-          console.log('titulo', titulo);
-  
-        } catch (err) {
-          console.error('Erro ao buscar título notas:', err);
-        }
-      };
-  
-      buscarTituloNota();
-    }, [idDataNota]); */
-
 
 }
 

@@ -1,27 +1,17 @@
 import React, { useContext, useState } from 'react';
-import {
-  Image,
-  Text,
-  View,
-  StyleSheet,
-  Button,
-  Modal,
-  TouchableWithoutFeedback,
-  ScrollView,
-  Dimensions
-} from 'react-native';
+import { Image, Text, View, StyleSheet, Button, Modal, TouchableWithoutFeedback, ScrollView, Dimensions } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import { Context } from "../data/Provider";
 import Globais from "../data/Globais";
 import HeaderMenu from '../componentes/HeaderMenu';
 import DropDown from "../listas/DropDownPeriodo";
-import { deleteUser } from "../banco_dados/deletarBD";
 import { Picker } from '@react-native-picker/picker';
 import i18n from '../../i18n';
 import { useTranslation } from 'react-i18next';
+import { deletarProfessor } from '../services/professores';
 
 const ModalMenu = ({ navigation }: any) => {
-  const { modalMenu, setModalMenu, setIdUsuario, idUsuario } = useContext(Context);
+  const { modalMenu, setModalMenu, setIdUsuario, idProfessor, setIdProfessor } = useContext(Context);
   const { width, height } = Dimensions.get('window');
   const [selectedLanguage, setSelectedLanguage] = useState(i18n.language)
   const isLandscape = width > height;
@@ -32,9 +22,16 @@ const ModalMenu = ({ navigation }: any) => {
       .signOut()
       .then(() => [
         navigation.reset({ index: 0, routes: [{ name: "Login" }] }),
-        setIdUsuario('')
+        setIdUsuario(''),
+        setModalMenu(!modalMenu)
       ])
+  };
 
+  const delProfessor = () => {
+    deletarProfessor(idProfessor)
+    navigation.reset({ index: 0, routes: [{ name: "Login" }] })
+    setIdProfessor('')
+    setModalMenu(!modalMenu)
   };
 
   const changeLanguage = (lng: string) => {
@@ -82,7 +79,7 @@ const ModalMenu = ({ navigation }: any) => {
                   <Button color={Globais.corPrimaria} title={t('Sair')} onPress={funcSair} />
                 </View>
                 <View style={styles.button}>
-                  <Button color={Globais.corPrimaria} title={t('Excluir conta')} onPress={() => deleteUser(navigation, idUsuario)} />
+                  <Button color={Globais.corPrimaria} title={t('Excluir conta')} onPress={delProfessor} />
                 </View>
               </View>
             </View>

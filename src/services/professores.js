@@ -54,3 +54,4 @@ export const deletarProfessor = async (id) => {
     throw erro;
   }
 };
+
