@@ -1,33 +1,30 @@
 import { Text, View, StyleSheet, Pressable, Modal, TouchableOpacity } from "react-native"
 import React, { useContext } from 'react';
-import firestore from '@react-native-firebase/firestore';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import { Context } from "../data/Provider";
 import Globais from "../data/Globais";
-import { deletePeriodo } from "../banco_dados/deletarBD";
+import { deletarPeriodo } from "../services/periodos";
 import { useTranslation } from 'react-i18next';
 
 const ModalDelPeriodo = () => {
 
-  const { modalDelPeriodo, setModalDelPeriodo, idUsuario, setIdPeriodoSelec, idPeriodoSelec } = useContext(Context);
+  const { modalDelPeriodo, setModalDelPeriodo, setRecarregarPeriodos, setIdPeriodoSelec,
+    idPeriodoSelec, setRecarregarClasses, setRecarregarAlunos, setIdClasseSelec, setNomePeriodoSelec } = useContext(Context);
   const { t } = useTranslation();
 
-  const deletarClasse = () => {
-
-    deletePeriodo(idUsuario, idPeriodoSelec)
-
-    setModalDelPeriodo(!modalDelPeriodo)
-    setIdPeriodoSelec('')
-
-    //deletando o estado do período
-    firestore().collection(idUsuario).
-      doc('EstadosApp').update({
-        periodo: '',
-        classe: '',
-        idPeriodo: '',
-        idClasse: '',
-        data: ''
-      })
+  const delPeriodo = async () => {
+    try {
+      await deletarPeriodo(idPeriodoSelec);
+      setIdPeriodoSelec(null)
+      setNomePeriodoSelec(null)
+      setIdClasseSelec(null)
+      setRecarregarPeriodos((prev: any) => !prev)
+      setRecarregarClasses((prev: any) => !prev)
+      setRecarregarAlunos((prev: any) => !prev)
+      setModalDelPeriodo(!modalDelPeriodo)
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   return (
@@ -49,7 +46,7 @@ const ModalDelPeriodo = () => {
             <Text style={styles.modalText}>{t('Deseja realmente excluir o período?')}</Text>
             <Pressable
               style={[styles.button, styles.buttonClose]}
-              onPress={deletarClasse}>
+              onPress={delPeriodo}>
               <Text style={styles.textStyle}>Ok</Text>
             </Pressable>
           </View>

@@ -53,19 +53,6 @@ export const atualizarAluno = async (id, dados) => {
   }
 };
 
-
-
-// Deletar aluno
-export const deletarAluno = async (id) => {
-  try {
-    const resposta = await api.delete(`/alunos/${id}`);
-    return resposta.data;
-  } catch (erro) {
-    console.error('Erro ao deletar aluno:', erro);
-    throw erro;
-  }
-};
-
 // Buscar um aluno específico (caso use o endpoint /alunos/id/:id)
 export const buscarAlunoPorId = async (id) => {
   try {
@@ -73,6 +60,17 @@ export const buscarAlunoPorId = async (id) => {
     return resposta.data;
   } catch (erro) {
     console.error('Erro ao buscar aluno:', erro);
+    throw erro;
+  }
+};
+
+// Deletar aluno pelo ID
+export const deletarAluno = async (id) => {
+  try {
+    const resposta = await api.delete(`/alunos/${id}`);
+    return resposta.data;
+  } catch (erro) {
+    console.error('Erro ao deletar aluno:', erro);
     throw erro;
   }
 };

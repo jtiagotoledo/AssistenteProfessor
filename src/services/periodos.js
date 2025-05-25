@@ -35,3 +35,14 @@ export const atualizarPeriodo = async (id, nome) => {
     throw erro;
   }
 };
+
+// Deletar período pelo ID
+export const deletarPeriodo = async (id) => {
+  try {
+    const resposta = await api.delete(`/periodos/${id}`);
+    return resposta.data;
+  } catch (erro) {
+    console.error('Erro ao deletar período:', erro);
+    throw erro;
+  }
+};

@@ -1,57 +1,27 @@
 import { Text, View, StyleSheet, Pressable, Modal, TouchableOpacity } from "react-native"
 import React, { useContext } from 'react';
-import firestore from '@react-native-firebase/firestore';
 import { Context } from "../data/Provider";
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import Globais from "../data/Globais";
 import { useTranslation } from 'react-i18next';
+import { deletarAluno } from "../services/alunos";
 
 const ModalDelAluno = () => {
 
-  const { idPeriodoSelec, idClasseSelec, modalDelAluno, setModalDelAluno, 
-    idUsuario,setFlagLongPressAluno, setNumAlunoSelec, setSelectedIdAluno, idAlunoSelec } = useContext(Context);
+  const { modalDelAluno, setModalDelAluno, setIdAlunoSelec, setFlagLongPressAluno, 
+    setRecarregarAlunos, idAlunoSelec } = useContext(Context);
   const { t } = useTranslation();
 
-  const deletarAluno = () => {
-    //deletar aluno da lista de alunos
-    firestore().collection(idUsuario)
-      .doc(idPeriodoSelec).collection('Classes')
-      .doc(idClasseSelec).collection('ListaAlunos')
-      .doc(idAlunoSelec).delete()
-    setModalDelAluno(!modalDelAluno)
-    setFlagLongPressAluno(false)
-    setNumAlunoSelec('')
-    setSelectedIdAluno('')
-
-    //deletar aluno da lista de frequencias
-    firestore().collection(idUsuario)
-      .doc(idPeriodoSelec).collection('Classes')
-      .doc(idClasseSelec).collection('Frequencia')
-      .onSnapshot(snapshot => {
-        snapshot.forEach(docSnapshot => {
-          const data = docSnapshot.id
-          firestore().collection(idUsuario)
-            .doc(idPeriodoSelec).collection('Classes')
-            .doc(idClasseSelec).collection('Frequencia')
-            .doc(data).collection('Alunos')
-            .doc(idAlunoSelec).delete()
-        })
-      })
-
-    //deletar aluno da lista de notas
-    firestore().collection(idUsuario)
-      .doc(idPeriodoSelec).collection('Classes')
-      .doc(idClasseSelec).collection('Notas')
-      .onSnapshot(snapshot => {
-        snapshot.forEach(docSnapshot => {
-          const data = docSnapshot.id
-          firestore().collection(idUsuario)
-            .doc(idPeriodoSelec).collection('Classes')
-            .doc(idClasseSelec).collection('Notas')
-            .doc(data).collection('Alunos')
-            .doc(idAlunoSelec).delete()
-        })
-      })
+  const delAluno = async () => {
+    try {
+      await deletarAluno(idAlunoSelec);
+      setIdAlunoSelec(null)
+      setRecarregarAlunos((prev: any) => !prev)
+      setFlagLongPressAluno(false)
+      setModalDelAluno(!modalDelAluno)
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   return (
@@ -67,13 +37,13 @@ const ModalDelAluno = () => {
           <View style={styles.modalView}>
             <View style={styles.containerIcon}>
               <TouchableOpacity onPress={() => setModalDelAluno(!modalDelAluno)}>
-                <MaterialIcon name="cancel" color="black" size={25}/>
+                <MaterialIcon name="cancel" color="black" size={25} />
               </TouchableOpacity>
             </View>
             <Text style={styles.modalText}>{t('Deseja realmente excluir o aluno?')}</Text>
             <Pressable
               style={[styles.button, styles.buttonClose]}
-              onPress={deletarAluno}>
+              onPress={delAluno}>
               <Text style={styles.textStyle}>Ok</Text>
             </Pressable>
           </View>

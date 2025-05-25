@@ -14,8 +14,7 @@ const ModalDelDataNotas = () => {
 
   const deletarData = async () => {
       try {
-        const resultado = await deletarDataNota(idDataNota);
-        console.log(resultado.mensagem); 
+        await deletarDataNota(idDataNota);
         setDataSelec(null)
         setIdDataNota(null)
         setRecarregarNotas((prev:any)=>!prev)

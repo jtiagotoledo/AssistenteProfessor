@@ -1,31 +1,28 @@
 import { Text, View, StyleSheet, Pressable, Modal, TouchableOpacity } from "react-native"
 import React, { useContext } from 'react';
-import firestore from '@react-native-firebase/firestore';
 import { Context } from "../data/Provider";
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import Globais from "../data/Globais";
-import { deleteClasse } from "../banco_dados/deletarBD";
 import { useTranslation } from "react-i18next";
+import { deletarClasse } from "../services/classes";
 
 const ModalDelClasse = () => {
 
-  const { idPeriodoSelec, idClasseSelec, modalDelClasse, setModalDelClasse, idUsuario,
-    setFlagLongPressClasse, setIdClasseSelec } = useContext(Context);
+  const { idClasseSelec, modalDelClasse, setModalDelClasse,
+    setFlagLongPressClasse, setIdClasseSelec, setRecarregarClasses, setRecarregarAlunos } = useContext(Context);
   const { t } = useTranslation();
 
-  const deletarClasse = () => {
-
-    deleteClasse(idUsuario, idPeriodoSelec, idClasseSelec)
-
-    setModalDelClasse(!modalDelClasse)
-    setFlagLongPressClasse(false)
-    setIdClasseSelec('')
-
-    //deletando o estado da classe
-    firestore().collection(idUsuario).
-      doc('EstadosApp').update({
-        classe: ''
-      })
+  const delClasse = async () => {
+    try {
+      await deletarClasse(idClasseSelec);
+      setIdClasseSelec(null)
+      setRecarregarClasses((prev: any) => !prev)
+      setRecarregarAlunos((prev: any) => !prev)
+      setFlagLongPressClasse(false)
+      setModalDelClasse(!modalDelClasse)
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   return (
@@ -47,7 +44,7 @@ const ModalDelClasse = () => {
             <Text style={styles.modalText}>{t('Deseja realmente excluir a classe?')}</Text>
             <Pressable
               style={[styles.button, styles.buttonClose]}
-              onPress={deletarClasse}>
+              onPress={delClasse}>
               <Text style={styles.textStyle}>Ok</Text>
             </Pressable>
           </View>

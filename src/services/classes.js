@@ -38,3 +38,14 @@ export const atualizarClasse = async (id, nome, id_periodo) => {
     throw erro; 
   }
 };
+
+// Deletar classe pelo ID
+export const deletarClasse = async (id) => {
+  try {
+    const resposta = await api.delete(`/classes/${id}`);
+    return resposta.data;
+  } catch (erro) {
+    console.error('Erro ao deletar classe:', erro);
+    throw erro;
+  }
+};

@@ -15,8 +15,7 @@ const ModalDelDataFreq = () => {
 
   const deletarData = async () => {
     try {
-      const resultado = await deletarDataFrequencia(idDataFreq);
-      console.log(resultado.mensagem); 
+      await deletarDataFrequencia(idDataFreq);
       setDataSelec(null)
       setIdDataFreq(null)
       setRecarregarFrequencia((prev:any)=>!prev)

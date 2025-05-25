@@ -63,7 +63,10 @@ const consultasBD = () => {
     // buscar todas as classes do período selecionado
     const carregarClasses = async () => {
       try {
-        if (!idPeriodoSelec) return;
+        if (!idPeriodoSelec) {
+          setListaClasses({})
+          return
+        }
         const classes = await buscarClassesPorPeriodo(idPeriodoSelec);
         const classesFormatadas = classes.map((c) => ({
           idClasse: c.id,
@@ -83,7 +86,10 @@ const consultasBD = () => {
     // carregar flatList alunos
     const carregarAlunosFrequenciasENotas = async () => {
       try {
-        if (!idClasseSelec) return;
+        if (!idClasseSelec||!idPeriodoSelec) {
+          setListaAlunos({})
+          return
+        }
 
         // 1. Buscar alunos da classe
         const alunos = await buscarAlunosPorClasse(idClasseSelec);
