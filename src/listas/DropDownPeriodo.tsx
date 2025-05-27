@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import { Dropdown } from 'react-native-element-dropdown';
 import AntIcon from 'react-native-vector-icons/AntDesign';
@@ -10,9 +10,18 @@ import { useTranslation } from 'react-i18next';
 const DropDownPeriodo = () => {
   const [valuePSelec, setValuePSelec] = useState('');
   const [isFocus, setIsFocus] = useState(false);
-  const { setIdPeriodoSelec, setFlagLongPressAluno, idUsuario, setModalMenu, setFlagLongPressClasse, setModalDelPeriodo, 
+  const { setIdPeriodoSelec, setFlagLongPressAluno, idUsuario, setModalMenu, setFlagLongPressClasse, setModalDelPeriodo,
     listaPeriodos, setNomePeriodoSelec, nomePeriodoSelec, setModalEditPeriodo } = useContext(Context)
   const { t } = useTranslation();
+
+  useEffect(() => {
+    if (listaPeriodos.length > 0) {
+      const primeiroPeriodo = listaPeriodos[0];
+      setValuePSelec(primeiroPeriodo.periodo);
+      setNomePeriodoSelec(primeiroPeriodo.periodo);
+      setIdPeriodoSelec(primeiroPeriodo.idPeriodo);
+    }
+  }, [listaPeriodos]);
 
   const onChangePeriodo = (item: any) => {
     setValuePSelec(item.periodo);
@@ -92,7 +101,7 @@ const styles = StyleSheet.create({
     backgroundColor: Globais.corTerciaria,
     padding: 8,
     width: '100%',
-    marginBottom:24
+    marginBottom: 24
   },
   containerIcon: {
     flexDirection: 'row'

@@ -28,7 +28,7 @@ import { registrarAcesso } from '../services/acessos';
 import React from "react";
 
 function Classes({ navigation }: any) {
-  const { nomePeriodoSelec, idProfessor, email } = useContext(Context);
+  const { nomePeriodoSelec, idProfessor, email, listaPeriodos, setNomePeriodoSelec, setIdPeriodoSelec } = useContext(Context);
   const { t } = useTranslation();
 
   consultasBD();
@@ -44,6 +44,14 @@ function Classes({ navigation }: any) {
     };
     registrar();
   }, [idProfessor]);
+
+  useEffect(() => {
+      if (listaPeriodos.length > 0) {
+        const primeiroPeriodo = listaPeriodos[0];
+        setNomePeriodoSelec(primeiroPeriodo.periodo);
+        setIdPeriodoSelec(primeiroPeriodo.idPeriodo);
+      }
+    }, [listaPeriodos]);
 
   const renderHeader = () => (
     <>
