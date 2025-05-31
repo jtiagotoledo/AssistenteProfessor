@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useRef, useState } from 'react'
 import { SafeAreaView, FlatList, View, Text, StyleSheet, AppState, TextInput } from 'react-native'
 import { Context } from "../data/Provider";
 import Globais from '../data/Globais';
-import { atualizarNotas } from "../banco_dados/atualizarBD"
 import { useTranslation } from 'react-i18next';
 import { atualizarNota } from "../services/nota"
 
@@ -34,9 +33,7 @@ const FlatListNotas = (props: any) => {
   useEffect(() => {
     //monitoramento do app, se fechado ele chama a função para salvar as notas.
     const handleAppStateChange = (nextAppState: any) => {
-      if (nextAppState === 'background' && listaNotasRef.current !== undefined) {
-        atualizarNotas(listaNotasRef.current, idUsuario, idPeriodoSelec, idClasseSelec, dataSelec)
-      }
+      
     };
     const subscription = AppState.addEventListener('change', handleAppStateChange);
 

@@ -4,7 +4,6 @@ import { Header as HeaderRNE } from '@rneui/themed';
 import { TouchableOpacity } from 'react-native';
 import { Context } from "../data/Provider";
 import Globais from '../data/Globais';
-import { atualizarNotas } from "../banco_dados/atualizarBD"
 
 import AntIcon from 'react-native-vector-icons/AntDesign';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';

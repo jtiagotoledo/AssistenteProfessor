@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { Image, Text, View, StyleSheet, Button, Modal, TouchableWithoutFeedback, ScrollView, Dimensions } from 'react-native';
-import auth from '@react-native-firebase/auth';
+// import auth from '@react-native-firebase/auth';
 import { Context } from "../data/Provider";
 import Globais from "../data/Globais";
 import HeaderMenu from '../componentes/HeaderMenu';
@@ -11,20 +11,20 @@ import { useTranslation } from 'react-i18next';
 import { deletarProfessor } from '../services/professores';
 
 const ModalMenu = ({ navigation }: any) => {
-  const { modalMenu, setModalMenu, setIdUsuario, idProfessor, setIdProfessor } = useContext(Context);
+  const { modalMenu, setModalMenu, email, idProfessor, setIdProfessor } = useContext(Context);
   const { width, height } = Dimensions.get('window');
   const [selectedLanguage, setSelectedLanguage] = useState(i18n.language)
   const isLandscape = width > height;
   const { t } = useTranslation();
 
   const funcSair = () => {
-    auth()
+    /* auth()
       .signOut()
       .then(() => [
         navigation.reset({ index: 0, routes: [{ name: "Login" }] }),
         setIdUsuario(''),
         setModalMenu(!modalMenu)
-      ])
+      ]) */
   };
 
   const delProfessor = () => {
@@ -60,7 +60,7 @@ const ModalMenu = ({ navigation }: any) => {
               />
             </View>
             <View style={styles.authContainer}>
-              <Text style={styles.textStyle}>{auth().currentUser?.email}</Text>
+              <Text style={styles.textStyle}>{email}</Text>
             </View>
             <View style={styles.dropDownContainer}>
               <DropDown />

@@ -1,5 +1,4 @@
 import { useEffect, useContext } from "react";
-import firestore from '@react-native-firebase/firestore';
 import { Context } from "../data/Provider";
 import Globais from "../data/Globais";
 import { buscarProfessorPorId } from '../services/professores';
@@ -12,7 +11,6 @@ import { buscarDatasFrequenciaPorClasse } from '../services/datasFrequencia';
 import { buscarDatasNotaPorClasse } from '../services/datasNotas';
 import { buscarFrequenciasPorClasse } from '../services/frequencia';
 import { buscarNotasPorClasse } from '../services/nota';
-import auth from '@react-native-firebase/auth';
 
 const consultasBD = () => {
 
@@ -20,14 +18,13 @@ const consultasBD = () => {
     recarregarFrequencia, idPeriodoSelec, setListaClasses, idClasseSelec, setListaAlunos, recarregarPeriodos, recarregarAlunos, setListaDatasMarcadasNotas,
     dataSelec, setListaFrequencia, setListaNotas, dataFreqSelec, dataNotaSelec, recarregarClasses, recarregarDadosProfessor, recarregarDatasMarcadasFreq, idDataFreq, idDataNota } = useContext(Context)
 
-  useEffect(() => {
+  /* useEffect(() => {
     // recupera dados dos professor e inicia os estados.
     const buscar = async () => {
-      const id = auth().currentUser?.uid;
 
-      if (id) {
+      if (idProfessor) {
         try {
-          const result = await buscarProfessorPorId(id);
+          const result = await buscarProfessorPorId(idProfessor);
           setNome(result.nome)
           setEmail(result.email)
           setIdProfessor(result.id)
@@ -37,7 +34,7 @@ const consultasBD = () => {
       }
     };
     buscar();
-  }, [recarregarDadosProfessor]);
+  }, [recarregarDadosProfessor]); */
 
   useEffect(() => {
     // buscar todos os períodos do professor.

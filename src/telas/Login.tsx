@@ -1,7 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { TextInput, View, Text, StyleSheet, ToastAndroid, NativeSyntheticEvent, TextInputChangeEventData, Image, TouchableOpacity, ScrollView } from 'react-native';
 import auth from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { Context } from "../data/Provider";
 import ConexaoInternet from "../componentes/ConexaoInternet";
@@ -11,10 +10,11 @@ import { Picker } from '@react-native-picker/picker';
 import { useTranslation } from 'react-i18next';
 import i18n from '../../i18n';
 import { criarProfessor } from '../services/professores';
+import { loginComGoogle as loginComGoogleService } from '../services/auth';
 
 const Login = ({ navigation }: any) => {
     const [senhaVisivel, setSenhaVisivel] = useState(false);
-    const { email, setEmail, senha, setSenha, setIdUsuario, setRecarregarDadosProfessor } = useContext(Context);
+    const { email, setEmail, senha, setSenha, setIdProfessor, setRecarregarPeriodos, setRecarregarDadosProfessor, setNome } = useContext(Context);
     const [selectedLanguage, setSelectedLanguage] = useState(i18n.language)
     const { t } = useTranslation();
 
@@ -58,45 +58,20 @@ const Login = ({ navigation }: any) => {
     const loginComGoogle = async () => {
         try {
             await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
-            const result: any = await GoogleSignin.signIn();
+            const result = await GoogleSignin.signIn();
 
             if (result && result.data && result.data.idToken) {
                 const idToken = result.data.idToken;
-                const googleCredential = auth.GoogleAuthProvider.credential(idToken);
-                const userCredential = await auth().signInWithCredential(googleCredential);
-                const nome = userCredential.user.displayName
-                const email = userCredential.user.email
-                const foto = userCredential.user.photoURL
-                const uuid = userCredential.user.uid
+                // Envia para backend
+                const resposta = await loginComGoogleService(idToken);
+                console.log('Tokens recebidos:', resposta.professor.id);
+                setIdProfessor(resposta.professor.id)
+                setNome(resposta.professor.nome)
+                setEmail(resposta.professor.email)
+                setRecarregarPeriodos((prev:any)=>!prev)
 
-                //salvando credenciais no firebase
-                firestore().collection(userCredential.user.email ?? '').
-                    doc('DadosUsuario').set({
-                        nomeUsuario: nome,
-                        emailUsuario: email,
-                        fotoUsuario: foto,
-                        iudUsuario: uuid
-                    })
 
-                //salvando credenciais no servidor próprio
-                if (userCredential.additionalUserInfo?.isNewUser) {
-                    await criarProfessor({ nome, email, uuid, foto });
-                    setRecarregarDadosProfessor((prev: any) => !prev)
-                    ToastAndroid.show(t('msg_014'), ToastAndroid.SHORT);
-                }
-
-                //cria Estados do App
-                firestore().collection(userCredential.user.email ?? '').doc('EstadosApp').set({
-                    idPeriodo: '',
-                    periodo: '',
-                    idClasse: '',
-                    classe: '',
-                    data: '',
-                    aba: 'Classes'
-                })
-                setIdUsuario(userCredential.user.email)
                 navigation.reset({ index: 0, routes: [{ name: "App" }] });
-
             } else {
                 ToastAndroid.show(t('msg_004'), ToastAndroid.LONG);
             }
@@ -110,6 +85,7 @@ const Login = ({ navigation }: any) => {
             }
         }
     };
+
 
     const funcSenha = () => {
         if (email != '') {

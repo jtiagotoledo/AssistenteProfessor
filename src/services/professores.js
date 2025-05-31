@@ -14,7 +14,7 @@ export const buscarTodosProfessores = async () => {
 // GET /professores/:id
 export const buscarProfessorPorId = async (id) => {
   try {
-    const resposta = await api.get(`/professores/uuid/${id}`);
+    const resposta = await api.get(`/professores/id/${id}`);
     return resposta.data;
   } catch (erro) {
     console.error(`Erro ao buscar professor com id ${id}`, erro);

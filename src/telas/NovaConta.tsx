@@ -3,7 +3,6 @@ import { TextInput, View, Text, StyleSheet, ToastAndroid, NativeSyntheticEvent, 
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import auth from '@react-native-firebase/auth';
 import { Context } from "../data/Provider";
-import firestore from '@react-native-firebase/firestore';
 import ConexaoInternet from "../componentes/ConexaoInternet";
 import Globais from '../data/Globais';
 import { useTranslation } from 'react-i18next';
@@ -15,17 +14,7 @@ const NovaConta = ({ navigation }: any) => {
     const [loading, setLoading] = useState(false);
     const { t } = useTranslation();
 
-    const criarCaminhoSalvarEstados = () => {
-        firestore().collection(email)
-            .doc('EstadosApp').set({
-                idPeriodo: '',
-                periodo: '',
-                idClasse: '',
-                classe: '',
-                data: '',
-                aba: 'Classes'
-            })
-    }
+   
 
     const criarConta = async () => {
         if (email && senha && nome) {
@@ -36,7 +25,6 @@ const NovaConta = ({ navigation }: any) => {
                 const foto = ''
 
                 setIdUsuario(email);
-                criarCaminhoSalvarEstados();
                 const result = await criarProfessor({ nome, email, uuid, foto }); //servidor ubuntu
                 setRecarregarDadosProfessor((prev: any) => !prev)
                 navigation.reset({ index: 0, routes: [{ name: "App" }] });

@@ -9,7 +9,6 @@ import HeaderClasses from "../componentes/HeaderClasses";
 import ConexaoInternet from "../componentes/ConexaoInternet";
 import Globais from "../data/Globais";
 import consultasBD from "../banco_dados/consultasBD";
-import atualizarBD from "../banco_dados/atualizarBD";
 
 import ModalAddPeriodo from "../modais/ModalAddPeriodo";
 import ModalAddClasse from "../modais/ModalAddClasse";
@@ -32,7 +31,6 @@ function Classes({ navigation }: any) {
   const { t } = useTranslation();
 
   consultasBD();
-  // atualizarBD();
 
   useEffect(() => {
     // contador de acessos do professor - mariadb tabela acessos.
@@ -44,14 +42,6 @@ function Classes({ navigation }: any) {
     };
     registrar();
   }, [idProfessor]);
-
-  useEffect(() => {
-      if (listaPeriodos.length > 0) {
-        const primeiroPeriodo = listaPeriodos[0];
-        setNomePeriodoSelec(primeiroPeriodo.periodo);
-        setIdPeriodoSelec(primeiroPeriodo.idPeriodo);
-      }
-    }, [listaPeriodos]);
 
   const renderHeader = () => (
     <>
