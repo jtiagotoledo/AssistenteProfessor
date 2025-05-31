@@ -34,6 +34,7 @@ Porta de acesso: 3000
 1.2.0 - login com google.
 1.3.0 - tradução para o Inglês.
 1.4.0 - banco de dados mariadb - ubuntu server.
+1.5.0 - Implementado token JWT.
 
 # Autor
 José Tiago Toledo da Silva 

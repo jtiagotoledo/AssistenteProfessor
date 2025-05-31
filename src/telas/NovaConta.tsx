@@ -1,55 +1,61 @@
 import React, { useContext, useState } from 'react';
 import { TextInput, View, Text, StyleSheet, ToastAndroid, NativeSyntheticEvent, TextInputChangeEventData, Image, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import auth from '@react-native-firebase/auth';
 import { Context } from "../data/Provider";
 import ConexaoInternet from "../componentes/ConexaoInternet";
 import Globais from '../data/Globais';
 import { useTranslation } from 'react-i18next';
 import { criarProfessor } from '../services/professores';
+import { salvarTokens } from '../utils/tokenStorage';
+
 
 const NovaConta = ({ navigation }: any) => {
-    const { nome, setNome, email, setEmail, senha, setSenha, setIdUsuario, setRecarregarDadosProfessor } = useContext(Context);
+    const { nome, setNome, email, setEmail, senha, setSenha, setIdProfessor, setRecarregarPeriodos } = useContext(Context);
     const [senhaVisivel, setSenhaVisivel] = useState(false); // Estado para alternar a visibilidade da senha
     const [loading, setLoading] = useState(false);
     const { t } = useTranslation();
 
-   
-
     const criarConta = async () => {
-        if (email && senha && nome) {
-            try {
-                setLoading(true);
-                const userCredential = await auth().createUserWithEmailAndPassword(email, senha);
-                const uuid = userCredential.user.uid;
-                const foto = ''
+        if (!email || !senha || !nome) {
+            ToastAndroid.show(t('msg_003'), ToastAndroid.SHORT); // "Preencha todos os campos"
+            return;
+        }
 
-                setIdUsuario(email);
-                const result = await criarProfessor({ nome, email, uuid, foto }); //servidor ubuntu
-                setRecarregarDadosProfessor((prev: any) => !prev)
-                navigation.reset({ index: 0, routes: [{ name: "App" }] });
+        try {
+            setLoading(true);
 
-                ToastAndroid.show(t('msg_014'), ToastAndroid.SHORT);
-            } catch (error: any) {
-                if (error.code === 'auth/email-already-in-use') {
-                    ToastAndroid.show(t('msg_015'), ToastAndroid.SHORT);
-                } else if (error.code === 'auth/invalid-email') {
-                    ToastAndroid.show(t('msg_010'), ToastAndroid.SHORT);
-                } else if (error.code === 'auth/weak-password') {
-                    ToastAndroid.show(t('msg_016'), ToastAndroid.SHORT);
-                } else if (error.code === 'auth/network-request-failed') {
-                    ToastAndroid.show(t('msg_035'), ToastAndroid.SHORT);
-                } else {
-                    ToastAndroid.show(t('msg_001'), ToastAndroid.SHORT); // mensagem genérica
-                    console.error("Erro ao criar conta:", error);
-                }
-            } finally {
-                setLoading(false);
+            // Envia para o backend: nome, email, senha
+            const result = await criarProfessor({ nome, email, senha });
+            console.log('result', result);
+
+            // Guarda os tokens localmente
+            if (result.accessToken && result.refreshToken) {
+                await salvarTokens(result.accessToken, result.refreshToken);
             }
-        } else {
-            ToastAndroid.show(t('msg_003'), ToastAndroid.SHORT);
+
+            //inicializa estados da aplicação
+            setIdProfessor(result.id)
+            setNome(result.nome)
+            setEmail(result.email)
+            setRecarregarPeriodos((prev: any) => !prev)
+
+            // Navega para o App
+            navigation.reset({ index: 0, routes: [{ name: "App" }] });
+
+            ToastAndroid.show(t('msg_014'), ToastAndroid.SHORT); // "Conta criada com sucesso"
+        } catch (error: any) {
+            console.error("Erro ao criar conta:", error);
+
+            if (error.response && error.response.status === 409) {
+                ToastAndroid.show(t('msg_015'), ToastAndroid.SHORT); // "Email já em uso"
+            } else {
+                ToastAndroid.show(t('msg_001'), ToastAndroid.SHORT); // "Erro inesperado"
+            }
+        } finally {
+            setLoading(false);
         }
     };
+
 
     const onChangeInputNome = (event: NativeSyntheticEvent<TextInputChangeEventData>) => {
         setNome(event.nativeEvent.text);

@@ -9,7 +9,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Picker } from '@react-native-picker/picker';
 import { useTranslation } from 'react-i18next';
 import i18n from '../../i18n';
-import { criarProfessor } from '../services/professores';
+import { salvarTokens } from '../utils/tokenStorage';
 import { loginComGoogle as loginComGoogleService } from '../services/auth';
 
 const Login = ({ navigation }: any) => {
@@ -64,12 +64,16 @@ const Login = ({ navigation }: any) => {
                 const idToken = result.data.idToken;
                 // Envia para backend
                 const resposta = await loginComGoogleService(idToken);
-                console.log('Tokens recebidos:', resposta.professor.id);
+                const { accessToken, refreshToken } = resposta;
+
+                // Salva os tokens seguros
+                await salvarTokens(accessToken, refreshToken);
+
+                //inicializa estados da aplicação
                 setIdProfessor(resposta.professor.id)
                 setNome(resposta.professor.nome)
                 setEmail(resposta.professor.email)
-                setRecarregarPeriodos((prev:any)=>!prev)
-
+                setRecarregarPeriodos((prev: any) => !prev)
 
                 navigation.reset({ index: 0, routes: [{ name: "App" }] });
             } else {
