@@ -39,6 +39,8 @@
     "msg_038":"Failed to create class!",
     "msg_039": "Error adding student!",
     "msg_040": "Error editing student!",
+    "msg_041": "Logged out successfully!",
+    "msg_042": "Logged in successfully!",
     "email": "Email",
     "senha": "Password",
     "entrar": "Login",

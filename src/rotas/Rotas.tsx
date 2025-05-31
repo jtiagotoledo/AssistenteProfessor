@@ -1,32 +1,79 @@
 import App from './App';
 import Login from '../telas/Login';
 import NovaConta from '../telas/NovaConta';
-import Provider from "../data/Provider";
-import auth from '@react-native-firebase/auth';
+import { jwtDecode } from 'jwt-decode';
+import { Context } from "../data/Provider";
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { useContext, useEffect, useState } from 'react';
+import { recuperarTokens } from '../utils/tokenStorage';
+
+interface MeuTokenPayload {
+  id: string;
+  nome: string;
+  email: string;
+  exp: number;
+  iat: number;
+}
 
 const Stack = createNativeStackNavigator();
 
 function Rotas() {
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  const { setEmail, setIdProfessor, setNome } = useContext(Context);
 
-    return (
-      <Provider>
-        <NavigationContainer>
-          <Stack.Navigator 
-          initialRouteName={auth().currentUser?'App':'Login'}
-          screenOptions={() => ({
-              headerShown:false
-              })
-          }>
-            <Stack.Screen name="Login" component={Login} />
-            <Stack.Screen name="App" component={App} />
-            <Stack.Screen name="NovaConta" component={NovaConta} />
-          </Stack.Navigator>
-        </NavigationContainer>
-      </Provider>
-    );
+  useEffect(() => {
+    const verificarToken = async () => {
+      try {
+        const tokens = await recuperarTokens();
+
+        if (tokens && tokens.accessToken) {
+          const decoded = jwtDecode<MeuTokenPayload>(tokens.accessToken);
+          const agora = Math.floor(Date.now() / 1000);
+
+          if (decoded.exp && decoded.exp > agora) {
+            setIsAuthenticated(true);
+            setIdProfessor(decoded.id);
+            setNome(decoded.nome);
+            setEmail(decoded.email);
+            console.log('dados',decoded.id,decoded.nome,decoded.email);
+            
+            return;
+          }
+        }
+        setIsAuthenticated(false);
+      } catch (error) {
+        console.error('Erro ao verificar token:', error);
+        setIsAuthenticated(false);
+      }
+    };
+
+    verificarToken();
+  }, []);
+
+  if (isAuthenticated === null) {
+    return null;
   }
-  
-  export default Rotas;
+
+  return (
+      <NavigationContainer>
+        <Stack.Navigator
+          initialRouteName={isAuthenticated ? 'App' : 'Login'}
+          screenOptions={() => ({
+            headerShown: false
+          })
+          }>
+          <Stack.Screen name="Login" component={Login} />
+          <Stack.Screen name="App" component={App} />
+          <Stack.Screen name="NovaConta" component={NovaConta} />
+        </Stack.Navigator>
+      </NavigationContainer>
+  );
+}
+
+export default Rotas;
+
+
+
+

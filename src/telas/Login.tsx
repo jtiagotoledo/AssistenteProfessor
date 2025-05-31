@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { TextInput, View, Text, StyleSheet, ToastAndroid, NativeSyntheticEvent, TextInputChangeEventData, Image, TouchableOpacity, ScrollView } from 'react-native';
+import { TextInput, View, Text, StyleSheet, ToastAndroid, NativeSyntheticEvent, TextInputChangeEventData, Image, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { Context } from "../data/Provider";
@@ -10,11 +10,13 @@ import { Picker } from '@react-native-picker/picker';
 import { useTranslation } from 'react-i18next';
 import i18n from '../../i18n';
 import { salvarTokens } from '../utils/tokenStorage';
+import { login } from '../services/auth';
 import { loginComGoogle as loginComGoogleService } from '../services/auth';
 
 const Login = ({ navigation }: any) => {
     const [senhaVisivel, setSenhaVisivel] = useState(false);
     const { email, setEmail, senha, setSenha, setIdProfessor, setRecarregarPeriodos, setRecarregarDadosProfessor, setNome } = useContext(Context);
+    const [loading, setLoading] = useState(false);
     const [selectedLanguage, setSelectedLanguage] = useState(i18n.language)
     const { t } = useTranslation();
 
@@ -37,21 +39,43 @@ const Login = ({ navigation }: any) => {
         setSelectedLanguage(lng);
     };
 
-    const entrarConta = () => {
-        if (email && senha) {
-            auth()
-                .signInWithEmailAndPassword(email, senha)
-                .then(() => {
-                    navigation.reset({ index: 0, routes: [{ name: "App" }] });
-                }).catch(error => {
-                    if (error.code === 'auth/invalid-credential') {
-                        ToastAndroid.show(t('msg_001'), ToastAndroid.SHORT);
-                    } else {
-                        ToastAndroid.show(t('msg_002') + error.message, ToastAndroid.SHORT);
-                    }
-                });
-        } else {
-            ToastAndroid.show(t('msg_003'), ToastAndroid.SHORT);
+    const entrarConta = async () => {
+        if (!email || !senha) {
+            ToastAndroid.show(t('msg_003'), ToastAndroid.SHORT); // "Preencha todos os campos"
+            return;
+        }
+
+        try {
+            setLoading(true);
+
+            // Faz a requisição de login
+            const result = await login({ email, senha });
+            
+            // Salva tokens
+            await salvarTokens(result.accessToken, result.refreshToken);
+
+            // Atualiza estados da aplicação
+            setIdProfessor(result.id);
+            setNome(result.nome);
+            setEmail(result.email);
+            setRecarregarPeriodos((prev: any) => !prev);
+
+            // Navega para o App
+            navigation.reset({ index: 0, routes: [{ name: "App" }] });
+
+            ToastAndroid.show(t('msg_042'), ToastAndroid.SHORT);  // "Login realizado com sucesso"
+        } catch (error: any) {
+            console.error('Erro ao fazer login:', error);
+
+            if (error.response && error.response.status === 401) {
+                ToastAndroid.show(t('msg_015'), ToastAndroid.SHORT); // "Credenciais inválidas"
+            } else if (error.response && error.response.status === 500) {
+                ToastAndroid.show(t('msg_001'), ToastAndroid.SHORT); // "Erro inesperado"
+            } else {
+                ToastAndroid.show(t('msg_002') + error.message, ToastAndroid.SHORT);
+            }
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -194,6 +218,11 @@ const Login = ({ navigation }: any) => {
                         onPress={() => funcSenha()}>{t('Esqueci minha senha')}
                     </Text>
                 </View>
+                {loading ? (
+                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                        <ActivityIndicator size="large" color="#0000ff" />
+                    </View>
+                ) : null}
             </View>
         </ScrollView>
     )

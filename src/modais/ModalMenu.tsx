@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { Image, Text, View, StyleSheet, Button, Modal, TouchableWithoutFeedback, ScrollView, Dimensions } from 'react-native';
+import { Image, Text, View, StyleSheet, Button, Modal, TouchableWithoutFeedback, ScrollView, Dimensions, ToastAndroid } from 'react-native';
 // import auth from '@react-native-firebase/auth';
 import { Context } from "../data/Provider";
 import Globais from "../data/Globais";
@@ -9,22 +9,29 @@ import { Picker } from '@react-native-picker/picker';
 import i18n from '../../i18n';
 import { useTranslation } from 'react-i18next';
 import { deletarProfessor } from '../services/professores';
+import { limparTokens } from '../utils/tokenStorage';
 
 const ModalMenu = ({ navigation }: any) => {
-  const { modalMenu, setModalMenu, email, idProfessor, setIdProfessor } = useContext(Context);
+  const { modalMenu, setModalMenu, email, idProfessor, setIdProfessor, setEmail, setRecarregarPeriodos } = useContext(Context);
   const { width, height } = Dimensions.get('window');
   const [selectedLanguage, setSelectedLanguage] = useState(i18n.language)
   const isLandscape = width > height;
   const { t } = useTranslation();
 
-  const funcSair = () => {
-    /* auth()
-      .signOut()
-      .then(() => [
-        navigation.reset({ index: 0, routes: [{ name: "Login" }] }),
-        setIdUsuario(''),
-        setModalMenu(!modalMenu)
-      ]) */
+  const funcSair = async () => {
+    try {
+        await limparTokens();
+
+        setIdProfessor(null);
+        setEmail(null);
+        setRecarregarPeriodos(false);
+        setModalMenu(false)
+        navigation.reset({ index: 0, routes: [{ name: "Login" }] });
+
+        ToastAndroid.show(t('msg_041'), ToastAndroid.SHORT);  // "Logout realizado com sucesso"
+    } catch (error) {
+        console.error('Erro ao sair:', error);
+    }
   };
 
   const delProfessor = () => {
@@ -147,3 +154,5 @@ const styles = StyleSheet.create({
 });
 
 export default ModalMenu;
+
+
