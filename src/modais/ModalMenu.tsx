@@ -12,7 +12,8 @@ import { deletarProfessor } from '../services/professores';
 import { limparTokens } from '../utils/tokenStorage';
 
 const ModalMenu = ({ navigation }: any) => {
-  const { modalMenu, setModalMenu, email, idProfessor, setIdProfessor, setEmail, setRecarregarPeriodos } = useContext(Context);
+  const { modalMenu, setModalMenu, setListaClasses, setListaPeriodos, email, setNomePeriodoSelec,
+    setIdPeriodoSelec, idProfessor, setIdProfessor, setEmail, setRecarregarPeriodos } = useContext(Context);
   const { width, height } = Dimensions.get('window');
   const [selectedLanguage, setSelectedLanguage] = useState(i18n.language)
   const isLandscape = width > height;
@@ -20,17 +21,19 @@ const ModalMenu = ({ navigation }: any) => {
 
   const funcSair = async () => {
     try {
-        await limparTokens();
+      await limparTokens();
 
-        setIdProfessor(null);
-        setEmail(null);
-        setRecarregarPeriodos(false);
-        setModalMenu(false)
-        navigation.reset({ index: 0, routes: [{ name: "Login" }] });
+      setIdProfessor(null);
+      setEmail(null);
+      setNomePeriodoSelec(null)
+      setIdPeriodoSelec(null)
+      setRecarregarPeriodos(false);
+      setModalMenu(false)
+      navigation.reset({ index: 0, routes: [{ name: "Login" }] });
 
-        ToastAndroid.show(t('msg_041'), ToastAndroid.SHORT);  // "Logout realizado com sucesso"
+      ToastAndroid.show(t('msg_041'), ToastAndroid.SHORT);  // "Logout realizado com sucesso"
     } catch (error) {
-        console.error('Erro ao sair:', error);
+      console.error('Erro ao sair:', error);
     }
   };
 
@@ -38,6 +41,10 @@ const ModalMenu = ({ navigation }: any) => {
     deletarProfessor(idProfessor)
     navigation.reset({ index: 0, routes: [{ name: "Login" }] })
     setIdProfessor('')
+    setIdProfessor(null);
+    setEmail(null);
+    setNomePeriodoSelec(null)
+    setIdPeriodoSelec(null)
     setModalMenu(!modalMenu)
   };
 

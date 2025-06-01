@@ -7,7 +7,7 @@ import { Context } from "../data/Provider";
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useContext, useEffect, useState } from 'react';
-import { recuperarTokens } from '../utils/tokenStorage';
+import { recuperarTokens, renovarAccessToken  } from '../utils/tokenStorage';
 
 interface MeuTokenPayload {
   id: string;
@@ -37,11 +37,21 @@ function Rotas() {
             setIdProfessor(decoded.id);
             setNome(decoded.nome);
             setEmail(decoded.email);
-            console.log('dados',decoded.id,decoded.nome,decoded.email);
-            
             return;
+          } else {
+            // Tenta renovar
+            const novoAccessToken = await renovarAccessToken();
+            if (novoAccessToken) {
+              const novoDecoded = jwtDecode<MeuTokenPayload>(novoAccessToken);
+              setIsAuthenticated(true);
+              setIdProfessor(novoDecoded.id);
+              setNome(novoDecoded.nome);
+              setEmail(novoDecoded.email);
+              return;
+            }
           }
         }
+
         setIsAuthenticated(false);
       } catch (error) {
         console.error('Erro ao verificar token:', error);
@@ -57,18 +67,18 @@ function Rotas() {
   }
 
   return (
-      <NavigationContainer>
-        <Stack.Navigator
-          initialRouteName={isAuthenticated ? 'App' : 'Login'}
-          screenOptions={() => ({
-            headerShown: false
-          })
-          }>
-          <Stack.Screen name="Login" component={Login} />
-          <Stack.Screen name="App" component={App} />
-          <Stack.Screen name="NovaConta" component={NovaConta} />
-        </Stack.Navigator>
-      </NavigationContainer>
+    <NavigationContainer>
+      <Stack.Navigator
+        initialRouteName={isAuthenticated ? 'App' : 'Login'}
+        screenOptions={() => ({
+          headerShown: false
+        })
+        }>
+        <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="App" component={App} />
+        <Stack.Screen name="NovaConta" component={NovaConta} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
 
