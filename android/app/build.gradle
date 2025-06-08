@@ -34,8 +34,8 @@ android {
         applicationId "com.apolotecnologia.assistenteprofessor"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 23
-        versionName "1.5.4" // removido o campo editar notas.
+        versionCode 24
+        versionName "1.5.5" // tutorial you tube.
         manifestPlaceholders = [
         appAuthRedirectScheme: 'com.googleusercontent.apps.1000578379733-ahmcfl9ot3gn7p87c1ed4v3ejinhvkii'
         ]

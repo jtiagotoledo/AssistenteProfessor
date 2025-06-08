@@ -1,6 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { Image, Text, View, StyleSheet, Button, Modal, TouchableWithoutFeedback, ScrollView, Dimensions, ToastAndroid } from 'react-native';
-// import auth from '@react-native-firebase/auth';
+import { Image, Text, View, StyleSheet, Button, Modal, TouchableWithoutFeedback, ScrollView, Dimensions, ToastAndroid, Linking } from 'react-native';
 import { Context } from "../data/Provider";
 import Globais from "../data/Globais";
 import HeaderMenu from '../componentes/HeaderMenu';
@@ -10,6 +9,9 @@ import i18n from '../../i18n';
 import { useTranslation } from 'react-i18next';
 import { deletarProfessor } from '../services/professores';
 import { limparTokens } from '../utils/tokenStorage';
+import DeviceInfo from 'react-native-device-info';
+
+const videoUrl = 'https://youtube.com/shorts/jM1_CSlT_hI';
 
 const ModalMenu = ({ navigation }: any) => {
   const { modalMenu, setModalMenu, setListaClasses, setListaPeriodos, email, setNomePeriodoSelec,
@@ -18,6 +20,12 @@ const ModalMenu = ({ navigation }: any) => {
   const [selectedLanguage, setSelectedLanguage] = useState(i18n.language)
   const isLandscape = width > height;
   const { t } = useTranslation();
+
+
+
+  const tutorial = () => {
+    Linking.openURL(videoUrl).catch(err => console.error('Erro ao abrir vídeo', err));
+  };
 
   const funcSair = async () => {
     try {
@@ -72,6 +80,7 @@ const ModalMenu = ({ navigation }: any) => {
                 source={require('../assets/logo.png')}
                 style={styles.logo}
               />
+              <Text>Versão {DeviceInfo.getVersion()}</Text>
             </View>
             <View style={styles.authContainer}>
               <Text style={styles.textStyle}>{email}</Text>
@@ -89,6 +98,9 @@ const ModalMenu = ({ navigation }: any) => {
                 <Picker.Item label="English" value="en" />
               </Picker>
               <View style={styles.containerButton}>
+                <View style={styles.button}>
+                  <Button color={Globais.corPrimaria} title={t('Ver Tutorial')} onPress={tutorial} />
+                </View>
                 <View style={styles.button}>
                   <Button color={Globais.corPrimaria} title={t('Sair')} onPress={funcSair} />
                 </View>
@@ -143,8 +155,10 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   logoContainer: {
-    flexDirection: 'row',
+    flexDirection: 'column',
     justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 30,
   },
   dropDownContainer: {
     marginBottom: 40,
