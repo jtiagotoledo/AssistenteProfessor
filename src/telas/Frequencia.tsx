@@ -17,18 +17,14 @@ import i18n from '../../i18n';
 import { atualizarAtividade } from '../services/datasFrequencia';
 
 const Frequencia = () => {
-    const { dataSelec, setModalCalendarioFreq, nomePeriodoSelec, setFlagLongPressDataFreq, idDataFreq, 
-        textoAtividades, setTextoAtividades} = useContext(Context);
+    const { dataSelec, setModalCalendarioFreq, nomePeriodoSelec, setFlagLongPressDataFreq, idDataFreq,
+        textoAtividades, setTextoAtividades } = useContext(Context);
     const { t } = useTranslation();
-    let atividades = ''
 
     useEffect(() => {
         setTextoAtividades('')
     }, [dataSelec]);
 
-    function onChangeAtividades(text: string) {
-        atividades = text
-    }
 
     function formatarData(data: String) {
         if (typeof data === "string" && data.includes("-")) {
@@ -57,37 +53,9 @@ const Frequencia = () => {
                     </Text>
                 </TouchableOpacity>
             </View>
-            {dataSelec && (
-                <View style={styles.containerInput}>
-                    <View style={styles.inputWrapper}>
-                        <TextInput
-                            multiline
-                            placeholder={t("Descreva as atividades") + "..."}
-                            onChangeText={(text) => onChangeAtividades(text)}
-                            defaultValue={textoAtividades}
-                            style={styles.textInput}
-                        />
-                        <TouchableOpacity
-                            style={styles.saveButtonInside}
-                            onPress={async () => {
-                                if (atividades.trim() === '') {
-                                    ToastAndroid.show(t("msg_017"), ToastAndroid.SHORT);
-                                } else {
-                                    try {
-                                        const resultado = await atualizarAtividade(idDataFreq, atividades);
-                                        console.log('Atividade atualizada:', resultado);
-                                        ToastAndroid.show(t("msg_018"), ToastAndroid.SHORT);
-                                    } catch (erro) {
-                                        console.error('Erro ao atualizar atividade:', erro);
-                                    }
-                                }
-                            }}
-                        >
-                            <Text style={styles.saveButtonTextInside}>{t('Salvar')}{'\n'} {t('Atividade')}</Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-            )}
+            <Text style={styles.textInputHighlight}>
+                {textoAtividades}
+            </Text>
 
         </TouchableOpacity>
     );
@@ -169,6 +137,16 @@ const styles = StyleSheet.create({
         textAlign: 'center', // Centraliza o texto dentro do botão
         flexWrap: 'wrap',
     },
+    textInputHighlight: {
+        backgroundColor: 'white',
+        color: 'black',
+        fontSize: 18,
+        padding: 10,
+        marginHorizontal: 20,
+        marginBottom: 16,
+        borderRadius: 8,
+        elevation: 2, // sombra leve para destacar
+    }
 
 });
 

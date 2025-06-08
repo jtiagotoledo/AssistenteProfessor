@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react';
-import { ScrollView, Pressable, StyleSheet, Text, View, Dimensions, ToastAndroid } from 'react-native';
+import { ScrollView, Pressable, StyleSheet, Text, View, Dimensions, ToastAndroid, TextInput } from 'react-native';
 import { Calendar, LocaleConfig } from 'react-native-calendars';
 import { Context } from "../data/Provider";
 import Globais from '../data/Globais';
@@ -9,6 +9,7 @@ import { criarDataNota } from '../services/datasNotas';
 import { buscarAlunosPorClasse } from '../services/alunos';
 import { criarNota } from '../services/nota';
 import { buscarIdTituloPorDataEClasse } from '../services/datasNotas';
+import { atualizarTitulo } from '../services/datasNotas';
 
 const { width } = Dimensions.get('window'); // Captura a largura e altura da tela
 
@@ -31,7 +32,7 @@ if (i18n.language == 'en') LocaleConfig.defaultLocale = "en";
 
 const CalendarioNota = () => {
   const { t } = useTranslation();
-  const { idClasseSelec, dataSelec, setDataSelec, modalCalendarioNota, setModalCalendarioNota,
+  const { idClasseSelec, dataSelec, setDataSelec, modalCalendarioNota, setModalCalendarioNota, textoTituloNotas,
     setRecarregarDatasMarcadasNotas, setRecarregarNotas, listaDatasMarcadasNotas, setIdDataNota, setTextoTituloNotas } = useContext(Context)
 
   useEffect(() => {
@@ -42,7 +43,16 @@ const CalendarioNota = () => {
     }
   }, [i18n.language]);
 
+  function onChangeTituloNotas(text: string) {
+    setTextoTituloNotas(text)
+  }
+
   const onPressAddData = async () => {
+    if (!textoTituloNotas || textoTituloNotas.trim() === '') {
+      ToastAndroid.show('Digite um título para a avaliação.', ToastAndroid.SHORT);
+      return;
+    }
+
     if (dataSelec && idClasseSelec) {
       try {
         setModalCalendarioNota(false); // Fecha modal do calendário de notas
@@ -64,6 +74,9 @@ const CalendarioNota = () => {
             })
           )
         );
+
+        // Registra o titulo da nota no banco de dados
+        await atualizarTitulo(novaDataNota.id, textoTituloNotas)
 
         setRecarregarNotas((prev: any) => !prev);
         ToastAndroid.show('Data de nota criada!', ToastAndroid.SHORT);
@@ -101,6 +114,12 @@ const CalendarioNota = () => {
                 verificarId();
               }}
               markedDates={listaDatasMarcadasNotas}
+            />
+            <TextInput
+              multiline
+              placeholder={t('Título da avaliação') + "..."}
+              onChangeText={(text) => onChangeTituloNotas(text)}
+              style={styles.textInput}
             />
             <Pressable
               style={[styles.button, styles.buttonClose]}
@@ -159,6 +178,14 @@ const styles = StyleSheet.create({
     fontSize: 24,
     color: Globais.corTextoClaro,
     textAlign: 'center',
+  },
+  textInput: {
+    marginTop: 30,
+    width: '100%',
+    backgroundColor: Globais.corTextoClaro,
+    padding: 8,
+    fontSize: 16,
+    borderRadius: 5,
   }
 });
 

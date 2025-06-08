@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react';
-import { ScrollView, Pressable, StyleSheet, Text, View, Dimensions, ToastAndroid } from 'react-native';
+import { ScrollView, Pressable, StyleSheet, Text, View, Dimensions, ToastAndroid, TextInput } from 'react-native';
 import { Calendar, LocaleConfig } from 'react-native-calendars';
 import { Context } from "../data/Provider";
 import Globais from '../data/Globais';
@@ -9,7 +9,7 @@ import { criarDataFrequencia } from '../services/datasFrequencia';
 import { buscarAlunosPorClasse } from '../services/alunos';
 import { criarFrequencia } from '../services/frequencia';
 import { buscarIdAtivPorDataEClasse } from '../services/datasFrequencia';
-
+import { atualizarAtividade } from '../services/datasFrequencia';
 
 const { width } = Dimensions.get('window'); // Captura a largura e altura da tela
 
@@ -30,7 +30,7 @@ LocaleConfig.locales.en = {
 const CalendarioFrequencia = () => {
   const { t } = useTranslation();
   const { idClasseSelec, dataSelec, setDataSelec, modalCalendarioFreq, setModalCalendarioFreq, setDataFreqSelec,
-    setRecarregarDatasMarcadasFreq, setRecarregarFrequencia, listaDatasMarcadasFreq, setIdDataFreq, setTextoAtividades } = useContext(Context)
+    setRecarregarDatasMarcadasFreq, setRecarregarFrequencia, listaDatasMarcadasFreq, setIdDataFreq, setTextoAtividades, textoAtividades } = useContext(Context)
 
   useEffect(() => {
     if (i18n.language === 'pt') {
@@ -40,7 +40,16 @@ const CalendarioFrequencia = () => {
     }
   }, [i18n.language]);
 
+  function onChangeAtividades(text: string) {
+    setTextoAtividades(text)
+  }
+
   const onPressAddData = async () => {
+    if (!textoAtividades || textoAtividades.trim() === '') {
+      ToastAndroid.show('A atividade não deve estar em branco', ToastAndroid.SHORT);
+      return;
+    }
+
     if (dataSelec && idClasseSelec) {
       try {
         setModalCalendarioFreq(false);
@@ -61,6 +70,12 @@ const CalendarioFrequencia = () => {
             })
           )
         );
+
+        // Registra a atividade no banco de dados
+        console.log(novaData.id, textoAtividades);
+
+        await atualizarAtividade(novaData.id, textoAtividades)
+
         setRecarregarFrequencia((prev: any) => !prev);
         ToastAndroid.show('Data criada!', ToastAndroid.SHORT);
       } catch (error) {
@@ -96,6 +111,12 @@ const CalendarioFrequencia = () => {
                 verificarId();
               }}
               markedDates={listaDatasMarcadasFreq}
+            />
+            <TextInput
+              multiline
+              placeholder={t('Descreva a atividade') + "..."}
+              onChangeText={(text:any) => onChangeAtividades(text)}
+              style={styles.textInput}
             />
             <Pressable
               style={[styles.button, styles.buttonClose]}
@@ -154,6 +175,14 @@ const styles = StyleSheet.create({
     fontSize: 24,
     color: Globais.corTextoClaro,
     textAlign: 'center',
+  },
+  textInput: {
+    marginTop: 30,
+    width: '100%',
+    backgroundColor: Globais.corTextoClaro,
+    padding: 8,
+    fontSize: 16,
+    borderRadius: 5,
   }
 });
 

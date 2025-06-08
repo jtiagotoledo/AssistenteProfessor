@@ -14,21 +14,15 @@ import HeaderNotas from "../componentes/HeaderNotas";
 import ConexaoInternet from "../componentes/ConexaoInternet";
 import { useTranslation } from 'react-i18next';
 import i18n from '../../i18n';
-import { atualizarTitulo } from '../services/datasNotas';
 
 const Notas = () => {
     const { dataSelec, setModalCalendarioNota, nomePeriodoSelec, setFlagLongPressDataNotas,
         textoTituloNotas, setTextoTituloNotas, idDataNota } = useContext(Context);
     const { t } = useTranslation();
-    let titulo = ''
 
     useEffect(() => {
         setTextoTituloNotas('')
     }, [dataSelec]);
-
-    function onChangeTituloNotas(text: string) {
-        titulo = text
-    }
 
     function formatarData(data: String) {
         if (typeof data === "string" && data.includes("-")) {
@@ -57,41 +51,9 @@ const Notas = () => {
                     </Text>
                 </TouchableOpacity>
             </View>
-            {dataSelec && (
-                <View style={styles.containerInput}>
-                    <View style={styles.inputWrapper}>
-                        <TextInput
-                            multiline
-                            placeholder={t('Título da avaliação') + "..."}
-                            onChangeText={(text) => onChangeTituloNotas(text)}
-                            defaultValue={textoTituloNotas}
-                            style={styles.textInput}
-                        />
-                        <TouchableOpacity
-                            style={styles.saveButtonInside}
-                            onPress={async () => {
-                                if (titulo.trim() === '') {
-                                    ToastAndroid.show(t('msg_019'), ToastAndroid.SHORT);
-                                } else {
-                                    try {
-                                        console.log('idDataNota',idDataNota,'titulo',titulo);
-                                        
-                                        const resultado = await atualizarTitulo(idDataNota, titulo);
-                                        console.log('Atividade atualizada:', resultado);
-                                        ToastAndroid.show(t("msg_018"), ToastAndroid.SHORT);
-                                    } catch (erro) {
-                                        console.error('Erro ao atualizar atividade:', erro);
-                                    }
-
-                                    ToastAndroid.show(t('msg_020'), ToastAndroid.SHORT);
-                                }
-                            }}
-                        >
-                            <Text style={styles.saveButtonTextInside}>{t('Salvar')}{'\n'} {t('Avaliação')}</Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-            )}
+            <Text style={styles.textInputHighlight}>
+                {textoTituloNotas}
+            </Text>
         </TouchableOpacity>
     );
 
@@ -172,6 +134,16 @@ const styles = StyleSheet.create({
         textAlign: 'center', // Centraliza o texto dentro do botão
         flexWrap: 'wrap',
     },
+    textInputHighlight: {
+        backgroundColor: 'white',
+        color: 'black',
+        fontSize: 18,
+        padding: 10,
+        marginHorizontal: 20,
+        marginBottom: 16,
+        borderRadius: 8,
+        elevation: 2, // sombra leve para destacar
+    }
 });
 
 export default Notas;
