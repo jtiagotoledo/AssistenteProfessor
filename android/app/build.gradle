@@ -34,8 +34,8 @@ android {
         applicationId "com.apolotecnologia.assistenteprofessor"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 24
-        versionName "1.5.5" // tutorial you tube.
+        versionCode 25
+        versionName "1.6.0" // foto dos alunos.
         manifestPlaceholders = [
         appAuthRedirectScheme: 'com.googleusercontent.apps.1000578379733-ahmcfl9ot3gn7p87c1ed4v3ejinhvkii'
         ]

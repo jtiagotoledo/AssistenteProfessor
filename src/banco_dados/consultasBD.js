@@ -80,16 +80,16 @@ const consultasBD = () => {
 
 
   useEffect(() => {
-    // carregar flatList alunos
     const carregarAlunosFrequenciasENotas = async () => {
       try {
-        if (!idClasseSelec||!idPeriodoSelec) {
-          setListaAlunos({})
-          return
+        if (!idClasseSelec || !idPeriodoSelec) {
+          setListaAlunos([]);
+          return;
         }
 
         // 1. Buscar alunos da classe
         const alunos = await buscarAlunosPorClasse(idClasseSelec);
+
         const alunosFormatados = alunos.map(a => ({
           idAluno: a.id,
           nome: a.nome,
@@ -98,6 +98,7 @@ const consultasBD = () => {
           porcFreq: 0,    // será calculado
           inativo: a.inativo,
           idClasseSelec: a.id_classe,
+          foto_url: a.foto_url || null,  // <- Adicionado aqui
         }));
 
         // 2. Buscar todas as frequências da classe
@@ -108,13 +109,11 @@ const consultasBD = () => {
 
         // 4. Para cada aluno, calcular porcentagem de frequência e média de notas
         const alunosComDados = alunosFormatados.map(aluno => {
-          // Frequências
           const freqAluno = todasFreqs.filter(f => f.id_aluno === aluno.idAluno);
           const totalFreq = freqAluno.length;
           const presencas = freqAluno.filter(f => f.presente).length;
           const porcFreq = totalFreq === 0 ? 0 : ((presencas / totalFreq) * 100).toFixed(2);
 
-          // Notas
           const notasAluno = todasNotas.filter(n => n.id_aluno === aluno.idAluno);
           const notasValidas = notasAluno.filter(n => n.nota !== null && !isNaN(parseFloat(n.nota)));
 
@@ -129,6 +128,7 @@ const consultasBD = () => {
             mediaNotas
           };
         });
+
         setListaAlunos(alunosComDados);
 
       } catch (erro) {
@@ -161,10 +161,10 @@ const consultasBD = () => {
 
   useEffect(() => {
     // Buscar as notas dos alunos por classe e data
-    if (!idClasseSelec || !dataSelec){
+    if (!idClasseSelec || !dataSelec) {
       setListaNotas({});
       return;
-    } 
+    }
 
     const carregarNotas = async () => {
       try {

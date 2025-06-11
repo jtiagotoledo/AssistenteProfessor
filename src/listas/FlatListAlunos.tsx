@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { SafeAreaView, FlatList, Text, StyleSheet, TouchableOpacity, View, Dimensions } from 'react-native';
+import { SafeAreaView, FlatList, Text, StyleSheet, TouchableOpacity, View, Dimensions, Image } from 'react-native';
 import { Context } from "../data/Provider";
 import Globais from '../data/Globais';
 import { useTranslation } from 'react-i18next';
@@ -11,6 +11,7 @@ type ItemData = {
   idAluno: string;
   mediaNotas: string;
   porcFreq: string;
+  foto_url?: string; // <== foto aqui
 };
 
 type ItemProps = {
@@ -22,15 +23,26 @@ type ItemProps = {
 };
 
 const FlatListAlunos = (props: any) => {
-  const { setNumAlunoSelec, setFlagLongPressClasse, listaAlunos, setFlagLongPressAluno,
-    selectedIdAluno, setSelectedIdAluno, setNomeAlunoSelec, setIdAlunoSelec, setAlunoInativo } = useContext(Context);
+  const {
+    setNumAlunoSelec, setFlagLongPressClasse, listaAlunos,
+    setFlagLongPressAluno, selectedIdAluno, setSelectedIdAluno,
+    setNomeAlunoSelec, setIdAlunoSelec, setAlunoInativo
+  } = useContext(Context);
   const { t } = useTranslation();
 
   const Item = ({ item, onPress, onLongPress, backgroundColor, textColor }: ItemProps) => (
     <TouchableOpacity onPress={onPress} onLongPress={onLongPress} style={[styles.item, { backgroundColor }]}>
       <View style={styles.itemHeader}>
-        <Text style={[styles.title, { color: textColor }]}>{item.numero + '  '}</Text>
-        <Text style={[styles.title, { color: textColor, flex: 1 }]}>{item.nome}</Text>
+        {item.foto_url ? (
+          <Image source={{ uri: item.foto_url }} style={styles.avatar} />
+        ) : (
+          <View style={[styles.avatar, styles.avatarPlaceholder]} />
+        )}
+        <View style={{ marginLeft: 10, flex: 1 }}>
+          <Text style={[styles.title, { color: textColor }]}>
+            {item.numero + '  '}{item.nome}
+          </Text>
+        </View>
       </View>
       <View style={styles.itemFooter}>
         <Text style={styles.smallText}>{t('Média') + ": " + (item.mediaNotas != null ? item.mediaNotas : '...')}</Text>
@@ -38,12 +50,15 @@ const FlatListAlunos = (props: any) => {
       </View>
     </TouchableOpacity>
   );
+
   const onPressItem = (item: any) => {
     selectedIdAluno === '' || selectedIdAluno !== item.idAluno ? setSelectedIdAluno(item.idAluno) : setSelectedIdAluno('');
     setIdAlunoSelec(item.idAluno);
     setNomeAlunoSelec(item.nome);
     setNumAlunoSelec(item.numero.toString());
     setFlagLongPressAluno(false);
+    console.log('listaAlunos',listaAlunos);
+    
   };
 
   const onLongPressItem = (item: any) => {
@@ -81,7 +96,7 @@ const FlatListAlunos = (props: any) => {
         {...props}
         data={listaAlunos}
         renderItem={renderItem}
-        keyExtractor={(item, index) => (item.id ? item.id.toString() : index.toString())}
+        keyExtractor={(item, index) => (item.idAluno ? item.idAluno.toString() : index.toString())}
         extraData={selectedIdAluno}
       />
     </SafeAreaView>
@@ -96,14 +111,13 @@ const styles = StyleSheet.create({
     backgroundColor: Globais.corSecundaria,
   },
   item: {
-    padding: Dimensions.get('window').width * 0.03, // Proporcional à largura da tela
+    padding: Dimensions.get('window').width * 0.03,
     marginVertical: 4,
     marginHorizontal: '2%',
     borderRadius: 5,
   },
   itemHeader: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
   },
   itemFooter: {
@@ -113,8 +127,18 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: Dimensions.get('window').width * 0.045,
+    fontWeight: '500',
   },
   smallText: {
     fontSize: Dimensions.get('window').width * 0.035,
+  },
+  avatar: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#ccc',
+  },
+  avatarPlaceholder: {
+    backgroundColor: '#aaa',
   },
 });
