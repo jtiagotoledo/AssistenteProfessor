@@ -12,22 +12,36 @@ export const buscarAlunosPorClasse = async (id_classe) => {
 };
 
 // Criar novo aluno
-export const criarAluno = async ({ numero, nome, media_notas, porc_frequencia, inativo = false, id_classe }) => {
+export const criarAluno = async ({numero,nome,media_notas,porc_frequencia,inativo = false,id_classe,foto}) => {
   try {
-    const resposta = await api.post('/alunos', {
-      numero,
-      nome,
-      media_notas,
-      porc_frequencia,
-      inativo,
-      id_classe
+    const formData = new FormData();
+
+    formData.append('numero', numero);
+    formData.append('nome', nome);
+    formData.append('inativo', inativo ? '1' : '0');
+    formData.append('id_classe', id_classe);
+
+    if (foto) {
+      formData.append('foto', {
+        uri: foto.uri,
+        name: foto.name || `${numero}.jpg`,
+        type: foto.type || 'image/jpeg',
+      });
+    }
+
+    const resposta = await api.post('/alunos', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
     });
+
     return resposta.data;
   } catch (erro) {
     console.error('Erro ao criar aluno:', erro);
     throw erro;
   }
 };
+
 
 export const atualizarAluno = async (id, dados) => {
   try {
