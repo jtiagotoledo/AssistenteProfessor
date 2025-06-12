@@ -34,8 +34,8 @@ android {
         applicationId "com.apolotecnologia.assistenteprofessor"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 25
-        versionName "1.6.0" // foto dos alunos.
+        versionCode 26
+        versionName "1.6.1" // foto dos alunos com memo.
         manifestPlaceholders = [
         appAuthRedirectScheme: 'com.googleusercontent.apps.1000578379733-ahmcfl9ot3gn7p87c1ed4v3ejinhvkii'
         ]
