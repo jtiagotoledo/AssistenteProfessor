@@ -1,8 +1,9 @@
-import React, { useContext } from 'react';
-import { SafeAreaView, FlatList, Text, StyleSheet, TouchableOpacity, View, Dimensions, Image } from 'react-native';
+import React, { useContext, useMemo } from 'react';
+import { SafeAreaView, FlatList, Text, StyleSheet, TouchableOpacity, View, Dimensions } from 'react-native';
 import { Context } from "../data/Provider";
 import Globais from '../data/Globais';
 import { useTranslation } from 'react-i18next';
+import FastImage from 'react-native-fast-image';
 
 type ItemData = {
   nome: string;
@@ -11,7 +12,7 @@ type ItemData = {
   idAluno: string;
   mediaNotas: string;
   porcFreq: string;
-  foto_url?: string; // <== foto aqui
+  foto_url?: string;
 };
 
 type ItemProps = {
@@ -22,46 +23,55 @@ type ItemProps = {
   textColor: string;
 };
 
+const Item = React.memo(({ item, onPress, onLongPress, backgroundColor, textColor }: ItemProps) => (
+  <TouchableOpacity onPress={onPress} onLongPress={onLongPress} style={[styles.item, { backgroundColor }]}>
+    <View style={styles.itemHeader}>
+      {item.foto_url ? (
+        <FastImage
+          style={styles.avatar}
+          source={{
+            uri: item.foto_url,
+            priority: FastImage.priority.normal,
+            cache: FastImage.cacheControl.immutable,
+          }}
+          resizeMode={FastImage.resizeMode.cover}
+        />
+      ) : (
+        <View style={[styles.avatar, styles.avatarPlaceholder]} />
+      )}
+      <View style={{ marginLeft: 10, flex: 1 }}>
+        <Text style={[styles.title, { color: textColor }]}>
+          {item.numero + '  '}{item.nome}
+        </Text>
+      </View>
+    </View>
+    <View style={styles.itemFooter}>
+      <Text style={styles.smallText}>{`${item.mediaNotas != null ? item.mediaNotas : '...'} ${'Média'}`}</Text>
+      <Text style={styles.smallText}>{`${item.porcFreq != null ? item.porcFreq + '%' : '...'} ${'Frequência'}`}</Text>
+    </View>
+  </TouchableOpacity>
+));
+
 const FlatListAlunos = (props: any) => {
   const {
     setNumAlunoSelec, setFlagLongPressClasse, listaAlunos,
     setFlagLongPressAluno, selectedIdAluno, setSelectedIdAluno,
     setNomeAlunoSelec, setIdAlunoSelec, setAlunoInativo
   } = useContext(Context);
+
   const { t } = useTranslation();
 
-  const Item = ({ item, onPress, onLongPress, backgroundColor, textColor }: ItemProps) => (
-    <TouchableOpacity onPress={onPress} onLongPress={onLongPress} style={[styles.item, { backgroundColor }]}>
-      <View style={styles.itemHeader}>
-        {item.foto_url ? (
-          <Image source={{ uri: item.foto_url }} style={styles.avatar} />
-        ) : (
-          <View style={[styles.avatar, styles.avatarPlaceholder]} />
-        )}
-        <View style={{ marginLeft: 10, flex: 1 }}>
-          <Text style={[styles.title, { color: textColor }]}>
-            {item.numero + '  '}{item.nome}
-          </Text>
-        </View>
-      </View>
-      <View style={styles.itemFooter}>
-        <Text style={styles.smallText}>{t('Média') + ": " + (item.mediaNotas != null ? item.mediaNotas : '...')}</Text>
-        <Text style={styles.smallText}>{t('Frequência') + ": " + (item.porcFreq != null ? item.porcFreq + "%" : '...')}</Text>
-      </View>
-    </TouchableOpacity>
-  );
-
-  const onPressItem = (item: any) => {
-    selectedIdAluno === '' || selectedIdAluno !== item.idAluno ? setSelectedIdAluno(item.idAluno) : setSelectedIdAluno('');
+  const onPressItem = (item: ItemData) => {
+    selectedIdAluno === '' || selectedIdAluno !== item.idAluno
+      ? setSelectedIdAluno(item.idAluno)
+      : setSelectedIdAluno('');
     setIdAlunoSelec(item.idAluno);
     setNomeAlunoSelec(item.nome);
     setNumAlunoSelec(item.numero.toString());
     setFlagLongPressAluno(false);
-    console.log('listaAlunos',listaAlunos);
-    
   };
 
-  const onLongPressItem = (item: any) => {
+  const onLongPressItem = (item: ItemData) => {
     setSelectedIdAluno(item.idAluno);
     setIdAlunoSelec(item.idAluno);
     setNomeAlunoSelec(item.nome);
@@ -77,7 +87,10 @@ const FlatListAlunos = (props: any) => {
       : item.idAluno === selectedIdAluno
         ? Globais.corPrimaria
         : Globais.corTerciaria;
-    const color = item.idAluno === selectedIdAluno ? Globais.corTextoClaro : Globais.corTextoEscuro;
+
+    const color = item.idAluno === selectedIdAluno
+      ? Globais.corTextoClaro
+      : Globais.corTextoEscuro;
 
     return (
       <Item
@@ -90,14 +103,22 @@ const FlatListAlunos = (props: any) => {
     );
   };
 
+  const keyExtractor = useMemo(() => (item: ItemData, index: number) => (
+    item.idAluno ? item.idAluno.toString() : index.toString()
+  ), []);
+
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
         {...props}
         data={listaAlunos}
         renderItem={renderItem}
-        keyExtractor={(item, index) => (item.idAluno ? item.idAluno.toString() : index.toString())}
+        keyExtractor={keyExtractor}
         extraData={selectedIdAluno}
+        initialNumToRender={10}
+        maxToRenderPerBatch={10}
+        windowSize={5}
+        removeClippedSubviews
       />
     </SafeAreaView>
   );
