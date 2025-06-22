@@ -14,15 +14,7 @@ const DropDownPeriodo = () => {
     listaPeriodos, setNomePeriodoSelec, nomePeriodoSelec, setModalEditPeriodo } = useContext(Context)
   const { t } = useTranslation();
 
-  /* useEffect(() => {
-    if (listaPeriodos.length > 0) {
-      const primeiroPeriodo = listaPeriodos[0];
-      setValuePSelec(primeiroPeriodo.periodo);
-      setNomePeriodoSelec(primeiroPeriodo.periodo);
-      setIdPeriodoSelec(primeiroPeriodo.idPeriodo);
-    }
-  }, [listaPeriodos]); */
-
+  
   const onChangePeriodo = (item: any) => {
     setValuePSelec(item.periodo);
     setNomePeriodoSelec(item.periodo)
@@ -64,8 +56,8 @@ const DropDownPeriodo = () => {
         value={nomePeriodoSelec}
         maxHeight={300}
         placeholder={!isFocus ? t('Selecione o período:') : '...'}
-        labelField="label"
-        valueField="value"
+        labelField="periodo"
+        valueField="idPeriodo"
         onFocus={() => setIsFocus(true)}
         onBlur={() => setIsFocus(false)}
         onChange={item => { onChangePeriodo(item) }}

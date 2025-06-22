@@ -1,9 +1,10 @@
-import React, { useContext, useMemo } from 'react';
+import React, { useContext, useMemo, useState } from 'react';
 import { SafeAreaView, FlatList, Text, StyleSheet, TouchableOpacity, View, Dimensions } from 'react-native';
 import { Context } from "../data/Provider";
 import Globais from '../data/Globais';
 import { useTranslation } from 'react-i18next';
 import FastImage from 'react-native-fast-image';
+import ModalFotoAluno from '../modais/ModalFotoAluno';  
 
 type ItemData = {
   nome: string;
@@ -19,23 +20,26 @@ type ItemProps = {
   item: ItemData;
   onPress: () => void;
   onLongPress: () => void;
+  onPressPhoto: (foto_url: string) => void;
   backgroundColor: string;
   textColor: string;
 };
 
-const Item = React.memo(({ item, onPress, onLongPress, backgroundColor, textColor }: ItemProps) => (
+const Item = React.memo(({ item, onPress, onLongPress, onPressPhoto, backgroundColor, textColor }: ItemProps) => (
   <TouchableOpacity onPress={onPress} onLongPress={onLongPress} style={[styles.item, { backgroundColor }]}>
     <View style={styles.itemHeader}>
       {item.foto_url ? (
-        <FastImage
-          style={styles.avatar}
-          source={{
-            uri: item.foto_url,
-            priority: FastImage.priority.normal,
-            cache: FastImage.cacheControl.immutable,
-          }}
-          resizeMode={FastImage.resizeMode.cover}
-        />
+        <TouchableOpacity onPress={() => onPressPhoto(item.foto_url!)}>
+          <FastImage
+            style={styles.avatar}
+            source={{
+              uri: item.foto_url,
+              priority: FastImage.priority.normal,
+              cache: FastImage.cacheControl.immutable,
+            }}
+            resizeMode={FastImage.resizeMode.cover}
+          />
+        </TouchableOpacity>
       ) : (
         <View style={[styles.avatar, styles.avatarPlaceholder]} />
       )}
@@ -61,6 +65,9 @@ const FlatListAlunos = (props: any) => {
 
   const { t } = useTranslation();
 
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalImageUrl, setModalImageUrl] = useState<string | null>(null);
+
   const onPressItem = (item: ItemData) => {
     selectedIdAluno === '' || selectedIdAluno !== item.idAluno
       ? setSelectedIdAluno(item.idAluno)
@@ -81,6 +88,11 @@ const FlatListAlunos = (props: any) => {
     setFlagLongPressClasse(false);
   };
 
+  const onPressPhoto = (foto_url: string) => {
+    setModalImageUrl(foto_url);
+    setModalVisible(true);
+  };
+
   const renderItem = ({ item }: { item: ItemData }) => {
     const backgroundColor = item.inativo
       ? Globais.corAlunoInativo
@@ -97,6 +109,7 @@ const FlatListAlunos = (props: any) => {
         item={item}
         onPress={() => onPressItem(item)}
         onLongPress={() => onLongPressItem(item)}
+        onPressPhoto={onPressPhoto}
         backgroundColor={backgroundColor}
         textColor={color}
       />
@@ -119,6 +132,12 @@ const FlatListAlunos = (props: any) => {
         maxToRenderPerBatch={10}
         windowSize={5}
         removeClippedSubviews
+      />
+
+      <ModalFotoAluno
+        visible={modalVisible}
+        imageUrl={modalImageUrl}
+        onClose={() => setModalVisible(false)}
       />
     </SafeAreaView>
   );

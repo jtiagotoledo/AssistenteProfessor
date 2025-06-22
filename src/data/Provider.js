@@ -1,13 +1,14 @@
-import React, { createContext, useState } from "react";
-import auth from '@react-native-firebase/auth';
+import React, { createContext, useState, useEffect } from "react";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const Context = createContext();
 
 export default function Provider({ children }) {
+    const [hydrated, setHydrated] = useState(false);
 
     const [email, setEmail] = useState('');
     const [nome, setNome] = useState('');
-    const [idUsuario, setIdUsuario] = useState(auth().currentUser?.email);
+    const [idUsuario, setIdUsuario] = useState('');
     const [idProfessor, setIdProfessor] = useState('');
     const [idDataFreq, setIdDataFreq] = useState('');
     const [idDataNota, setIdDataNota] = useState('');
@@ -57,7 +58,7 @@ export default function Provider({ children }) {
     const [alunoInativo, setAlunoInativo] = useState(false);
     const [dataSelec, setDataSelec] = useState('');
     const [abaSelec, setAbaSelec] = useState('');
-    const [listaPeriodos, setListaPeriodos] = useState({});
+    const [listaPeriodos, setListaPeriodos] = useState([]);
     const [listaClasses, setListaClasses] = useState({});
     const [listaAlunos, setListaAlunos] = useState({});
     const [listaFrequencia, setListaFrequencia] = useState({});
@@ -71,6 +72,49 @@ export default function Provider({ children }) {
     const [textoAtividades, setTextoAtividades] = useState('');
     const [textoTituloNotas, setTextoTituloNotas] = useState('');
 
+
+    // Carregar do AsyncStorage 
+    useEffect(() => {
+        const carregarEstados = async () => {
+            try {
+                const periodo = await AsyncStorage.getItem('@idPeriodoSelec');
+                const nomePeriodo = await AsyncStorage.getItem('@nomePeriodoSelec');
+                const classe = await AsyncStorage.getItem('@idClasseSelec');
+                if (periodo !== null) setIdPeriodoSelec(periodo);
+                if (nomePeriodo !== null) setNomePeriodoSelec(nomePeriodo);
+                if (classe !== null) setIdClasseSelec(classe);
+
+                setHydrated(true);
+            } catch (e) {
+                console.error('Erro ao carregar estados:', e);
+                setHydrated(true);
+            }
+        };
+
+        carregarEstados();
+    }, []);
+
+    // Auto-save no AsyncStorage
+    useEffect(() => {
+        const salvarEstados = async () => {
+            try {
+                await AsyncStorage.setItem('@idPeriodoSelec', idPeriodoSelec);
+                await AsyncStorage.setItem('@nomePeriodoSelec', nomePeriodoSelec);
+                await AsyncStorage.setItem('@idClasseSelec', idClasseSelec);
+            } catch (e) {
+                console.error('Erro ao salvar estados:', e);
+            }
+        };
+
+        if (hydrated) {
+            salvarEstados();
+        }
+    }, [idPeriodoSelec, idClasseSelec, hydrated]);
+
+    // Enquanto não carregou, não renderiza ---
+    if (!hydrated) {
+        return null; 
+    }
 
     return (
         <Context.Provider value={{

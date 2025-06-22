@@ -90,6 +90,8 @@ const ModalAddAluno = () => {
                 <MaterialIcon name="cancel" color="black" size={25}></MaterialIcon>
               </TouchableOpacity>
             </View>
+            <Text style={[styles.modalText, { marginBottom: 30 }]}>{t('Adicione um novo aluno:')}</Text>
+            <Text style={styles.modalText}>{t('Foto')}</Text>
             <TouchableOpacity onPress={escolherImagem} style={{ alignSelf: 'center', marginBottom: 16 }}>
               {fotoUri ? (
                 <View style={{ borderRadius: 50, overflow: 'hidden', width: 100, height: 100 }}>
@@ -108,7 +110,6 @@ const ModalAddAluno = () => {
                 </View>
               )}
             </TouchableOpacity>
-            <Text style={styles.modalText}>{t('Adicione um novo aluno:')}</Text>
             <TextInput placeholder={t('Número')} onChange={onChangeInputNumero} style={styles.textInput} keyboardType='numeric'></TextInput>
             <TextInput placeholder={t('Nome')} onChange={onChangeInputNome} style={styles.textInput}></TextInput>
             <TouchableOpacity style={styles.iconCheckContainer} onPress={() => setAlunoInativo(!alunoInativo)}>
@@ -187,7 +188,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     textAlign: 'center',
     color: 'black',
-    fontSize: 18
+    fontSize: 18,
   },
   textInput: {
     backgroundColor: 'white',
