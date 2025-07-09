@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 
 const FabClasses = () => {
 
-  const { setModalAddPeriodo, setModalAddClasse,
+  const { setModalAddPeriodo, setModalAddClasse, setModalExcel,
     setModalAddAluno, idPeriodoSelec, idClasseSelec } = useContext(Context);
   const { t } = useTranslation();
 
@@ -40,6 +40,15 @@ const FabClasses = () => {
       name: "aluno",
       position: 3
     },
+    {
+      text: t("Adicionar vários alunos"),
+      textBackground: Globais.corPrimaria,
+      textColor: Globais.corTextoClaro,
+      color: Globais.corPrimaria,
+      icon: <Icon name={'users'} color={'white'}></Icon>,
+      name: "alunos",
+      position: 4
+    },
   
   ];
 
@@ -61,6 +70,13 @@ const FabClasses = () => {
           if (idClasseSelec != '') {
             name == 'aluno' ? setModalAddAluno(true) : null
           } else if (idClasseSelec != '' || name == 'aluno') {
+            ToastAndroid.show(
+              t('msg_032'),
+              ToastAndroid.SHORT)
+          }
+          if (idClasseSelec != '') {
+            name == 'alunos' ? setModalExcel(true) : null
+          } else if (idClasseSelec != '' || name == 'alunos') {
             ToastAndroid.show(
               t('msg_032'),
               ToastAndroid.SHORT)

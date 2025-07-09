@@ -20,6 +20,7 @@ import ModalDelPeriodo from "../modais/ModalDelPeriodo";
 import ModalDelClasse from "../modais/ModalDelClasse";
 import ModalDelAluno from "../modais/ModalDelAluno";
 import ModalMenu from "../modais/ModalMenu";
+import ModalExcel from "../modais/ModalExcel";
 
 import { useTranslation } from 'react-i18next';
 import { Context } from "../data/Provider";
@@ -27,7 +28,7 @@ import { registrarAcesso } from '../services/acessos';
 import React from "react";
 
 function Classes({ navigation }: any) {
-  const { nomePeriodoSelec, idProfessor, email, listaPeriodos, setNomePeriodoSelec, setIdPeriodoSelec } = useContext(Context);
+  const { nomePeriodoSelec, idProfessor, email } = useContext(Context);
   const { t } = useTranslation();
 
   consultasBD();
@@ -73,6 +74,7 @@ function Classes({ navigation }: any) {
       <ModalDelClasse />
       <ModalDelAluno />
       <ModalMenu navigation={navigation} />
+      <ModalExcel />
       <FabClasses />
     </View>
   );
