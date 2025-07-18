@@ -7,7 +7,7 @@ import { Context } from '../data/Provider';
 import { importarAlunosEmLote } from '../services/alunos';
 
 const ImportarAlunosModal = () => {
-  const { modalExcel, setModalExcel } = useContext(Context);
+  const { modalExcel, setModalExcel, idClasseSelec } = useContext(Context);
 
   const escolherArquivo = async () => {
     try {
@@ -20,7 +20,13 @@ const ImportarAlunosModal = () => {
 
       const workbook = XLSX.read(fileData, { type: 'base64' });
       const planilha = workbook.Sheets[workbook.SheetNames[0]];
-      const dados = XLSX.utils.sheet_to_json(planilha);
+      const dadosOriginais  = XLSX.utils.sheet_to_json(planilha);
+
+      // Adiciona a idClasseSelec a cada aluno
+      const dados = dadosOriginais.map((aluno: any) => ({
+        ...aluno,
+        id_classe: idClasseSelec
+      }));
 
       // Enviar para o backend
       const resposta = await importarAlunosEmLote(dados);
