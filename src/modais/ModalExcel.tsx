@@ -1,16 +1,21 @@
-import React, { useState, useContext } from 'react';
-import { View, Text, Modal, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import React, { useContext, useState } from 'react';
+import { View, Text, Modal, TouchableOpacity, StyleSheet, Alert, ActivityIndicator, Image } from 'react-native';
 import DocumentPicker from 'react-native-document-picker';
 import XLSX from 'xlsx';
 import RNFS from 'react-native-fs';
+import removeAccents from 'remove-accents';
+import Globais from '../data/Globais';
 import { Context } from '../data/Provider';
 import { importarAlunosEmLote } from '../services/alunos';
 
 const ImportarAlunosModal = () => {
-  const { modalExcel, setModalExcel, idClasseSelec } = useContext(Context);
+  const { modalExcel, setModalExcel, idClasseSelec, setRecarregarAlunos } = useContext(Context);
+  const [carregando, setCarregando] = useState(false);
 
   const escolherArquivo = async () => {
     try {
+      setCarregando(true);
+
       const file = await DocumentPicker.pickSingle({
         type: [DocumentPicker.types.allFiles]
       });
@@ -20,19 +25,29 @@ const ImportarAlunosModal = () => {
 
       const workbook = XLSX.read(fileData, { type: 'base64' });
       const planilha = workbook.Sheets[workbook.SheetNames[0]];
-      const dadosOriginais  = XLSX.utils.sheet_to_json(planilha);
+      const dadosOriginais = XLSX.utils.sheet_to_json(planilha);
 
-      // Adiciona a idClasseSelec a cada aluno
-      const dados = dadosOriginais.map((aluno: any) => ({
-        ...aluno,
-        id_classe: idClasseSelec
-      }));
+      if (dadosOriginais.length > 50) {
+        Alert.alert('Erro', 'O arquivo possui mais de 50 linhas. Por favor, envie um arquivo menor.');
+        return;
+      }
 
-      // Enviar para o backend
-      const resposta = await importarAlunosEmLote(dados);
+      const dadosNormalizados = dadosOriginais.map((aluno: any) => {
+        const novoAluno: any = {};
+        Object.keys(aluno).forEach(chave => {
+          const chaveNormalizada = removeAccents(chave.trim().toLowerCase());
+          novoAluno[chaveNormalizada] = aluno[chave];
+        });
+        return {
+          ...novoAluno,
+          id_classe: idClasseSelec,
+        };
+      });
+
+      const resposta = await importarAlunosEmLote(dadosNormalizados);
 
       console.log('Alunos importados:', resposta);
-      Alert.alert('Sucesso', `${resposta.importados?.length || dados.length} alunos importados com sucesso.`);
+      Alert.alert('Sucesso', `${resposta.importados?.length || dadosNormalizados.length} alunos importados com sucesso.`);
       setModalExcel(false);
     } catch (err) {
       if (DocumentPicker.isCancel(err)) {
@@ -41,6 +56,9 @@ const ImportarAlunosModal = () => {
         console.error('Erro ao importar alunos:', err);
         Alert.alert('Erro', 'Não foi possível importar os alunos.');
       }
+    } finally {
+      setCarregando(false);
+      setRecarregarAlunos((prev:any) => !prev);
     }
   };
 
@@ -54,17 +72,25 @@ const ImportarAlunosModal = () => {
       <View style={styles.modalFundo}>
         <View style={styles.modalContainer}>
           <Text style={styles.modalTitulo}>Importar Alunos</Text>
+          <Text style={styles.modalTitulo}>Aviso: o arquivo deve estar como no modelo abaixo e deve ter nomáximo 50 linhas</Text>
 
-          <TouchableOpacity style={styles.botao} onPress={escolherArquivo}>
-            <Text style={styles.botaoTexto}>Escolher Arquivo Excel</Text>
-          </TouchableOpacity>
+          <Image
+            source={require('../assets/modeloImportarAlunos.png')}
+            style={styles.imagemModelo}
+          />
 
-          <TouchableOpacity
-            style={[styles.botao, { backgroundColor: '#ccc' }]}
-            onPress={() => setModalExcel(false)}
-          >
-            <Text style={[styles.botaoTexto, { color: '#000' }]}>Cancelar</Text>
-          </TouchableOpacity>
+          {carregando ? (
+            <ActivityIndicator size="large" color={Globais.corPrimaria} style={{ marginVertical: 20 }} />
+          ) : (
+            <>
+              <TouchableOpacity style={styles.botao} onPress={escolherArquivo}>
+                <Text style={styles.botaoTexto}>Escolher Arquivo Excel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.botao} onPress={() => setModalExcel(false)}>
+                <Text style={styles.botaoTexto}>Cancelar</Text>
+              </TouchableOpacity>
+            </>
+          )}
         </View>
       </View>
     </Modal>
@@ -82,17 +108,18 @@ const styles = StyleSheet.create({
   modalContainer: {
     margin: 20,
     padding: 20,
-    backgroundColor: 'white',
+    backgroundColor: Globais.corTerciaria,
     borderRadius: 10
   },
   modalTitulo: {
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 15,
-    textAlign: 'center'
+    textAlign: 'center',
+    color: Globais.corTextoEscuro
   },
   botao: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: Globais.corPrimaria,
     padding: 15,
     borderRadius: 8,
     marginVertical: 10
@@ -101,5 +128,11 @@ const styles = StyleSheet.create({
     color: 'white',
     textAlign: 'center',
     fontWeight: 'bold'
+  },
+  imagemModelo: {
+    width: '100%',
+    height: 200,
+    resizeMode: 'contain',
+    marginBottom: 10
   }
 });
