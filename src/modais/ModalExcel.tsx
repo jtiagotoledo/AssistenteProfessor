@@ -4,10 +4,10 @@ import DocumentPicker from 'react-native-document-picker';
 import XLSX from 'xlsx';
 import RNFS from 'react-native-fs';
 import { Context } from '../data/Provider';
+import { importarAlunosEmLote } from '../services/alunos';
 
 const ImportarAlunosModal = () => {
   const { modalExcel, setModalExcel } = useContext(Context);
-  const [alunos, setAlunos] = useState<any[]>([]);
 
   const escolherArquivo = async () => {
     try {
@@ -15,23 +15,25 @@ const ImportarAlunosModal = () => {
         type: [DocumentPicker.types.allFiles]
       });
 
-      const path = file.uri.replace('file://', ''); // remove o prefixo em Android
+      const path = file.uri.replace('file://', '');
       const fileData = await RNFS.readFile(path, 'base64');
 
       const workbook = XLSX.read(fileData, { type: 'base64' });
       const planilha = workbook.Sheets[workbook.SheetNames[0]];
       const dados = XLSX.utils.sheet_to_json(planilha);
 
-      setAlunos(dados);
-      console.log('Alunos importados:', dados);
-      Alert.alert('Sucesso', `${dados.length} alunos importados.`);
+      // Enviar para o backend
+      const resposta = await importarAlunosEmLote(dados);
+
+      console.log('Alunos importados:', resposta);
+      Alert.alert('Sucesso', `${resposta.importados?.length || dados.length} alunos importados com sucesso.`);
       setModalExcel(false);
     } catch (err) {
       if (DocumentPicker.isCancel(err)) {
         Alert.alert('Cancelado', 'Seleção de arquivo cancelada.');
       } else {
-        console.error('Erro ao ler arquivo:', err);
-        Alert.alert('Erro', 'Não foi possível ler o arquivo Excel.');
+        console.error('Erro ao importar alunos:', err);
+        Alert.alert('Erro', 'Não foi possível importar os alunos.');
       }
     }
   };

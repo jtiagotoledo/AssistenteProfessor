@@ -42,6 +42,19 @@ export const criarAluno = async ({numero,nome,media_notas,porc_frequencia,inativ
   }
 };
 
+// Importar vários alunos de uma vez
+export const importarAlunosEmLote = async (alunos) => {
+  try {
+    const resposta = await api.post('/alunos/importar', {
+      alunos: alunos,
+    });
+
+    return resposta.data;
+  } catch (erro) {
+    console.error('Erro ao importar alunos em lote:', erro);
+    throw erro;
+  }
+};
 
 export const atualizarAluno = async (id, dados) => {
   try {
