@@ -34,8 +34,8 @@ android {
         applicationId "com.apolotecnologia.assistenteprofessor"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 27
-        versionName "1.6.2" // foto dos alunos com modal.
+        versionCode 28
+        versionName "1.7.0" // importar alunos em lote.
         manifestPlaceholders = [
         appAuthRedirectScheme: 'com.googleusercontent.apps.1000578379733-ahmcfl9ot3gn7p87c1ed4v3ejinhvkii'
         ]
