@@ -35,7 +35,7 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 28
-        versionName "1.7.0" // importar alunos em lote.
+        versionName "1.7.1" // atualizar foto do aluno.
         manifestPlaceholders = [
         appAuthRedirectScheme: 'com.googleusercontent.apps.1000578379733-ahmcfl9ot3gn7p87c1ed4v3ejinhvkii'
         ]
