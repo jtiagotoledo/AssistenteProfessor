@@ -80,6 +80,30 @@ export const atualizarAluno = async (id, dados) => {
   }
 };
 
+// Atualizar apenas a foto de um aluno
+export const atualizarFotoAluno = async (idAluno, foto) => {
+  try {
+    const formData = new FormData();
+
+    formData.append('foto', {
+      uri: foto.uri,
+      name: foto.name || `${idAluno}.jpg`,
+      type: foto.type || 'image/jpeg',
+    });
+
+    const resposta = await api.put(`/alunos/${idAluno}/foto`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+
+    return resposta.data;
+  } catch (erro) {
+    console.error('Erro ao atualizar foto do aluno:', erro);
+    throw erro;
+  }
+};
+
 // Buscar um aluno específico (caso use o endpoint /alunos/id/:id)
 export const buscarAlunoPorId = async (id) => {
   try {

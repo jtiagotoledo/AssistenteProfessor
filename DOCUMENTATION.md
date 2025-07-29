@@ -35,6 +35,8 @@ Porta de acesso: 3000
 1.3.0 - tradução para o Inglês.
 1.4.0 - banco de dados mariadb - ubuntu server.
 1.5.0 - Implementado token JWT.
+1.6.0 - Fotos dos alunos.
+1.7.0 - Importar alunos em lote no excel.
 
 # Autor
 José Tiago Toledo da Silva 

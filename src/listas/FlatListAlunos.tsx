@@ -1,10 +1,10 @@
 import React, { useContext, useMemo, useState } from 'react';
-import { SafeAreaView, FlatList, Text, StyleSheet, TouchableOpacity, View, Dimensions } from 'react-native';
+import { SafeAreaView, FlatList, Text, StyleSheet, TouchableOpacity, View, Dimensions, Image } from 'react-native';
 import { Context } from "../data/Provider";
 import Globais from '../data/Globais';
 import { useTranslation } from 'react-i18next';
 import FastImage from 'react-native-fast-image';
-import ModalFotoAluno from '../modais/ModalFotoAluno';  
+import ModalFotoAluno from '../modais/ModalFotoAluno';
 
 type ItemData = {
   nome: string;
@@ -20,7 +20,7 @@ type ItemProps = {
   item: ItemData;
   onPress: () => void;
   onLongPress: () => void;
-  onPressPhoto: (foto_url: string) => void;
+  onPressPhoto: (foto_url?: string) => void;
   backgroundColor: string;
   textColor: string;
 };
@@ -28,8 +28,8 @@ type ItemProps = {
 const Item = React.memo(({ item, onPress, onLongPress, onPressPhoto, backgroundColor, textColor }: ItemProps) => (
   <TouchableOpacity onPress={onPress} onLongPress={onLongPress} style={[styles.item, { backgroundColor }]}>
     <View style={styles.itemHeader}>
-      {item.foto_url ? (
-        <TouchableOpacity onPress={() => onPressPhoto(item.foto_url!)}>
+      <TouchableOpacity onPress={() => onPressPhoto(item.foto_url)}>
+        {item.foto_url ? (
           <FastImage
             style={styles.avatar}
             source={{
@@ -39,10 +39,14 @@ const Item = React.memo(({ item, onPress, onLongPress, onPressPhoto, backgroundC
             }}
             resizeMode={FastImage.resizeMode.cover}
           />
-        </TouchableOpacity>
-      ) : (
-        <View style={[styles.avatar, styles.avatarPlaceholder]} />
-      )}
+        ) : (
+          <Image
+            style={styles.avatar}
+            source={require('../assets/user.png')}
+            resizeMode="cover"
+          />
+        )}
+      </TouchableOpacity>
       <View style={{ marginLeft: 10, flex: 1 }}>
         <Text style={[styles.title, { color: textColor }]}>
           {item.numero + '  '}{item.nome}
@@ -50,8 +54,8 @@ const Item = React.memo(({ item, onPress, onLongPress, onPressPhoto, backgroundC
       </View>
     </View>
     <View style={styles.itemFooter}>
-      <Text style={styles.smallText}>{`${item.mediaNotas != null ? item.mediaNotas : '...'} ${'Média'}`}</Text>
-      <Text style={styles.smallText}>{`${item.porcFreq != null ? item.porcFreq + '%' : '...'} ${'Frequência'}`}</Text>
+      <Text style={styles.smallText}>{`${item.mediaNotas != null ? item.mediaNotas : '...'} Média`}</Text>
+      <Text style={styles.smallText}>{`${item.porcFreq != null ? item.porcFreq + '%' : '...'} Frequência`}</Text>
     </View>
   </TouchableOpacity>
 ));
@@ -60,7 +64,7 @@ const FlatListAlunos = (props: any) => {
   const {
     setNumAlunoSelec, setFlagLongPressClasse, listaAlunos,
     setFlagLongPressAluno, selectedIdAluno, setSelectedIdAluno,
-    setNomeAlunoSelec, setIdAlunoSelec, setAlunoInativo
+    setNomeAlunoSelec, setIdAlunoSelec, setAlunoInativo, idAlunoSelec
   } = useContext(Context);
 
   const { t } = useTranslation();
@@ -88,8 +92,9 @@ const FlatListAlunos = (props: any) => {
     setFlagLongPressClasse(false);
   };
 
-  const onPressPhoto = (foto_url: string) => {
-    setModalImageUrl(foto_url);
+  const onPressPhoto = (foto_url?: string, idAluno?: string) => {
+    setModalImageUrl(foto_url ?? 'local');
+    setIdAlunoSelec(idAluno ?? '');
     setModalVisible(true);
   };
 
@@ -109,7 +114,7 @@ const FlatListAlunos = (props: any) => {
         item={item}
         onPress={() => onPressItem(item)}
         onLongPress={() => onLongPressItem(item)}
-        onPressPhoto={onPressPhoto}
+        onPressPhoto={() => onPressPhoto(item.foto_url, item.idAluno)}
         backgroundColor={backgroundColor}
         textColor={color}
       />
@@ -137,6 +142,7 @@ const FlatListAlunos = (props: any) => {
       <ModalFotoAluno
         visible={modalVisible}
         imageUrl={modalImageUrl}
+        idAluno={idAlunoSelec ?? ''}
         onClose={() => setModalVisible(false)}
       />
     </SafeAreaView>
@@ -177,8 +183,5 @@ const styles = StyleSheet.create({
     height: 40,
     borderRadius: 20,
     backgroundColor: '#ccc',
-  },
-  avatarPlaceholder: {
-    backgroundColor: '#aaa',
   },
 });
