@@ -1,5 +1,5 @@
 import { useContext, useEffect } from "react";
-import { View, StyleSheet, Text } from "react-native";
+import { View, StyleSheet, Text, TouchableWithoutFeedback } from "react-native";
 import { Divider } from "react-native-paper";
 
 import FabClasses from "../componentes/FabClasses";
@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
   },
   textLoad: {
     fontSize: 24,
-    color: Globais.corTextoClaro,
+    color: Globais.corTextoEscuro,
     textAlign: "center",
   },
 });

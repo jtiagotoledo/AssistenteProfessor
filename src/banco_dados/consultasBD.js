@@ -14,27 +14,25 @@ import { buscarNotasPorClasse } from '../services/nota';
 
 const consultasBD = () => {
 
-  const { setNome, setEmail, idProfessor, setIdProfessor, setListaPeriodos, recarregarNotas, setListaDatasMarcadasFreq, recarregarDatasMarcadasNotas,
+  const { idProfessor, setListaPeriodos, recarregarNotas, setListaDatasMarcadasFreq, recarregarDatasMarcadasNotas,
     recarregarFrequencia, idPeriodoSelec, setListaClasses, idClasseSelec, setListaAlunos, recarregarPeriodos, recarregarAlunos, setListaDatasMarcadasNotas,
-    dataSelec, setListaFrequencia, setListaNotas, dataFreqSelec, dataNotaSelec, recarregarClasses, recarregarDadosProfessor, recarregarDatasMarcadasFreq, idDataFreq, idDataNota } = useContext(Context)
+    dataSelec, setListaFrequencia, setListaNotas, recarregarClasses, recarregarDatasMarcadasFreq, setFotoProfessor } = useContext(Context)
 
-  /* useEffect(() => {
+  useEffect(() => {
     // recupera dados dos professor e inicia os estados.
     const buscar = async () => {
 
       if (idProfessor) {
         try {
           const result = await buscarProfessorPorId(idProfessor);
-          setNome(result.nome)
-          setEmail(result.email)
-          setIdProfessor(result.id)
+          setFotoProfessor(result.foto)
         } catch (erro) {
           console.error('Erro ao buscar professor:', erro);
         }
       }
     };
     buscar();
-  }, [recarregarDadosProfessor]); */
+  }, [idProfessor]);
 
   useEffect(() => {
     // buscar todos os períodos do professor.

@@ -9,6 +9,7 @@ export default function Provider({ children }) {
     const [email, setEmail] = useState('');
     const [nome, setNome] = useState('');
     const [idUsuario, setIdUsuario] = useState('');
+    const [fotoProfessor, setFotoProfessor] = useState('');
     const [idProfessor, setIdProfessor] = useState('');
     const [idDataFreq, setIdDataFreq] = useState('');
     const [idDataNota, setIdDataNota] = useState('');
@@ -123,6 +124,7 @@ export default function Provider({ children }) {
             email, setEmail,
             senha, setSenha,
             idUsuario, setIdUsuario,
+            fotoProfessor, setFotoProfessor,
             idProfessor, setIdProfessor,
             idDataFreq, setIdDataFreq,
             idDataNota, setIdDataNota,

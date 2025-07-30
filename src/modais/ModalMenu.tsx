@@ -14,14 +14,12 @@ import DeviceInfo from 'react-native-device-info';
 const videoUrl = 'https://youtube.com/shorts/jM1_CSlT_hI';
 
 const ModalMenu = ({ navigation }: any) => {
-  const { modalMenu, setModalMenu, setListaClasses, setListaPeriodos, email, setNomePeriodoSelec,
+  const { modalMenu, setModalMenu, fotoProfessor, email, setNomePeriodoSelec,
     setIdPeriodoSelec, idProfessor, setIdProfessor, setEmail, setRecarregarPeriodos } = useContext(Context);
   const { width, height } = Dimensions.get('window');
   const [selectedLanguage, setSelectedLanguage] = useState(i18n.language)
   const isLandscape = width > height;
   const { t } = useTranslation();
-
-
 
   const tutorial = () => {
     Linking.openURL(videoUrl).catch(err => console.error('Erro ao abrir vídeo', err));
@@ -75,6 +73,13 @@ const ModalMenu = ({ navigation }: any) => {
         <View style={[styles.modalView, isLandscape && styles.modalLandscape]}>
           <HeaderMenu title={t('Menu')} />
           <ScrollView contentContainerStyle={styles.modalContent}>
+            <Image
+              source={fotoProfessor ? { uri: fotoProfessor } : require('../assets/user.png')}
+              style={styles.userPhoto}
+            />
+            <View style={styles.authContainer}>
+              <Text style={styles.textStyle}>{email}</Text>
+            </View>
             <View style={styles.logoContainer}>
               <Image
                 source={require('../assets/logo.png')}
@@ -82,9 +87,7 @@ const ModalMenu = ({ navigation }: any) => {
               />
               <Text>Versão {DeviceInfo.getVersion()}</Text>
             </View>
-            <View style={styles.authContainer}>
-              <Text style={styles.textStyle}>{email}</Text>
-            </View>
+
             <View style={styles.dropDownContainer}>
               <DropDown />
               <Text>Selecione a linguaguem/ Select Language</Text>
@@ -149,10 +152,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   logo: {
-    width: 150,
-    height: 150,
+    width: 100,
+    height: 100,
     resizeMode: 'contain',
     marginBottom: 16,
+    marginTop: 16
   },
   logoContainer: {
     flexDirection: 'column',
@@ -171,6 +175,15 @@ const styles = StyleSheet.create({
   },
   button: {
     marginBottom: 16,
+  },
+  userPhoto: {
+    width: 70,
+    height: 70,
+    borderRadius: 50,
+    alignSelf: 'center',
+    marginBottom: 12,
+    borderWidth: 2,
+    borderColor: Globais.corPrimaria,
   },
 });
 
