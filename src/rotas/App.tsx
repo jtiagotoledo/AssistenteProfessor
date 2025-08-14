@@ -5,13 +5,14 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import Classes from '../telas/Classes';
 import Frequencia from '../telas/Frequencia';
 import Notas from '../telas/Notas';
+import Mapa from '../telas/Mapa';
 import Globais from '../data/Globais';
 import { Context } from "../data/Provider";
 import { useTranslation } from 'react-i18next';
 
 const Tab = createBottomTabNavigator();
 
-type RouteNames = 'Classes' | 'Frequencia' | 'Notas' ;
+type RouteNames = 'Classes' | 'Frequencia' | 'Notas' | 'Mapa' ;
 
 const App = ({ navigation }: any) => {
   const { setDataSelec, setRecarregarAlunos, setRecarregarFrequencia, setRecarregarNotas } = useContext(Context);
@@ -26,6 +27,7 @@ const App = ({ navigation }: any) => {
             Classes: 'book',
             Frequencia: 'calendar',
             Notas: 'pencil',
+            Mapa: 'users'
           };
 
           return {
@@ -87,6 +89,14 @@ const App = ({ navigation }: any) => {
                 }}
               />
             ),
+          }}
+        />
+        <Tab.Screen
+          name="Mapa"
+          component={Mapa}
+          options={{
+            tabBarLabel:t('Mapa de sala'),
+            
           }}
         />
       </Tab.Navigator>
