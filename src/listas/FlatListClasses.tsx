@@ -23,8 +23,8 @@ const Item = ({ item, onPress, onLongPress, backgroundColor, textColor }: ItemPr
 );
 
 const FlatListClasses = () => {
-  const { idPeriodoSelec, idClasseSelec, setIdClasseSelec, listaClasses, idUsuario, setFlagLongPressClasse, listaNotas, setDataSelec, dataSelec,
-    setSelectedIdAluno, setNumAlunoSelec, setFlagLongPressAluno, nomePeriodoSelec, setFlagLongPressDataFreq, setFlagLongPressDataNotas, setNomeClasseSelec } = useContext(Context)
+  const { idPeriodoSelec, idClasseSelec, setIdClasseSelec, listaClasses, setFlagLongPressClasse, setDataSelec,
+    setSelectedIdAluno, setNumAlunoSelec, setFlagLongPressAluno, setFlagLongPressDataFreq, setFlagLongPressDataNotas, setNomeClasseSelec } = useContext(Context)
 
   const onPressItem = (item: any) => {
     setIdClasseSelec(item.idClasse)

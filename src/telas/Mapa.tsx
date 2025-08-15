@@ -1,14 +1,17 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Button, FlatList, StyleSheet, Text, TouchableOpacity, View, Modal, ScrollView, StatusBar } from "react-native";
+import { Button, FlatList, StyleSheet, Text, TouchableOpacity, View, Modal, ScrollView, StatusBar, Image } from "react-native";
 import { Context } from "../data/Provider";
+import DropDown from "../listas/DropDownPeriodo";
 import FlatListClasses from "../listas/FlatListClasses";
 import Globais from "../data/Globais";
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Slider from '@react-native-community/slider';
+import HeaderMapa from "../componentes/HeaderMapa";
+import { Divider } from "react-native-paper";
 
-// Definição dos tipos
+// Definição dos tipos atualizada
 type Assento = { pos: number; alunoId: string | null; };
-type Aluno = { id: string; nome: string; };
+type Aluno = { id: string; nome: string; numero: number; foto_url: string; };
 
 const Mapa = () => {
     // ... Estados do componente
@@ -20,21 +23,23 @@ const Mapa = () => {
     const [modalLayoutVisible, setModalLayoutVisible] = useState(false);
     const [posSelecionada, setPosSelecionada] = useState<number | null>(null);
 
-    // Contexto (substitua com seus próprios dados, se necessário)
-    const { dataSelec, setModalCalendarioNota, nomePeriodoSelec, setFlagLongPressDataNotas,
-          textoTituloNotas, setTextoTituloNotas, idDataNota } = useContext(Context);
+    const { listaAlunos } = useContext(Context);
 
     useEffect(() => {
         const total = colunas * fileiras;
         const inicial = Array.from({ length: total }, (_, i) => ({ pos: i, alunoId: null }));
         setMapa(inicial);
-        setAlunos([
-            { id: '1', nome: 'João' },
-            { id: '2', nome: 'Maria' },
-            { id: '3', 'nome': 'Pedro' },
-            { id: '4', nome: 'Ana' },
-        ]);
-    }, [colunas, fileiras]);
+        
+        if (listaAlunos && listaAlunos.length > 0) {
+            const alunosMapeados = listaAlunos.map((aluno:any) => ({
+                id: aluno.idAluno,
+                nome: aluno.nome,
+                numero: aluno.numero,
+                foto_url: aluno.foto_url,
+            }));
+            setAlunos(alunosMapeados);
+        }
+    }, [colunas, fileiras, listaAlunos]);
 
     const abrirModal = (pos: number) => {
         setPosSelecionada(pos);
@@ -51,10 +56,9 @@ const Mapa = () => {
 
     return (
         <View style={styles.container}>
-            <View style={{ paddingTop: StatusBar.currentHeight }} />
-
+            <HeaderMapa title="Mapa de Sala"></HeaderMapa>
             <FlatListClasses />
-
+            <Divider style={styles.divider}></Divider>
             <ScrollView horizontal={true} contentContainerStyle={styles.scrollHorizontal}>
                 <FlatList
                     key={colunas}
@@ -69,7 +73,20 @@ const Mapa = () => {
                                 onPress={() => abrirModal(item.pos)}
                                 style={[styles.assento, aluno && styles.assentoOcupado]}
                             >
-                                <Text style={styles.assentoText}>{aluno ? aluno.nome : "Vazio"}</Text>
+                                {aluno ? (
+                                    <View style={styles.assentoContent}>
+                                        <Image 
+                                            source={{ uri: aluno.foto_url }} 
+                                            style={styles.alunoFoto}
+                                        />
+                                        <View style={styles.alunoTextContainer}>
+                                            <Text style={styles.alunoNumero}>{aluno.numero}</Text>
+                                            <Text style={styles.alunoNome} numberOfLines={3}>{aluno.nome}</Text>
+                                        </View>
+                                    </View>
+                                ) : (
+                                    <Text style={styles.assentoText}>Vazio</Text>
+                                )}
                             </TouchableOpacity>
                         );
                     }}
@@ -105,7 +122,6 @@ const Mapa = () => {
                 <View style={styles.modalBackground}>
                     <View style={styles.modalContainer}>
                         <Text style={styles.modalTitle}>Configurar Layout</Text>
-                        {/* Slider para Colunas */}
                         <View style={styles.controlRow}>
                             <Text style={styles.controlLabel}>Colunas: {colunas}</Text>
                             <Slider
@@ -144,7 +160,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: Globais.corSecundaria,
-        padding: 10,
     },
     scrollHorizontal: {
         flexGrow: 1,
@@ -159,14 +174,43 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: '#333',
         margin: 5,
-        width: 70,
-        height: 70,
+        width: 120, 
+        height: 150,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#f0f0f0',
+        backgroundColor: 'white',
+        borderRadius: 8,
+        elevation: 2,
     },
     assentoOcupado: {
-        backgroundColor: '#d0f0c0',
+        backgroundColor: 'white',
+    },
+    assentoContent: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 5,
+    },
+    alunoFoto: {
+        width: 70, 
+        height: 70, 
+        borderRadius: 35, 
+        marginBottom: 4,
+        resizeMode: 'cover',
+    },
+    alunoTextContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    alunoNumero: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: 'black', // Cor do texto preto
+    },
+    alunoNome: {
+        fontSize: 14,
+        textAlign: 'center',
+        flexShrink: 1,
+        color: 'black', // Cor do texto preto
     },
     assentoText: {
         textAlign: 'center',
@@ -184,6 +228,7 @@ const styles = StyleSheet.create({
     },
     modalTitle: {
         fontWeight: 'bold',
+        fontSize: 20, 
         marginBottom: 10,
         textAlign: 'center',
     },
@@ -223,6 +268,9 @@ const styles = StyleSheet.create({
     fabIcon: {
         fontSize: 25,
         color: 'white',
+    },
+    divider: {
+        backgroundColor: Globais.corPrimaria,
     },
 });
 

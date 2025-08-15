@@ -26,6 +26,7 @@ import { useTranslation } from 'react-i18next';
 import { Context } from "../data/Provider";
 import { registrarAcesso } from '../services/acessos';
 import React from "react";
+import DropDown from "../listas/DropDownPeriodo";
 
 function Classes({ navigation }: any) {
   const { nomePeriodoSelec, idProfessor, email } = useContext(Context);
