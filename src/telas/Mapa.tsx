@@ -1,20 +1,18 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Button, FlatList, StyleSheet, Text, TouchableOpacity, View, Modal, ScrollView, StatusBar, Image } from "react-native";
+import { Button, FlatList, StyleSheet, Text, TouchableOpacity, View, Modal, ScrollView, StatusBar, Image, Alert } from "react-native";
 import { Context } from "../data/Provider";
-import DropDown from "../listas/DropDownPeriodo";
 import FlatListClasses from "../listas/FlatListClasses";
 import Globais from "../data/Globais";
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Slider from '@react-native-community/slider';
 import HeaderMapa from "../componentes/HeaderMapa";
 import { Divider } from "react-native-paper";
+import { buscarMapaDeSala, salvarMapaDeSala } from "../services/mapaSala"; // Importe os novos serviços
 
-// Definição dos tipos atualizada
 type Assento = { pos: number; alunoId: string | null; };
 type Aluno = { id: string; nome: string; numero: number; foto_url: string; };
 
 const Mapa = () => {
-    // ... Estados do componente
     const [colunas, setColunas] = useState(4);
     const [fileiras, setFileiras] = useState(5);
     const [mapa, setMapa] = useState<Assento[]>([]);
@@ -23,15 +21,13 @@ const Mapa = () => {
     const [modalLayoutVisible, setModalLayoutVisible] = useState(false);
     const [posSelecionada, setPosSelecionada] = useState<number | null>(null);
 
-    const { listaAlunos } = useContext(Context);
+    // Assumindo que idClasseSelec e listaAlunos estão no seu contexto
+    const { listaAlunos, idClasseSelec } = useContext(Context);
 
+    // useEffect para carregar os alunos do contexto
     useEffect(() => {
-        const total = colunas * fileiras;
-        const inicial = Array.from({ length: total }, (_, i) => ({ pos: i, alunoId: null }));
-        setMapa(inicial);
-        
         if (listaAlunos && listaAlunos.length > 0) {
-            const alunosMapeados = listaAlunos.map((aluno:any) => ({
+            const alunosMapeados = listaAlunos.map((aluno: any) => ({
                 id: aluno.idAluno,
                 nome: aluno.nome,
                 numero: aluno.numero,
@@ -39,7 +35,39 @@ const Mapa = () => {
             }));
             setAlunos(alunosMapeados);
         }
-    }, [colunas, fileiras, listaAlunos]);
+    }, [listaAlunos]);
+
+    // Novo useEffect para carregar o mapa do back-end
+    useEffect(() => {
+        const carregarMapa = async () => {
+            if (!idClasseSelec) return; // Não faz nada se a classe não estiver selecionada
+
+            try {
+                const dadosDoMapa = await buscarMapaDeSala(idClasseSelec);
+
+                if (dadosDoMapa) {
+                    const assentosCarregados = JSON.parse(dadosDoMapa.assentos);
+                    console.log("Dados do mapa recebidos:", dadosDoMapa);
+                    console.log("Array de assentos parseado:", assentosCarregados);
+
+                    setColunas(dadosDoMapa.colunas);
+                    setFileiras(dadosDoMapa.fileiras);
+                    setMapa(assentosCarregados);
+                } else {
+                    // Inicializa com o layout padrão se nenhum mapa for encontrado
+                    const total = colunas * fileiras;
+                    const inicial = Array.from({ length: total }, (_, i) => ({ pos: i, alunoId: null }));
+                    setMapa(inicial);
+                }
+            } catch (error) {
+                Alert.alert('Erro', 'Não foi possível carregar o mapa de sala. Tentando iniciar com padrão.');
+                const total = colunas * fileiras;
+                const inicial = Array.from({ length: total }, (_, i) => ({ pos: i, alunoId: null }));
+                setMapa(inicial);
+            }
+        };
+        carregarMapa();
+    }, [idClasseSelec]); // Dependência: recarrega quando a classe selecionada muda
 
     const abrirModal = (pos: number) => {
         setPosSelecionada(pos);
@@ -54,17 +82,41 @@ const Mapa = () => {
         setModalVisible(false);
     };
 
+   // Nova função para salvar o mapa
+const salvarMapa = async () => {
+    if (!idClasseSelec) {
+        Alert.alert('Aviso', 'Selecione uma classe para salvar o mapa.');
+        return;
+    }
+
+    try {
+        const nomeMapa = "Mapa Padrao"; 
+
+        await salvarMapaDeSala(idClasseSelec, nomeMapa, colunas, fileiras, mapa);
+
+        Alert.alert('Sucesso!', 'Mapa de sala salvo com sucesso.');
+    } catch (error) {
+        console.error('Erro ao salvar mapa:', error);
+        Alert.alert('Erro', 'Não foi possível salvar o mapa de sala.');
+    }
+};
+
     return (
         <View style={styles.container}>
             <HeaderMapa title="Mapa de Sala"></HeaderMapa>
             <FlatListClasses />
             <Divider style={styles.divider}></Divider>
+
+            <View style={styles.buttonContainer}>
+                <Button title="Salvar Organização" onPress={salvarMapa} />
+            </View>
+
             <ScrollView horizontal={true} contentContainerStyle={styles.scrollHorizontal}>
                 <FlatList
                     key={colunas}
                     contentContainerStyle={styles.flatListContainer}
                     data={mapa}
-                    keyExtractor={(item) => item.pos.toString()}
+                    keyExtractor={(item) => (item && item.pos !== undefined) ? item.pos.toString() : `placeholder-${Math.random()}`}
                     numColumns={colunas}
                     renderItem={({ item }) => {
                         const aluno = alunos.find(a => a.id === item.alunoId);
@@ -75,8 +127,8 @@ const Mapa = () => {
                             >
                                 {aluno ? (
                                     <View style={styles.assentoContent}>
-                                        <Image 
-                                            source={{ uri: aluno.foto_url }} 
+                                        <Image
+                                            source={{ uri: aluno.foto_url }}
                                             style={styles.alunoFoto}
                                         />
                                         <View style={styles.alunoTextContainer}>
@@ -161,6 +213,10 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: Globais.corSecundaria,
     },
+    buttonContainer: {
+        marginBottom: 10,
+        alignItems: 'center',
+    },
     scrollHorizontal: {
         flexGrow: 1,
         justifyContent: 'center',
@@ -174,7 +230,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: '#333',
         margin: 5,
-        width: 120, 
+        width: 120,
         height: 150,
         justifyContent: 'center',
         alignItems: 'center',
@@ -191,9 +247,9 @@ const styles = StyleSheet.create({
         padding: 5,
     },
     alunoFoto: {
-        width: 70, 
-        height: 70, 
-        borderRadius: 35, 
+        width: 70,
+        height: 70,
+        borderRadius: 35,
         marginBottom: 4,
         resizeMode: 'cover',
     },
@@ -204,13 +260,13 @@ const styles = StyleSheet.create({
     alunoNumero: {
         fontSize: 16,
         fontWeight: 'bold',
-        color: 'black', // Cor do texto preto
+        color: 'black',
     },
     alunoNome: {
         fontSize: 14,
         textAlign: 'center',
         flexShrink: 1,
-        color: 'black', // Cor do texto preto
+        color: 'black',
     },
     assentoText: {
         textAlign: 'center',
@@ -228,7 +284,7 @@ const styles = StyleSheet.create({
     },
     modalTitle: {
         fontWeight: 'bold',
-        fontSize: 20, 
+        fontSize: 20,
         marginBottom: 10,
         textAlign: 'center',
     },
