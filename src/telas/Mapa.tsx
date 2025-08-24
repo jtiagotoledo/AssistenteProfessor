@@ -7,67 +7,116 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import Slider from '@react-native-community/slider';
 import HeaderMapa from "../componentes/HeaderMapa";
 import { Divider } from "react-native-paper";
-import { buscarMapaDeSala, salvarMapaDeSala } from "../services/mapaSala"; // Importe os novos serviços
+import { buscarMapaDeSala, salvarMapaDeSala } from "../services/mapaSala";
 
-type Assento = { pos: number; alunoId: string | null; };
+// Definição dos tipos
+type AssentoData = { pos: number; alunoId: string | null; };
 type Aluno = { id: string; nome: string; numero: number; foto_url: string; };
+
+// Novo tipo para as props do componente de assento
+interface AssentoProps {
+    item: AssentoComDadosCompletos;
+    abrirModal: (pos: number) => void;
+    styles: any;
+}
+
+// Definição do tipo do assento com os dados do aluno combinados
+interface AssentoComDadosCompletos extends AssentoData {
+    aluno: Aluno | null;
+}
+
+const MemoizedAssento: React.FC<AssentoProps> = React.memo(({ item, abrirModal, styles }) => {
+    const aluno = item.aluno;
+    return (
+        <TouchableOpacity
+            onPress={() => abrirModal(item.pos)}
+            style={[styles.assento, aluno && styles.assentoOcupado]}
+        >
+            {aluno ? (
+                <View style={styles.assentoContent}>
+                    <Image 
+                        source={{ uri: aluno.foto_url }} 
+                        style={styles.alunoFoto}
+                    />
+                    <View style={styles.alunoTextContainer}>
+                        <Text style={styles.alunoNumero}>{aluno.numero}</Text>
+                        <Text style={styles.alunoNome} numberOfLines={3}>{aluno.nome}</Text>
+                    </View>
+                </View>
+            ) : (
+                <Text style={styles.assentoText}>Vazio</Text>
+            )}
+        </TouchableOpacity>
+    );
+});
 
 const Mapa = () => {
     const [colunas, setColunas] = useState(4);
     const [fileiras, setFileiras] = useState(5);
-    const [mapa, setMapa] = useState<Assento[]>([]);
+    const [mapa, setMapa] = useState<AssentoComDadosCompletos[]>([]);
     const [alunos, setAlunos] = useState<Aluno[]>([]);
     const [modalVisible, setModalVisible] = useState(false);
     const [modalLayoutVisible, setModalLayoutVisible] = useState(false);
     const [posSelecionada, setPosSelecionada] = useState<number | null>(null);
 
-    // Assumindo que idClasseSelec e listaAlunos estão no seu contexto
     const { listaAlunos, idClasseSelec } = useContext(Context);
 
-    // useEffect para carregar os alunos do contexto
+    // useEffect unificado para carregar e processar todos os dados
     useEffect(() => {
-        if (listaAlunos && listaAlunos.length > 0) {
-            const alunosMapeados = listaAlunos.map((aluno: any) => ({
-                id: aluno.idAluno,
-                nome: aluno.nome,
-                numero: aluno.numero,
-                foto_url: aluno.foto_url,
-            }));
-            setAlunos(alunosMapeados);
-        }
-    }, [listaAlunos]);
-
-    // Novo useEffect para carregar o mapa do back-end
-    useEffect(() => {
-        const carregarMapa = async () => {
-            if (!idClasseSelec) return; // Não faz nada se a classe não estiver selecionada
+        const carregarDadosCompletos = async () => {
+            if (!idClasseSelec) {
+                setMapa([]);
+                setAlunos([]);
+                return;
+            }
 
             try {
+                const alunosMapeados = listaAlunos ? listaAlunos.map((aluno: any) => ({
+                    id: aluno.idAluno,
+                    nome: aluno.nome,
+                    numero: aluno.numero,
+                    foto_url: aluno.foto_url,
+                })) : [];
+                setAlunos(alunosMapeados);
+
                 const dadosDoMapa = await buscarMapaDeSala(idClasseSelec);
-
-                if (dadosDoMapa) {
-                    const assentosCarregados = JSON.parse(dadosDoMapa.assentos);
-                    console.log("Dados do mapa recebidos:", dadosDoMapa);
-                    console.log("Array de assentos parseado:", assentosCarregados);
-
-                    setColunas(dadosDoMapa.colunas);
-                    setFileiras(dadosDoMapa.fileiras);
-                    setMapa(assentosCarregados);
-                } else {
-                    // Inicializa com o layout padrão se nenhum mapa for encontrado
-                    const total = colunas * fileiras;
-                    const inicial = Array.from({ length: total }, (_, i) => ({ pos: i, alunoId: null }));
-                    setMapa(inicial);
+                let assentosDoBackend: AssentoData[] = [];
+                
+                if (dadosDoMapa && dadosDoMapa.assentos) {
+                    try {
+                        const parsedAssentos = JSON.parse(dadosDoMapa.assentos);
+                        if (Array.isArray(parsedAssentos)) {
+                            assentosDoBackend = parsedAssentos;
+                            setColunas(dadosDoMapa.colunas);
+                            setFileiras(dadosDoMapa.fileiras);
+                        } else {
+                            console.warn('O JSON do backend não é um array. Inicializando com padrão.');
+                        }
+                    } catch (parseError) {
+                        console.error('Erro ao fazer JSON.parse:', parseError);
+                    }
                 }
+                
+                if (!assentosDoBackend || assentosDoBackend.length === 0) {
+                    const total = colunas * fileiras;
+                    assentosDoBackend = Array.from({ length: total }, (_, i) => ({ pos: i, alunoId: null }));
+                }
+                
+                const alunosPorId = new Map<string, Aluno>(alunosMapeados.map((aluno:any) => [aluno.id, aluno]));
+                const mapaComDadosCompletos = assentosDoBackend.map((assento: AssentoData) => ({
+                    ...assento,
+                    aluno: assento.alunoId ? (alunosPorId.get(assento.alunoId) ?? null) : null,
+                }));
+
+                setMapa(mapaComDadosCompletos);
             } catch (error) {
-                Alert.alert('Erro', 'Não foi possível carregar o mapa de sala. Tentando iniciar com padrão.');
-                const total = colunas * fileiras;
-                const inicial = Array.from({ length: total }, (_, i) => ({ pos: i, alunoId: null }));
-                setMapa(inicial);
+                console.error('Erro ao carregar dados:', error);
+                Alert.alert('Erro', 'Não foi possível carregar o mapa de sala.');
+                setMapa([]);
             }
         };
-        carregarMapa();
-    }, [idClasseSelec]); // Dependência: recarrega quando a classe selecionada muda
+        carregarDadosCompletos();
+    }, [idClasseSelec, listaAlunos]);
 
     const abrirModal = (pos: number) => {
         setPosSelecionada(pos);
@@ -76,37 +125,36 @@ const Mapa = () => {
 
     const selecionarAluno = (alunoId: string) => {
         const novoMapa = mapa.map(item =>
-            item.pos === posSelecionada ? { ...item, alunoId } : item
+            item.pos === posSelecionada 
+                ? { ...item, alunoId, aluno: alunos.find(a => a.id === alunoId) ?? null }
+                : item
         );
         setMapa(novoMapa);
         setModalVisible(false);
     };
 
-   // Nova função para salvar o mapa
-const salvarMapa = async () => {
-    if (!idClasseSelec) {
-        Alert.alert('Aviso', 'Selecione uma classe para salvar o mapa.');
-        return;
-    }
-
-    try {
-        const nomeMapa = "Mapa Padrao"; 
-
-        await salvarMapaDeSala(idClasseSelec, nomeMapa, colunas, fileiras, mapa);
-
-        Alert.alert('Sucesso!', 'Mapa de sala salvo com sucesso.');
-    } catch (error) {
-        console.error('Erro ao salvar mapa:', error);
-        Alert.alert('Erro', 'Não foi possível salvar o mapa de sala.');
-    }
-};
-
+    const salvarMapa = async () => {
+        if (!idClasseSelec) {
+            Alert.alert('Aviso', 'Selecione uma classe para salvar o mapa.');
+            return;
+        }
+        try {
+            const nomeMapa = "Mapa Padrao"; 
+            const assentosParaSalvar = mapa.map(item => ({ pos: item.pos, alunoId: item.alunoId }));
+            await salvarMapaDeSala(idClasseSelec, nomeMapa, colunas, fileiras, assentosParaSalvar);
+            Alert.alert('Sucesso!', 'Mapa de sala salvo com sucesso.');
+        } catch (error) {
+            console.error('Erro ao salvar mapa:', error);
+            Alert.alert('Erro', 'Não foi possível salvar o mapa de sala.');
+        }
+    };
+    
     return (
         <View style={styles.container}>
             <HeaderMapa title="Mapa de Sala"></HeaderMapa>
             <FlatListClasses />
             <Divider style={styles.divider}></Divider>
-
+            
             <View style={styles.buttonContainer}>
                 <Button title="Salvar Organização" onPress={salvarMapa} />
             </View>
@@ -116,32 +164,15 @@ const salvarMapa = async () => {
                     key={colunas}
                     contentContainerStyle={styles.flatListContainer}
                     data={mapa}
-                    keyExtractor={(item) => (item && item.pos !== undefined) ? item.pos.toString() : `placeholder-${Math.random()}`}
+                    keyExtractor={(item) => (item.pos !== undefined) ? item.pos.toString() : `placeholder-${Math.random()}`}
                     numColumns={colunas}
-                    renderItem={({ item }) => {
-                        const aluno = alunos.find(a => a.id === item.alunoId);
-                        return (
-                            <TouchableOpacity
-                                onPress={() => abrirModal(item.pos)}
-                                style={[styles.assento, aluno && styles.assentoOcupado]}
-                            >
-                                {aluno ? (
-                                    <View style={styles.assentoContent}>
-                                        <Image
-                                            source={{ uri: aluno.foto_url }}
-                                            style={styles.alunoFoto}
-                                        />
-                                        <View style={styles.alunoTextContainer}>
-                                            <Text style={styles.alunoNumero}>{aluno.numero}</Text>
-                                            <Text style={styles.alunoNome} numberOfLines={3}>{aluno.nome}</Text>
-                                        </View>
-                                    </View>
-                                ) : (
-                                    <Text style={styles.assentoText}>Vazio</Text>
-                                )}
-                            </TouchableOpacity>
-                        );
-                    }}
+                    renderItem={({ item }) => (
+                        <MemoizedAssento 
+                            item={item} 
+                            abrirModal={abrirModal}
+                            styles={styles} 
+                        />
+                    )}
                 />
             </ScrollView>
 
@@ -230,7 +261,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: '#333',
         margin: 5,
-        width: 120,
+        width: 120, 
         height: 150,
         justifyContent: 'center',
         alignItems: 'center',
@@ -247,9 +278,9 @@ const styles = StyleSheet.create({
         padding: 5,
     },
     alunoFoto: {
-        width: 70,
-        height: 70,
-        borderRadius: 35,
+        width: 70, 
+        height: 70, 
+        borderRadius: 35, 
         marginBottom: 4,
         resizeMode: 'cover',
     },
@@ -284,7 +315,7 @@ const styles = StyleSheet.create({
     },
     modalTitle: {
         fontWeight: 'bold',
-        fontSize: 20,
+        fontSize: 20, 
         marginBottom: 10,
         textAlign: 'center',
     },
