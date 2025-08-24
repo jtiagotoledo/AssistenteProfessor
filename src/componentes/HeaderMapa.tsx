@@ -6,13 +6,17 @@ import { Context } from "../data/Provider";
 import Globais from '../data/Globais';
 
 import AntIcon from 'react-native-vector-icons/AntDesign';
+import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
+
 import { useTranslation } from 'react-i18next';
 
 const { width } = Dimensions.get('window');
 
+// Atualize o tipo para incluir a função onSave
 type HeaderComponentProps = {
   title: string;
   view?: string;
+  onSave: () => void; // A nova prop para a função de salvar
 };
 
 const HeaderMapa: React.FunctionComponent<HeaderComponentProps> = (props) => {
@@ -35,13 +39,25 @@ const HeaderMapa: React.FunctionComponent<HeaderComponentProps> = (props) => {
           <Text style={styles.heading}>{props.title}</Text>
         </View>
       }
+      rightComponent={
+        <View style={styles.headerRight}>
+          <TouchableOpacity onPress={props.onSave}>
+            <FontAwesomeIcon
+                          style={styles.icon}
+                          name="save"
+                          color={'white'}
+                          size={24}
+                        />
+          </TouchableOpacity>
+        </View>
+      }
     />
   );
 };
 
 const styles = StyleSheet.create({
   headerContainer: {
-    backgroundColor: Globais.corPrimaria, // Garantia de aplicação da cor do tema
+    backgroundColor: Globais.corPrimaria,
     alignItems: 'center',
     marginBottom: 2,
     width: '100%',

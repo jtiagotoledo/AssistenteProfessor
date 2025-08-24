@@ -13,14 +13,12 @@ import { buscarMapaDeSala, salvarMapaDeSala } from "../services/mapaSala";
 type AssentoData = { pos: number; alunoId: string | null; };
 type Aluno = { id: string; nome: string; numero: number; foto_url: string; };
 
-// Novo tipo para as props do componente de assento
 interface AssentoProps {
     item: AssentoComDadosCompletos;
     abrirModal: (pos: number) => void;
     styles: any;
 }
 
-// Definição do tipo do assento com os dados do aluno combinados
 interface AssentoComDadosCompletos extends AssentoData {
     aluno: Aluno | null;
 }
@@ -61,7 +59,6 @@ const Mapa = () => {
 
     const { listaAlunos, idClasseSelec } = useContext(Context);
 
-    // useEffect unificado para carregar e processar todos os dados
     useEffect(() => {
         const carregarDadosCompletos = async () => {
             if (!idClasseSelec) {
@@ -116,7 +113,7 @@ const Mapa = () => {
             }
         };
         carregarDadosCompletos();
-    }, [idClasseSelec, listaAlunos]);
+    }, [idClasseSelec, listaAlunos, colunas, fileiras]);
 
     const abrirModal = (pos: number) => {
         setPosSelecionada(pos);
@@ -127,6 +124,17 @@ const Mapa = () => {
         const novoMapa = mapa.map(item =>
             item.pos === posSelecionada 
                 ? { ...item, alunoId, aluno: alunos.find(a => a.id === alunoId) ?? null }
+                : item
+        );
+        setMapa(novoMapa);
+        setModalVisible(false);
+    };
+
+    // Nova função para limpar o assento
+    const limparAssento = () => {
+        const novoMapa = mapa.map(item =>
+            item.pos === posSelecionada 
+                ? { ...item, alunoId: null, aluno: null }
                 : item
         );
         setMapa(novoMapa);
@@ -151,14 +159,10 @@ const Mapa = () => {
     
     return (
         <View style={styles.container}>
-            <HeaderMapa title="Mapa de Sala"></HeaderMapa>
+            <HeaderMapa title="Mapa de Sala" onSave={salvarMapa}></HeaderMapa>
             <FlatListClasses />
             <Divider style={styles.divider}></Divider>
             
-            <View style={styles.buttonContainer}>
-                <Button title="Salvar Organização" onPress={salvarMapa} />
-            </View>
-
             <ScrollView horizontal={true} contentContainerStyle={styles.scrollHorizontal}>
                 <FlatList
                     key={colunas}
@@ -187,15 +191,20 @@ const Mapa = () => {
                 <View style={styles.modalBackground}>
                     <View style={styles.modalContainer}>
                         <Text style={styles.modalTitle}>Selecione um aluno</Text>
-                        {alunos.map(aluno => (
-                            <TouchableOpacity
-                                key={aluno.id}
-                                onPress={() => selecionarAluno(aluno.id)}
-                                style={styles.modalItem}
-                            >
-                                <Text>{aluno.nome}</Text>
-                            </TouchableOpacity>
-                        ))}
+                        <ScrollView style={{ maxHeight: 300 }}>
+                            {alunos.map(aluno => (
+                                <TouchableOpacity
+                                    key={aluno.id}
+                                    onPress={() => selecionarAluno(aluno.id)}
+                                    style={styles.modalItem}
+                                >
+                                    <Text>{aluno.nome}</Text>
+                                </TouchableOpacity>
+                            ))}
+                        </ScrollView>
+                        <TouchableOpacity onPress={limparAssento} style={[styles.modalItem, styles.limparAssentoButton]}>
+                            <Text style={styles.limparAssentoText}>Limpar Assento</Text>
+                        </TouchableOpacity>
                         <Button title="Cancelar" onPress={() => setModalVisible(false)} />
                     </View>
                 </View>
@@ -323,6 +332,16 @@ const styles = StyleSheet.create({
         padding: 10,
         borderBottomWidth: 1,
         borderColor: '#ccc',
+    },
+    limparAssentoButton: {
+        marginTop: 10,
+        borderWidth: 1,
+        borderColor: '#cc0000',
+        borderRadius: 5,
+        alignItems: 'center',
+    },
+    limparAssentoText: {
+        color: '#cc0000',
     },
     controlRow: {
         flexDirection: 'row',
