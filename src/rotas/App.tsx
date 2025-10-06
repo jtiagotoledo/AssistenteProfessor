@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React, {useContext, useEffect} from 'react';
 import {TouchableOpacity} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -9,12 +9,24 @@ import Mapa from '../telas/Mapa';
 import Globais from '../data/Globais';
 import {Context} from '../data/Provider';
 import {useTranslation} from 'react-i18next';
+import {useNavigation} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {Linking} from 'react-native';
 
 const Tab = createBottomTabNavigator();
 
+type StackParamList = {
+  Login: undefined;
+  App: undefined;
+  NovaConta: undefined;
+  RedefinirSenha: {token?: string};
+};
+
 type RouteNames = 'Classes' | 'Frequencia' | 'Notas' | 'Mapa';
+type RotasNavigationProp = NativeStackNavigationProp<StackParamList>;
 
 const App = () => {
+  const navigation = useNavigation<RotasNavigationProp>();
   const {
     setDataSelec,
     setRecarregarAlunos,
@@ -22,6 +34,27 @@ const App = () => {
     setRecarregarNotas,
   } = useContext(Context);
   const {t} = useTranslation();
+
+  useEffect(() => {
+    const handleDeepLink = (event: any) => {
+      const url = event.url;
+      console.log('URL recebida:', url);
+
+      if (url.includes('redefinir-senha')) {
+        const token = url.split('/').pop();
+        navigation.navigate('RedefinirSenha', {token});
+      }
+    };
+
+    const subscription = Linking.addEventListener('url', handleDeepLink);
+    Linking.getInitialURL().then(url => {
+      if (url) {
+        handleDeepLink({url});
+      }
+    });
+
+    return () => subscription.remove();
+  }, [navigation]);
 
   return (
     <Tab.Navigator

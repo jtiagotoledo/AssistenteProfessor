@@ -3,11 +3,12 @@ import Login from '../telas/Login';
 import NovaConta from '../telas/NovaConta';
 import {jwtDecode} from 'jwt-decode';
 import {Context} from '../data/Provider';
-
+import 'react-native-url-polyfill/auto';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {useContext, useEffect, useState} from 'react';
 import {recuperarTokens, renovarAccessToken} from '../utils/tokenStorage';
+import RedefinirSenha from '../telas/RedefinirSenha';
 
 interface MeuTokenPayload {
   id: string;
@@ -60,7 +61,7 @@ function Rotas() {
     };
 
     verificarToken();
-  }, []);
+  }, [setIsAuthenticated, setIdProfessor, setNome, setEmail]);
 
   if (isAuthenticated === null) {
     return null;
@@ -76,6 +77,7 @@ function Rotas() {
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="App" component={App} />
         <Stack.Screen name="NovaConta" component={NovaConta} />
+        <Stack.Screen name="RedefinirSenha" component={RedefinirSenha} />
       </Stack.Navigator>
     </NavigationContainer>
   );

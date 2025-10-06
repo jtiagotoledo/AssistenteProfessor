@@ -1,21 +1,5 @@
-import React, {
-  useContext,
-  useCallback,
-  useRef,
-  useEffect,
-  useState,
-} from 'react';
-import {useFocusEffect} from '@react-navigation/native';
-import {
-  StyleSheet,
-  Text,
-  View,
-  TextInput,
-  TouchableOpacity,
-  AppState,
-  Alert,
-  ToastAndroid,
-} from 'react-native';
+import React, {useContext, useEffect} from 'react';
+import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import {Divider} from 'react-native-paper';
 
 import {Context} from '../data/Provider';
@@ -29,7 +13,6 @@ import FabFrequencia from '../componentes/FabFrequencia';
 import ConexaoInternet from '../componentes/ConexaoInternet';
 import {useTranslation} from 'react-i18next';
 import i18n from '../../i18n';
-import {atualizarAtividade} from '../services/datasFrequencia';
 
 const Frequencia = () => {
   const {
@@ -37,7 +20,6 @@ const Frequencia = () => {
     setModalCalendarioFreq,
     nomePeriodoSelec,
     setFlagLongPressDataFreq,
-    idDataFreq,
     textoAtividades,
     setTextoAtividades,
   } = useContext(Context);
@@ -62,7 +44,7 @@ const Frequencia = () => {
       onPress={() => setFlagLongPressDataFreq(false)}
       activeOpacity={1}>
       <Text style={styles.textLoad}>
-        {nomePeriodoSelec != undefined
+        {nomePeriodoSelec !== undefined
           ? t('Período') + ': ' + nomePeriodoSelec
           : t('Selecione um período') + '...'}
       </Text>
