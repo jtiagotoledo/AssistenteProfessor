@@ -1,40 +1,57 @@
-import { Text, View, StyleSheet, Pressable, TextInput, Modal, NativeSyntheticEvent, TextInputChangeEventData, ToastAndroid, TouchableOpacity } from "react-native"
-import React, { useState, useContext } from 'react';
+import {
+  Text,
+  View,
+  StyleSheet,
+  Pressable,
+  TextInput,
+  Modal,
+  NativeSyntheticEvent,
+  TextInputChangeEventData,
+  ToastAndroid,
+  TouchableOpacity,
+} from 'react-native';
+import React, {useState, useContext} from 'react';
 import firestore from '@react-native-firebase/firestore';
-import { Context } from "../data/Provider";
-import Globais from "../data/Globais";
+import {Context} from '../data/Provider';
+import Globais from '../data/Globais';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
-import { useTranslation } from 'react-i18next';
-import { atualizarPeriodo } from '../services/periodos';
-
+import {useTranslation} from 'react-i18next';
+import {atualizarPeriodo} from '../services/periodos';
 
 const ModalEditPeriodo = () => {
+  const [valuePeriodo, setValuePeriodo] = useState<string>('');
+  const {
+    modalEditPeriodo,
+    setModalEditPeriodo,
+    idPeriodoSelec,
+    idUsuario,
+    setRecarregarPeriodos,
+    setNomePeriodoSelec,
+    setIdPeriodoSelec,
+    nomePeriodoSelec,
+  } = useContext(Context);
+  const {t} = useTranslation();
 
-  const [valuePeriodo, setValuePeriodo] = useState<string>('')
-  const { modalEditPeriodo, setModalEditPeriodo, idPeriodoSelec,
-    idUsuario, setRecarregarPeriodos, setNomePeriodoSelec, setIdPeriodoSelec, nomePeriodoSelec } = useContext(Context)
-  const { t } = useTranslation();
-
-  const onChangeInputPeriodo = (event: NativeSyntheticEvent<TextInputChangeEventData>) => {
+  const onChangeInputPeriodo = (
+    event: NativeSyntheticEvent<TextInputChangeEventData>,
+  ) => {
     setValuePeriodo(event.nativeEvent.text);
-  }
+  };
 
   const onPressEditPeriodo = async () => {
     if (valuePeriodo != '') {
       setModalEditPeriodo(false);
       try {
         await atualizarPeriodo(idPeriodoSelec, valuePeriodo);
-        setRecarregarPeriodos((prev:any)=>!prev)
+        setRecarregarPeriodos((prev: any) => !prev);
         setNomePeriodoSelec(valuePeriodo);
       } catch (error) {
         console.log('Erro', 'Não foi possível atualizar.');
       }
     } else {
-      ToastAndroid.show(
-        t('msg_026'),
-        ToastAndroid.SHORT)
+      ToastAndroid.show(t('msg_026'), ToastAndroid.SHORT);
     }
-  }
+  };
 
   return (
     <View>
@@ -48,17 +65,19 @@ const ModalEditPeriodo = () => {
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
             <View style={styles.containerIcon}>
-              <TouchableOpacity onPress={() => setModalEditPeriodo(!modalEditPeriodo)}>
+              <TouchableOpacity
+                onPress={() => setModalEditPeriodo(!modalEditPeriodo)}>
                 <MaterialIcon name="cancel" color="black" size={25} />
               </TouchableOpacity>
             </View>
-            <Text style={styles.modalText}>{t('Edite o nome do período:')}</Text>
+            <Text style={styles.modalText}>
+              {t('Edite o nome do período:')}
+            </Text>
             <TextInput
               style={styles.textInput}
-              placeholder='Nome do período'
+              placeholder="Nome do período"
               defaultValue={nomePeriodoSelec}
-              onChange={onChangeInputPeriodo}>
-            </TextInput>
+              onChange={onChangeInputPeriodo}></TextInput>
             <Pressable
               style={[styles.button, styles.buttonClose]}
               onPress={() => onPressEditPeriodo()}>
@@ -68,8 +87,8 @@ const ModalEditPeriodo = () => {
         </View>
       </Modal>
     </View>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -78,10 +97,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 16,
     marginBottom: 16,
-    marginRight: 16
+    marginRight: 16,
   },
   containerIcon: {
-    alignItems: 'flex-end'
+    alignItems: 'flex-end',
   },
   centeredView: {
     flex: 1,
@@ -129,9 +148,8 @@ const styles = StyleSheet.create({
   textInput: {
     backgroundColor: 'white',
     minWidth: 100,
-    marginBottom: 20
-  }
-
+    marginBottom: 20,
+  },
 });
 
 export default ModalEditPeriodo;

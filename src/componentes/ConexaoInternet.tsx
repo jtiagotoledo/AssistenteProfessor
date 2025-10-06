@@ -2,27 +2,27 @@ import React, {useState, useEffect} from 'react';
 import {View, Text, StyleSheet, Dimensions} from 'react-native';
 import {useNetInfo} from '@react-native-community/netinfo';
 import Globais from '../data/Globais';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 import i18n from '../../i18n';
 
-const { width } = Dimensions.get('window');
+const {width} = Dimensions.get('window');
 
 export default function ConexaoInternet() {
   const netInfo = useNetInfo();
   const [messageConnection, setMessageConnection] = useState('Connected');
-  const { t } = useTranslation();
+  const {t} = useTranslation();
 
   useEffect(() => {
-    setMessageConnection(netInfo.isConnected ? t('Com internet') : t('Sem internet'));
-  }, [netInfo,i18n.language]);
+    setMessageConnection(
+      netInfo.isConnected ? t('Com internet') : t('Sem internet'),
+    );
+  }, [netInfo, i18n.language]);
 
-  return (
-    !netInfo.isConnected ? (
-      <View style={styles.containerComponent}>
-        <Text style={styles.textMessageConnection}>{messageConnection}</Text>
-      </View>
-    ) : null
-  );
+  return !netInfo.isConnected ? (
+    <View style={styles.containerComponent}>
+      <Text style={styles.textMessageConnection}>{messageConnection}</Text>
+    </View>
+  ) : null;
 }
 
 const styles = StyleSheet.create({

@@ -1,7 +1,7 @@
 import api from './api';
 
 // Buscar todos os alunos de uma classe
-export const buscarAlunosPorClasse = async (id_classe) => {
+export const buscarAlunosPorClasse = async id_classe => {
   try {
     const resposta = await api.get(`/alunos/${id_classe}`);
     return resposta.data;
@@ -12,7 +12,15 @@ export const buscarAlunosPorClasse = async (id_classe) => {
 };
 
 // Criar novo aluno
-export const criarAluno = async ({numero,nome,media_notas,porc_frequencia,inativo = false,id_classe,foto}) => {
+export const criarAluno = async ({
+  numero,
+  nome,
+  media_notas,
+  porc_frequencia,
+  inativo = false,
+  id_classe,
+  foto,
+}) => {
   try {
     const formData = new FormData();
 
@@ -43,7 +51,7 @@ export const criarAluno = async ({numero,nome,media_notas,porc_frequencia,inativ
 };
 
 // Importar vários alunos de uma vez
-export const importarAlunosEmLote = async (alunos) => {
+export const importarAlunosEmLote = async alunos => {
   try {
     const resposta = await api.post('/alunos/importar', {
       alunos: alunos,
@@ -105,7 +113,7 @@ export const atualizarFotoAluno = async (idAluno, foto) => {
 };
 
 // Buscar um aluno específico (caso use o endpoint /alunos/id/:id)
-export const buscarAlunoPorId = async (id) => {
+export const buscarAlunoPorId = async id => {
   try {
     const resposta = await api.get(`/alunos/id/${id}`);
     return resposta.data;
@@ -116,7 +124,7 @@ export const buscarAlunoPorId = async (id) => {
 };
 
 // Deletar aluno pelo ID
-export const deletarAluno = async (id) => {
+export const deletarAluno = async id => {
   try {
     const resposta = await api.delete(`/alunos/${id}`);
     return resposta.data;

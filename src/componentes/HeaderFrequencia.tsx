@@ -1,22 +1,31 @@
-import React, { useContext } from 'react';
-import { StyleSheet, TouchableWithoutFeedback, View, Text, Dimensions } from 'react-native';
-import { Header as HeaderRNE } from '@rneui/themed';
-import { TouchableOpacity } from 'react-native';
-import { Context } from "../data/Provider";
+import React, {useContext} from 'react';
+import {
+  StyleSheet,
+  TouchableWithoutFeedback,
+  View,
+  Text,
+  Dimensions,
+} from 'react-native';
+import {Header as HeaderRNE} from '@rneui/themed';
+import {TouchableOpacity} from 'react-native';
+import {Context} from '../data/Provider';
 import Globais from '../data/Globais';
 
 import AntIcon from 'react-native-vector-icons/AntDesign';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 
-const { width } = Dimensions.get('window');
+const {width} = Dimensions.get('window');
 
 type HeaderComponentProps = {
   title: string;
   view?: string;
 };
 
-const HeaderFrequencia: React.FunctionComponent<HeaderComponentProps> = (props) => {
-  const { setModalMenu, flagLongPressDataFreq, setModalDelDataFreq } = useContext(Context);
+const HeaderFrequencia: React.FunctionComponent<
+  HeaderComponentProps
+> = props => {
+  const {setModalMenu, flagLongPressDataFreq, setModalDelDataFreq} =
+    useContext(Context);
 
   const onPressBin = () => {
     if (flagLongPressDataFreq) {
@@ -27,7 +36,10 @@ const HeaderFrequencia: React.FunctionComponent<HeaderComponentProps> = (props) 
   return (
     <HeaderRNE
       backgroundColor={Globais.corPrimaria}
-      containerStyle={[styles.headerContainer, { backgroundColor: Globais.corPrimaria }]}
+      containerStyle={[
+        styles.headerContainer,
+        {backgroundColor: Globais.corPrimaria},
+      ]}
       leftComponent={
         <View style={styles.headerRight}>
           <TouchableOpacity onPress={() => setModalMenu(true)}>
@@ -41,7 +53,11 @@ const HeaderFrequencia: React.FunctionComponent<HeaderComponentProps> = (props) 
             <FontAwesomeIcon
               style={styles.icon}
               name="trash-o"
-              color={flagLongPressDataFreq ? 'rgba(255,255,255,1)' : 'rgba(255,255,255,0.6)'}
+              color={
+                flagLongPressDataFreq
+                  ? 'rgba(255,255,255,1)'
+                  : 'rgba(255,255,255,0.6)'
+              }
               size={24}
             />
           </TouchableWithoutFeedback>

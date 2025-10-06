@@ -1,31 +1,46 @@
-import { Text, View, StyleSheet, Pressable, Modal, TouchableOpacity } from "react-native"
-import React, { useContext } from 'react';
+import {
+  Text,
+  View,
+  StyleSheet,
+  Pressable,
+  Modal,
+  TouchableOpacity,
+} from 'react-native';
+import React, {useContext} from 'react';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
-import { Context } from "../data/Provider";
-import Globais from "../data/Globais";
-import { deletarPeriodo } from "../services/periodos";
-import { useTranslation } from 'react-i18next';
+import {Context} from '../data/Provider';
+import Globais from '../data/Globais';
+import {deletarPeriodo} from '../services/periodos';
+import {useTranslation} from 'react-i18next';
 
 const ModalDelPeriodo = () => {
-
-  const { modalDelPeriodo, setModalDelPeriodo, setRecarregarPeriodos, setIdPeriodoSelec,
-    idPeriodoSelec, setRecarregarClasses, setRecarregarAlunos, setIdClasseSelec, setNomePeriodoSelec } = useContext(Context);
-  const { t } = useTranslation();
+  const {
+    modalDelPeriodo,
+    setModalDelPeriodo,
+    setRecarregarPeriodos,
+    setIdPeriodoSelec,
+    idPeriodoSelec,
+    setRecarregarClasses,
+    setRecarregarAlunos,
+    setIdClasseSelec,
+    setNomePeriodoSelec,
+  } = useContext(Context);
+  const {t} = useTranslation();
 
   const delPeriodo = async () => {
     try {
       await deletarPeriodo(idPeriodoSelec);
-      setIdPeriodoSelec(null)
-      setNomePeriodoSelec(null)
-      setIdClasseSelec(null)
-      setRecarregarPeriodos((prev: any) => !prev)
-      setRecarregarClasses((prev: any) => !prev)
-      setRecarregarAlunos((prev: any) => !prev)
-      setModalDelPeriodo(!modalDelPeriodo)
+      setIdPeriodoSelec(null);
+      setNomePeriodoSelec(null);
+      setIdClasseSelec(null);
+      setRecarregarPeriodos((prev: any) => !prev);
+      setRecarregarClasses((prev: any) => !prev);
+      setRecarregarAlunos((prev: any) => !prev);
+      setModalDelPeriodo(!modalDelPeriodo);
     } catch (error) {
       console.error(error);
     }
-  }
+  };
 
   return (
     <View>
@@ -39,11 +54,14 @@ const ModalDelPeriodo = () => {
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
             <View style={styles.containerIcon}>
-              <TouchableOpacity onPress={() => setModalDelPeriodo(!modalDelPeriodo)}>
+              <TouchableOpacity
+                onPress={() => setModalDelPeriodo(!modalDelPeriodo)}>
                 <MaterialIcon name="cancel" color="black" size={25} />
               </TouchableOpacity>
             </View>
-            <Text style={styles.modalText}>{t('Deseja realmente excluir o período?')}</Text>
+            <Text style={styles.modalText}>
+              {t('Deseja realmente excluir o período?')}
+            </Text>
             <Pressable
               style={[styles.button, styles.buttonClose]}
               onPress={delPeriodo}>
@@ -53,8 +71,8 @@ const ModalDelPeriodo = () => {
         </View>
       </Modal>
     </View>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -63,7 +81,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 16,
     marginBottom: 16,
-    marginRight: 16
+    marginRight: 16,
   },
   containerIcon: {
     alignItems: 'flex-end',

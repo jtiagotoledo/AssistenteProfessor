@@ -1,39 +1,55 @@
-import { Text, View, StyleSheet, Pressable, TextInput, Modal, NativeSyntheticEvent, TextInputChangeEventData, ToastAndroid, TouchableOpacity } from "react-native"
-import React, { useState, useContext } from 'react';
-import { Context } from "../data/Provider";
-import Globais from "../data/Globais";
+import {
+  Text,
+  View,
+  StyleSheet,
+  Pressable,
+  TextInput,
+  Modal,
+  NativeSyntheticEvent,
+  TextInputChangeEventData,
+  ToastAndroid,
+  TouchableOpacity,
+} from 'react-native';
+import React, {useState, useContext} from 'react';
+import {Context} from '../data/Provider';
+import Globais from '../data/Globais';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
-import { useTranslation } from 'react-i18next';
-import { criarPeriodo } from '../services/periodos';
-
+import {useTranslation} from 'react-i18next';
+import {criarPeriodo} from '../services/periodos';
 
 const ModalAddPeriodo = () => {
+  const [valuePeriodo, setValuePeriodo] = useState<string>('');
+  const {
+    modalAddPeriodo,
+    setModalAddPeriodo,
+    idProfessor,
+    setNomePeriodoSelec,
+    setIdPeriodoSelec,
+    setRecarregarPeriodos,
+  } = useContext(Context);
+  const {t} = useTranslation();
 
-  const [valuePeriodo, setValuePeriodo] = useState<string>('')
-  const { modalAddPeriodo, setModalAddPeriodo, idProfessor, setNomePeriodoSelec,
-    setIdPeriodoSelec, setRecarregarPeriodos } = useContext(Context)
-  const { t } = useTranslation();
-
-  const onChangeInputPeriodo = (event: NativeSyntheticEvent<TextInputChangeEventData>) => {
+  const onChangeInputPeriodo = (
+    event: NativeSyntheticEvent<TextInputChangeEventData>,
+  ) => {
     setValuePeriodo(event.nativeEvent.text);
-  }
+  };
 
   const onPressAddPeriodo = async () => {
-    
     if (valuePeriodo !== '' && idProfessor) {
       try {
         setModalAddPeriodo(false);
         const result = await criarPeriodo(valuePeriodo, idProfessor);
         setIdPeriodoSelec(result.id);
         setNomePeriodoSelec(result.nome);
-        setRecarregarPeriodos((prev:any)=>!prev)
+        setRecarregarPeriodos((prev: any) => !prev);
       } catch (error) {
         ToastAndroid.show(t('msg_037'), ToastAndroid.SHORT);
       }
     } else {
       ToastAndroid.show(t('msg_026'), ToastAndroid.SHORT);
     }
-  }
+  };
 
   return (
     <View>
@@ -47,12 +63,16 @@ const ModalAddPeriodo = () => {
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
             <View style={styles.containerIcon}>
-              <TouchableOpacity onPress={() => setModalAddPeriodo(!modalAddPeriodo)}>
+              <TouchableOpacity
+                onPress={() => setModalAddPeriodo(!modalAddPeriodo)}>
                 <MaterialIcon name="cancel" color="black" size={25} />
               </TouchableOpacity>
             </View>
             <Text style={styles.modalText}>{t('Crie um novo período:')}</Text>
-            <TextInput placeholder={t('Nome do período')} onChange={onChangeInputPeriodo} style={styles.textInput}></TextInput>
+            <TextInput
+              placeholder={t('Nome do período')}
+              onChange={onChangeInputPeriodo}
+              style={styles.textInput}></TextInput>
             <Pressable
               style={[styles.button, styles.buttonClose]}
               onPress={onPressAddPeriodo}>
@@ -62,8 +82,8 @@ const ModalAddPeriodo = () => {
         </View>
       </Modal>
     </View>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -72,10 +92,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 16,
     marginBottom: 16,
-    marginRight: 16
+    marginRight: 16,
   },
   containerIcon: {
-    alignItems: 'flex-end'
+    alignItems: 'flex-end',
   },
   centeredView: {
     flex: 1,
@@ -122,8 +142,8 @@ const styles = StyleSheet.create({
   textInput: {
     backgroundColor: 'white',
     minWidth: 100,
-    marginBottom: 20
-  }
+    marginBottom: 20,
+  },
 });
 
-export default ModalAddPeriodo
+export default ModalAddPeriodo;

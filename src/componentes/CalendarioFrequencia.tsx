@@ -1,36 +1,125 @@
-import React, { useContext, useEffect } from 'react';
-import { ScrollView, Pressable, StyleSheet, Text, View, Dimensions, ToastAndroid, TextInput } from 'react-native';
-import { Calendar, LocaleConfig } from 'react-native-calendars';
-import { Context } from "../data/Provider";
+import React, {useContext, useEffect} from 'react';
+import {
+  ScrollView,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+  Dimensions,
+  ToastAndroid,
+  TextInput,
+} from 'react-native';
+import {Calendar, LocaleConfig} from 'react-native-calendars';
+import {Context} from '../data/Provider';
 import Globais from '../data/Globais';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 import i18n from '../../i18n';
-import { criarDataFrequencia } from '../services/datasFrequencia';
-import { buscarAlunosPorClasse } from '../services/alunos';
-import { criarFrequencia } from '../services/frequencia';
-import { buscarIdAtivPorDataEClasse } from '../services/datasFrequencia';
-import { atualizarAtividade } from '../services/datasFrequencia';
+import {criarDataFrequencia} from '../services/datasFrequencia';
+import {buscarAlunosPorClasse} from '../services/alunos';
+import {criarFrequencia} from '../services/frequencia';
+import {buscarIdAtivPorDataEClasse} from '../services/datasFrequencia';
+import {atualizarAtividade} from '../services/datasFrequencia';
 
-const { width } = Dimensions.get('window'); // Captura a largura e altura da tela
+const {width} = Dimensions.get('window'); // Captura a largura e altura da tela
 
 LocaleConfig.locales.br = {
-  monthNames: ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"],
-  monthNamesShort: ["Jan.", "Fev.", "Mar", "Abr", "Mai", "Jun", "Jul.", "Ago", "Set.", "Out.", "Nov.", "Dez."],
-  dayNames: ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"],
-  dayNamesShort: ["Dom.", "Seg.", "Ter.", "Qua.", "Qui.", "Sex.", "Sáb."]
+  monthNames: [
+    'Janeiro',
+    'Fevereiro',
+    'Março',
+    'Abril',
+    'Maio',
+    'Junho',
+    'Julho',
+    'Agosto',
+    'Setembro',
+    'Outubro',
+    'Novembro',
+    'Dezembro',
+  ],
+  monthNamesShort: [
+    'Jan.',
+    'Fev.',
+    'Mar',
+    'Abr',
+    'Mai',
+    'Jun',
+    'Jul.',
+    'Ago',
+    'Set.',
+    'Out.',
+    'Nov.',
+    'Dez.',
+  ],
+  dayNames: [
+    'Domingo',
+    'Segunda',
+    'Terça',
+    'Quarta',
+    'Quinta',
+    'Sexta',
+    'Sábado',
+  ],
+  dayNamesShort: ['Dom.', 'Seg.', 'Ter.', 'Qua.', 'Qui.', 'Sex.', 'Sáb.'],
 };
 
 LocaleConfig.locales.en = {
-  monthNames: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-  monthNamesShort: ["Jan.", "Feb.", "Mar", "Apr", "May", "Jun", "Jul.", "Aug", "Sep.", "Oct.", "Nov.", "Dec."],
-  dayNames: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
-  dayNamesShort: ["Sun.", "Mon.", "Tue.", "Wed.", "Thu.", "Fri.", "Sat."]
+  monthNames: [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ],
+  monthNamesShort: [
+    'Jan.',
+    'Feb.',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul.',
+    'Aug',
+    'Sep.',
+    'Oct.',
+    'Nov.',
+    'Dec.',
+  ],
+  dayNames: [
+    'Sunday',
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+  ],
+  dayNamesShort: ['Sun.', 'Mon.', 'Tue.', 'Wed.', 'Thu.', 'Fri.', 'Sat.'],
 };
 
 const CalendarioFrequencia = () => {
-  const { t } = useTranslation();
-  const { idClasseSelec, dataSelec, setDataSelec, modalCalendarioFreq, setModalCalendarioFreq, setDataFreqSelec,
-    setRecarregarDatasMarcadasFreq, setRecarregarFrequencia, listaDatasMarcadasFreq, setIdDataFreq, setTextoAtividades, textoAtividades } = useContext(Context)
+  const {t} = useTranslation();
+  const {
+    idClasseSelec,
+    dataSelec,
+    setDataSelec,
+    modalCalendarioFreq,
+    setModalCalendarioFreq,
+    setDataFreqSelec,
+    setRecarregarDatasMarcadasFreq,
+    setRecarregarFrequencia,
+    listaDatasMarcadasFreq,
+    setIdDataFreq,
+    setTextoAtividades,
+    textoAtividades,
+  } = useContext(Context);
 
   useEffect(() => {
     if (i18n.language === 'pt') {
@@ -41,12 +130,15 @@ const CalendarioFrequencia = () => {
   }, [i18n.language]);
 
   function onChangeAtividades(text: string) {
-    setTextoAtividades(text)
+    setTextoAtividades(text);
   }
 
   const onPressAddData = async () => {
     if (!textoAtividades || textoAtividades.trim() === '') {
-      ToastAndroid.show('A atividade não deve estar em branco', ToastAndroid.SHORT);
+      ToastAndroid.show(
+        'A atividade não deve estar em branco',
+        ToastAndroid.SHORT,
+      );
       return;
     }
 
@@ -54,8 +146,11 @@ const CalendarioFrequencia = () => {
       try {
         setModalCalendarioFreq(false);
         // Cria a data da frequência
-        const novaData = await criarDataFrequencia({ data: dataSelec, id_classe: idClasseSelec });
-        setIdDataFreq(novaData.id)
+        const novaData = await criarDataFrequencia({
+          data: dataSelec,
+          id_classe: idClasseSelec,
+        });
+        setIdDataFreq(novaData.id);
 
         // Busca os alunos da classe
         const alunos = await buscarAlunosPorClasse(idClasseSelec);
@@ -66,23 +161,23 @@ const CalendarioFrequencia = () => {
             criarFrequencia({
               id_data_frequencia: novaData.id,
               id_aluno: aluno.id,
-              presente: true
-            })
-          )
+              presente: true,
+            }),
+          ),
         );
 
         // Registra a atividade no banco de dados
         console.log(novaData.id, textoAtividades);
 
-        await atualizarAtividade(novaData.id, textoAtividades)
+        await atualizarAtividade(novaData.id, textoAtividades);
 
         setRecarregarFrequencia((prev: any) => !prev);
         ToastAndroid.show('Data criada!', ToastAndroid.SHORT);
       } catch (error) {
         ToastAndroid.show('Erro ao criar data!', ToastAndroid.SHORT);
       }
-    };
-  }
+    }
+  };
 
   const renderCarregamento = () => {
     if (idClasseSelec != '') {
@@ -97,7 +192,10 @@ const CalendarioFrequencia = () => {
                   if (listaDatasMarcadasFreq[day.dateString]?.selected) {
                     setRecarregarFrequencia((prev: any) => !prev);
                     try {
-                      const resposta = await buscarIdAtivPorDataEClasse(day.dateString, idClasseSelec);
+                      const resposta = await buscarIdAtivPorDataEClasse(
+                        day.dateString,
+                        idClasseSelec,
+                      );
                       console.log('ID encontrado:', resposta);
                       setIdDataFreq(resposta.id);
                       setTextoAtividades(resposta.atividade);
@@ -114,23 +212,28 @@ const CalendarioFrequencia = () => {
             />
             <TextInput
               multiline
-              placeholder={t('Descreva a atividade') + "..."}
-              onChangeText={(text:any) => onChangeAtividades(text)}
+              placeholder={t('Descreva a atividade') + '...'}
+              onChangeText={(text: any) => onChangeAtividades(text)}
               style={styles.textInput}
             />
             <Pressable
               style={[styles.button, styles.buttonClose]}
-              onPress={() => [onPressAddData(), setRecarregarDatasMarcadasFreq((prev: any) => !prev)]}>
+              onPress={() => [
+                onPressAddData(),
+                setRecarregarDatasMarcadasFreq((prev: any) => !prev),
+              ]}>
               <Text style={styles.textStyle}>{t('Criar data')}</Text>
             </Pressable>
           </View>
         </ScrollView>
-      )
+      );
     }
-  }
+  };
 
   return (
-    <ScrollView style={styles.mainScroll} contentContainerStyle={styles.mainContainer}>
+    <ScrollView
+      style={styles.mainScroll}
+      contentContainerStyle={styles.mainContainer}>
       {renderCarregamento()}
     </ScrollView>
   );
@@ -183,7 +286,7 @@ const styles = StyleSheet.create({
     padding: 8,
     fontSize: 16,
     borderRadius: 5,
-  }
+  },
 });
 
 export default CalendarioFrequencia;

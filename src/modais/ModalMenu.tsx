@@ -1,28 +1,52 @@
-import React, { useContext, useState } from 'react';
-import { Image, Text, View, StyleSheet, Button, Modal, TouchableWithoutFeedback, ScrollView, Dimensions, ToastAndroid, Linking } from 'react-native';
-import { Context } from "../data/Provider";
-import Globais from "../data/Globais";
+import React, {useContext, useState} from 'react';
+import {
+  Image,
+  Text,
+  View,
+  StyleSheet,
+  Button,
+  Modal,
+  TouchableWithoutFeedback,
+  ScrollView,
+  Dimensions,
+  ToastAndroid,
+  Linking,
+} from 'react-native';
+import {Context} from '../data/Provider';
+import Globais from '../data/Globais';
 import HeaderMenu from '../componentes/HeaderMenu';
-import DropDown from "../listas/DropDownPeriodo";
-import { Picker } from '@react-native-picker/picker';
+import DropDown from '../listas/DropDownPeriodo';
+import {Picker} from '@react-native-picker/picker';
 import i18n from '../../i18n';
-import { useTranslation } from 'react-i18next';
-import { deletarProfessor } from '../services/professores';
-import { limparTokens } from '../utils/tokenStorage';
+import {useTranslation} from 'react-i18next';
+import {deletarProfessor} from '../services/professores';
+import {limparTokens} from '../utils/tokenStorage';
 import DeviceInfo from 'react-native-device-info';
 
 const videoUrl = 'https://youtube.com/shorts/jM1_CSlT_hI';
 
-const ModalMenu = ({ navigation }: any) => {
-  const { modalMenu, setModalMenu, fotoProfessor, email, setNomePeriodoSelec,
-    setIdPeriodoSelec, idProfessor, setIdProfessor, setEmail, setRecarregarPeriodos } = useContext(Context);
-  const { width, height } = Dimensions.get('window');
-  const [selectedLanguage, setSelectedLanguage] = useState(i18n.language)
+const ModalMenu = ({navigation}: any) => {
+  const {
+    modalMenu,
+    setModalMenu,
+    fotoProfessor,
+    email,
+    setNomePeriodoSelec,
+    setIdPeriodoSelec,
+    idProfessor,
+    setIdProfessor,
+    setEmail,
+    setRecarregarPeriodos,
+  } = useContext(Context);
+  const {width, height} = Dimensions.get('window');
+  const [selectedLanguage, setSelectedLanguage] = useState(i18n.language);
   const isLandscape = width > height;
-  const { t } = useTranslation();
+  const {t} = useTranslation();
 
   const tutorial = () => {
-    Linking.openURL(videoUrl).catch(err => console.error('Erro ao abrir vídeo', err));
+    Linking.openURL(videoUrl).catch(err =>
+      console.error('Erro ao abrir vídeo', err),
+    );
   };
 
   const funcSair = async () => {
@@ -31,27 +55,27 @@ const ModalMenu = ({ navigation }: any) => {
 
       setIdProfessor(null);
       setEmail(null);
-      setNomePeriodoSelec(null)
-      setIdPeriodoSelec(null)
+      setNomePeriodoSelec(null);
+      setIdPeriodoSelec(null);
       setRecarregarPeriodos(false);
-      setModalMenu(false)
-      navigation.reset({ index: 0, routes: [{ name: "Login" }] });
+      setModalMenu(false);
+      navigation.reset({index: 0, routes: [{name: 'Login'}]});
 
-      ToastAndroid.show(t('msg_041'), ToastAndroid.SHORT);  // "Logout realizado com sucesso"
+      ToastAndroid.show(t('msg_041'), ToastAndroid.SHORT); // "Logout realizado com sucesso"
     } catch (error) {
       console.error('Erro ao sair:', error);
     }
   };
 
   const delProfessor = () => {
-    deletarProfessor(idProfessor)
-    navigation.reset({ index: 0, routes: [{ name: "Login" }] })
-    setIdProfessor('')
+    deletarProfessor(idProfessor);
+    navigation.reset({index: 0, routes: [{name: 'Login'}]});
+    setIdProfessor('');
     setIdProfessor(null);
     setEmail(null);
-    setNomePeriodoSelec(null)
-    setIdPeriodoSelec(null)
-    setModalMenu(!modalMenu)
+    setNomePeriodoSelec(null);
+    setIdPeriodoSelec(null);
+    setModalMenu(!modalMenu);
   };
 
   const changeLanguage = (lng: string) => {
@@ -67,14 +91,21 @@ const ModalMenu = ({ navigation }: any) => {
         onRequestClose={() => {
           setModalMenu(!modalMenu);
         }}>
-        <TouchableWithoutFeedback onPress={() => { setModalMenu(!modalMenu) }}>
+        <TouchableWithoutFeedback
+          onPress={() => {
+            setModalMenu(!modalMenu);
+          }}>
           <View style={styles.modalOverlay} />
         </TouchableWithoutFeedback>
         <View style={[styles.modalView, isLandscape && styles.modalLandscape]}>
           <HeaderMenu title={t('Menu')} />
           <ScrollView contentContainerStyle={styles.modalContent}>
             <Image
-              source={fotoProfessor ? { uri: fotoProfessor } : require('../assets/user.png')}
+              source={
+                fotoProfessor
+                  ? {uri: fotoProfessor}
+                  : require('../assets/user.png')
+              }
               style={styles.userPhoto}
             />
             <View style={styles.authContainer}>
@@ -95,20 +126,31 @@ const ModalMenu = ({ navigation }: any) => {
                 selectedValue={selectedLanguage}
                 onValueChange={(itemValue, itemIndex) => {
                   changeLanguage(itemValue);
-                }}
-              >
+                }}>
                 <Picker.Item label="Português" value="pt" />
                 <Picker.Item label="English" value="en" />
               </Picker>
               <View style={styles.containerButton}>
                 <View style={styles.button}>
-                  <Button color={Globais.corPrimaria} title={t('Ver Tutorial')} onPress={tutorial} />
+                  <Button
+                    color={Globais.corPrimaria}
+                    title={t('Ver Tutorial')}
+                    onPress={tutorial}
+                  />
                 </View>
                 <View style={styles.button}>
-                  <Button color={Globais.corPrimaria} title={t('Sair')} onPress={funcSair} />
+                  <Button
+                    color={Globais.corPrimaria}
+                    title={t('Sair')}
+                    onPress={funcSair}
+                  />
                 </View>
                 <View style={styles.button}>
-                  <Button color={Globais.corPrimaria} title={t('Excluir conta')} onPress={delProfessor} />
+                  <Button
+                    color={Globais.corPrimaria}
+                    title={t('Excluir conta')}
+                    onPress={delProfessor}
+                  />
                 </View>
               </View>
             </View>
@@ -135,7 +177,7 @@ const styles = StyleSheet.create({
     height: '100%',
     width: '75%',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
@@ -156,7 +198,7 @@ const styles = StyleSheet.create({
     height: 100,
     resizeMode: 'contain',
     marginBottom: 16,
-    marginTop: 16
+    marginTop: 16,
   },
   logoContainer: {
     flexDirection: 'column',
@@ -188,5 +230,3 @@ const styles = StyleSheet.create({
 });
 
 export default ModalMenu;
-
-

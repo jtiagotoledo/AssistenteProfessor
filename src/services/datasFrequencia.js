@@ -1,7 +1,7 @@
 import api from './api';
 
 // Criar nova data de frequência
-export const criarDataFrequencia = async ({ data, id_classe }) => {
+export const criarDataFrequencia = async ({data, id_classe}) => {
   try {
     const resposta = await api.post('/datas-frequencia', {
       data,
@@ -15,7 +15,7 @@ export const criarDataFrequencia = async ({ data, id_classe }) => {
 };
 
 // Buscar todas as datas de frequência por classe
-export const buscarDatasFrequenciaPorClasse = async (id_classe) => {
+export const buscarDatasFrequenciaPorClasse = async id_classe => {
   try {
     const resposta = await api.get(`/datas-frequencia/${id_classe}`);
     return resposta.data;
@@ -29,7 +29,7 @@ export const buscarDatasFrequenciaPorClasse = async (id_classe) => {
 export const buscarAtividadePorDataEClasse = async (data, id_classe) => {
   try {
     const resposta = await api.get('/datas-frequencia/buscar-atividade', {
-      params: { data, id_classe }
+      params: {data, id_classe},
     });
     return resposta.data;
   } catch (erro) {
@@ -41,7 +41,7 @@ export const buscarAtividadePorDataEClasse = async (data, id_classe) => {
 // Atualizar atividade
 export const atualizarAtividade = async (id, atividade) => {
   try {
-    const resposta = await api.put(`/datas-frequencia/${id}`, { atividade });
+    const resposta = await api.put(`/datas-frequencia/${id}`, {atividade});
     return resposta.data;
   } catch (erro) {
     console.error('Erro ao atualizar atividade:', erro);
@@ -53,9 +53,9 @@ export const atualizarAtividade = async (id, atividade) => {
 export const buscarIdAtivPorDataEClasse = async (data, id_classe) => {
   try {
     const resposta = await api.get('/datas-frequencia/buscar-id-atividade', {
-      params: { data, id_classe }
+      params: {data, id_classe},
     });
-    return resposta.data;  // { id: '...' }
+    return resposta.data; // { id: '...' }
   } catch (erro) {
     console.error('Erro ao buscar ID por data e classe:', erro);
     throw erro;
@@ -63,7 +63,7 @@ export const buscarIdAtivPorDataEClasse = async (data, id_classe) => {
 };
 
 // Deletar data de frequência pelo ID
-export const deletarDataFrequencia = async (id) => {
+export const deletarDataFrequencia = async id => {
   try {
     const resposta = await api.delete(`/datas-frequencia/${id}`);
     return resposta.data;

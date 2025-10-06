@@ -1,9 +1,15 @@
 import * as Keychain from 'react-native-keychain';
-import { jwtDecode } from 'jwt-decode';
-import api from '../services/api'; 
+import {jwtDecode} from 'jwt-decode';
+import api from '../services/api';
 
-export const salvarTokens = async (accessToken: string, refreshToken: string) => {
-  await Keychain.setGenericPassword('auth', JSON.stringify({ accessToken, refreshToken }));
+export const salvarTokens = async (
+  accessToken: string,
+  refreshToken: string,
+) => {
+  await Keychain.setGenericPassword(
+    'auth',
+    JSON.stringify({accessToken, refreshToken}),
+  );
 };
 
 export const recuperarTokens = async () => {
@@ -11,7 +17,7 @@ export const recuperarTokens = async () => {
   if (credentials) {
     return JSON.parse(credentials.password);
   }
-  return { accessToken: null, refreshToken: null };
+  return {accessToken: null, refreshToken: null};
 };
 
 export const limparTokens = async () => {
@@ -19,15 +25,16 @@ export const limparTokens = async () => {
 };
 
 export const renovarAccessToken = async () => {
-  const { refreshToken } = await recuperarTokens();
+  const {refreshToken} = await recuperarTokens();
   if (!refreshToken) {
     console.warn('Refresh token ausente');
     return null;
   }
 
   try {
-    const response = await api.post('/auth/refresh', { refreshToken });
-    const { accessToken: novoAccessToken, refreshToken: novoRefreshToken } = response.data;
+    const response = await api.post('/auth/refresh', {refreshToken});
+    const {accessToken: novoAccessToken, refreshToken: novoRefreshToken} =
+      response.data;
 
     await salvarTokens(novoAccessToken, novoRefreshToken);
     return novoAccessToken;
@@ -39,7 +46,7 @@ export const renovarAccessToken = async () => {
 };
 
 export const verificarValidadeAccessToken = async () => {
-  const { accessToken } = await recuperarTokens();
+  const {accessToken} = await recuperarTokens();
   if (!accessToken) return false;
 
   try {

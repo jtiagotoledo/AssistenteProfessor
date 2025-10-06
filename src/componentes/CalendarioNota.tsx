@@ -1,39 +1,127 @@
-import React, { useContext, useEffect } from 'react';
-import { ScrollView, Pressable, StyleSheet, Text, View, Dimensions, ToastAndroid, TextInput } from 'react-native';
-import { Calendar, LocaleConfig } from 'react-native-calendars';
-import { Context } from "../data/Provider";
+import React, {useContext, useEffect} from 'react';
+import {
+  ScrollView,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+  Dimensions,
+  ToastAndroid,
+  TextInput,
+} from 'react-native';
+import {Calendar, LocaleConfig} from 'react-native-calendars';
+import {Context} from '../data/Provider';
 import Globais from '../data/Globais';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 import i18n from '../../i18n';
-import { criarDataNota } from '../services/datasNotas';
-import { buscarAlunosPorClasse } from '../services/alunos';
-import { criarNota } from '../services/nota';
-import { buscarIdTituloPorDataEClasse } from '../services/datasNotas';
-import { atualizarTitulo } from '../services/datasNotas';
+import {criarDataNota} from '../services/datasNotas';
+import {buscarAlunosPorClasse} from '../services/alunos';
+import {criarNota} from '../services/nota';
+import {buscarIdTituloPorDataEClasse} from '../services/datasNotas';
+import {atualizarTitulo} from '../services/datasNotas';
 
-const { width } = Dimensions.get('window'); // Captura a largura e altura da tela
+const {width} = Dimensions.get('window'); // Captura a largura e altura da tela
 
 LocaleConfig.locales.br = {
-  monthNames: ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"],
-  monthNamesShort: ["Jan.", "Fev.", "Mar", "Abr", "Mai", "Jun", "Jul.", "Ago", "Set.", "Out.", "Nov.", "Dez."],
-  dayNames: ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"],
-  dayNamesShort: ["Dom.", "Seg.", "Ter.", "Qua.", "Qui.", "Sex.", "Sáb."]
+  monthNames: [
+    'Janeiro',
+    'Fevereiro',
+    'Março',
+    'Abril',
+    'Maio',
+    'Junho',
+    'Julho',
+    'Agosto',
+    'Setembro',
+    'Outubro',
+    'Novembro',
+    'Dezembro',
+  ],
+  monthNamesShort: [
+    'Jan.',
+    'Fev.',
+    'Mar',
+    'Abr',
+    'Mai',
+    'Jun',
+    'Jul.',
+    'Ago',
+    'Set.',
+    'Out.',
+    'Nov.',
+    'Dez.',
+  ],
+  dayNames: [
+    'Domingo',
+    'Segunda',
+    'Terça',
+    'Quarta',
+    'Quinta',
+    'Sexta',
+    'Sábado',
+  ],
+  dayNamesShort: ['Dom.', 'Seg.', 'Ter.', 'Qua.', 'Qui.', 'Sex.', 'Sáb.'],
 };
 
 LocaleConfig.locales.en = {
-  monthNames: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-  monthNamesShort: ["Jan.", "Feb.", "Mar", "Apr", "May", "Jun", "Jul.", "Aug", "Sep.", "Oct.", "Nov.", "Dec."],
-  dayNames: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
-  dayNamesShort: ["Sun.", "Mon.", "Tue.", "Wed.", "Thu.", "Fri.", "Sat."]
+  monthNames: [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ],
+  monthNamesShort: [
+    'Jan.',
+    'Feb.',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul.',
+    'Aug',
+    'Sep.',
+    'Oct.',
+    'Nov.',
+    'Dec.',
+  ],
+  dayNames: [
+    'Sunday',
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+  ],
+  dayNamesShort: ['Sun.', 'Mon.', 'Tue.', 'Wed.', 'Thu.', 'Fri.', 'Sat.'],
 };
 
-if (i18n.language == 'pt') LocaleConfig.defaultLocale = "br";
-if (i18n.language == 'en') LocaleConfig.defaultLocale = "en";
+if (i18n.language == 'pt') LocaleConfig.defaultLocale = 'br';
+if (i18n.language == 'en') LocaleConfig.defaultLocale = 'en';
 
 const CalendarioNota = () => {
-  const { t } = useTranslation();
-  const { idClasseSelec, dataSelec, setDataSelec, modalCalendarioNota, setModalCalendarioNota, textoTituloNotas,
-    setRecarregarDatasMarcadasNotas, setRecarregarNotas, listaDatasMarcadasNotas, setIdDataNota, setTextoTituloNotas } = useContext(Context)
+  const {t} = useTranslation();
+  const {
+    idClasseSelec,
+    dataSelec,
+    setDataSelec,
+    modalCalendarioNota,
+    setModalCalendarioNota,
+    textoTituloNotas,
+    setRecarregarDatasMarcadasNotas,
+    setRecarregarNotas,
+    listaDatasMarcadasNotas,
+    setIdDataNota,
+    setTextoTituloNotas,
+  } = useContext(Context);
 
   useEffect(() => {
     if (i18n.language === 'pt') {
@@ -44,12 +132,15 @@ const CalendarioNota = () => {
   }, [i18n.language]);
 
   function onChangeTituloNotas(text: string) {
-    setTextoTituloNotas(text)
+    setTextoTituloNotas(text);
   }
 
   const onPressAddData = async () => {
     if (!textoTituloNotas || textoTituloNotas.trim() === '') {
-      ToastAndroid.show('Digite um título para a avaliação.', ToastAndroid.SHORT);
+      ToastAndroid.show(
+        'Digite um título para a avaliação.',
+        ToastAndroid.SHORT,
+      );
       return;
     }
 
@@ -58,25 +149,28 @@ const CalendarioNota = () => {
         setModalCalendarioNota(false); // Fecha modal do calendário de notas
 
         // Cria a data da nota
-        const novaDataNota = await criarDataNota({ data: dataSelec, id_classe: idClasseSelec });
-        setIdDataNota(novaDataNota.id)
+        const novaDataNota = await criarDataNota({
+          data: dataSelec,
+          id_classe: idClasseSelec,
+        });
+        setIdDataNota(novaDataNota.id);
 
         // Busca os alunos da classe
         const alunos = await buscarAlunosPorClasse(idClasseSelec);
 
-        // Para cada aluno, cria um registro de nota inicial 
+        // Para cada aluno, cria um registro de nota inicial
         await Promise.all(
           alunos.map((aluno: any) =>
             criarNota({
               id_data_nota: novaDataNota.id,
               id_aluno: aluno.id,
-              nota: null
-            })
-          )
+              nota: null,
+            }),
+          ),
         );
 
         // Registra o titulo da nota no banco de dados
-        await atualizarTitulo(novaDataNota.id, textoTituloNotas)
+        await atualizarTitulo(novaDataNota.id, textoTituloNotas);
 
         setRecarregarNotas((prev: any) => !prev);
         ToastAndroid.show('Data de nota criada!', ToastAndroid.SHORT);
@@ -85,7 +179,6 @@ const CalendarioNota = () => {
       }
     }
   };
-
 
   const renderCarregamento = () => {
     if (idClasseSelec != '') {
@@ -100,7 +193,10 @@ const CalendarioNota = () => {
                   if (listaDatasMarcadasNotas[day.dateString]?.selected) {
                     setRecarregarNotas((prev: any) => !prev);
                     try {
-                      const resposta = await buscarIdTituloPorDataEClasse(day.dateString, idClasseSelec);
+                      const resposta = await buscarIdTituloPorDataEClasse(
+                        day.dateString,
+                        idClasseSelec,
+                      );
                       console.log('ID encontrado:', resposta);
                       setIdDataNota(resposta.id);
                       setTextoTituloNotas(resposta.titulo);
@@ -117,23 +213,28 @@ const CalendarioNota = () => {
             />
             <TextInput
               multiline
-              placeholder={t('Título da avaliação') + "..."}
-              onChangeText={(text) => onChangeTituloNotas(text)}
+              placeholder={t('Título da avaliação') + '...'}
+              onChangeText={text => onChangeTituloNotas(text)}
               style={styles.textInput}
             />
             <Pressable
               style={[styles.button, styles.buttonClose]}
-              onPress={() => [onPressAddData(), setRecarregarDatasMarcadasNotas((prev: any) => !prev)]}>
+              onPress={() => [
+                onPressAddData(),
+                setRecarregarDatasMarcadasNotas((prev: any) => !prev),
+              ]}>
               <Text style={styles.textStyle}>{t('Criar data')}</Text>
             </Pressable>
           </View>
         </ScrollView>
-      )
+      );
     }
-  }
+  };
 
   return (
-    <ScrollView style={styles.mainScroll} contentContainerStyle={styles.mainContainer}>
+    <ScrollView
+      style={styles.mainScroll}
+      contentContainerStyle={styles.mainContainer}>
       {renderCarregamento()}
     </ScrollView>
   );
@@ -186,7 +287,7 @@ const styles = StyleSheet.create({
     padding: 8,
     fontSize: 16,
     borderRadius: 5,
-  }
+  },
 });
 
 export default CalendarioNota;

@@ -1,11 +1,22 @@
-import { Text, View, StyleSheet, Pressable, TextInput, Modal, NativeSyntheticEvent, TextInputChangeEventData, ToastAndroid, TouchableOpacity } from "react-native"
-import React, { useState, useContext, useEffect } from 'react';
-import { Context } from "../data/Provider";
-import Globais from "../data/Globais";
+import {
+  Text,
+  View,
+  StyleSheet,
+  Pressable,
+  TextInput,
+  Modal,
+  NativeSyntheticEvent,
+  TextInputChangeEventData,
+  ToastAndroid,
+  TouchableOpacity,
+} from 'react-native';
+import React, {useState, useContext, useEffect} from 'react';
+import {Context} from '../data/Provider';
+import Globais from '../data/Globais';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import FontIstoIcon from 'react-native-vector-icons/Fontisto';
-import { useTranslation } from 'react-i18next';
-import { atualizarAluno } from '../services/alunos';
+import {useTranslation} from 'react-i18next';
+import {atualizarAluno} from '../services/alunos';
 
 type AlunoData = {
   numero: number;
@@ -17,28 +28,47 @@ type AlunoData = {
 };
 
 const ModalEditAluno = () => {
-  const { modalEditAluno, setModalEditAluno, setIdAlunoSelec, idUsuario, idClasseSelec, numAlunoSelec,
-    nomeAlunoSelec, alunoInativo, setAlunoInativo, setFlagLongPressAluno, idAlunoSelec, setRecarregarAlunos } = useContext(Context)
-  const [valueNomeAluno, setValueNomeAluno] = useState<string>('')
-  const [valueNumAluno, setValueNumAluno] = useState<string>('')
-  const { t } = useTranslation();
+  const {
+    modalEditAluno,
+    setModalEditAluno,
+    setIdAlunoSelec,
+    idUsuario,
+    idClasseSelec,
+    numAlunoSelec,
+    nomeAlunoSelec,
+    alunoInativo,
+    setAlunoInativo,
+    setFlagLongPressAluno,
+    idAlunoSelec,
+    setRecarregarAlunos,
+  } = useContext(Context);
+  const [valueNomeAluno, setValueNomeAluno] = useState<string>('');
+  const [valueNumAluno, setValueNumAluno] = useState<string>('');
+  const {t} = useTranslation();
 
   useEffect(() => {
-    setValueNomeAluno(nomeAlunoSelec)
-    setValueNumAluno(numAlunoSelec)
-  }, [nomeAlunoSelec, numAlunoSelec])
+    setValueNomeAluno(nomeAlunoSelec);
+    setValueNumAluno(numAlunoSelec);
+  }, [nomeAlunoSelec, numAlunoSelec]);
 
-
-  const onChangeInputAlunoNome = (event: NativeSyntheticEvent<TextInputChangeEventData>) => {
+  const onChangeInputAlunoNome = (
+    event: NativeSyntheticEvent<TextInputChangeEventData>,
+  ) => {
     setValueNomeAluno(event.nativeEvent.text);
-  }
+  };
 
-  const onChangeInputAlunoNum = (event: NativeSyntheticEvent<TextInputChangeEventData>) => {
+  const onChangeInputAlunoNum = (
+    event: NativeSyntheticEvent<TextInputChangeEventData>,
+  ) => {
     setValueNumAluno(event.nativeEvent.text);
-  }
+  };
 
   const onPressEditAluno = async () => {
-    if (valueNomeAluno.trim() !== '' && valueNumAluno.trim() !== '' && idClasseSelec) {
+    if (
+      valueNomeAluno.trim() !== '' &&
+      valueNumAluno.trim() !== '' &&
+      idClasseSelec
+    ) {
       try {
         setModalEditAluno(false);
 
@@ -51,7 +81,7 @@ const ModalEditAluno = () => {
 
         await atualizarAluno(idAlunoSelec, alunoAtualizado);
 
-        setAlunoInativo(false)
+        setAlunoInativo(false);
         setFlagLongPressAluno(false);
         setRecarregarAlunos((prev: boolean) => !prev);
       } catch (error) {
@@ -59,18 +89,17 @@ const ModalEditAluno = () => {
         console.error('Erro ao editar aluno:', error);
       }
     } else {
-      ToastAndroid.show(
-        t('msg_027'),
-        ToastAndroid.SHORT)
+      ToastAndroid.show(t('msg_027'), ToastAndroid.SHORT);
     }
   };
 
   const renderIconCheck = () => {
-    return (
-      alunoInativo ? <FontIstoIcon name="checkbox-active" color="black" size={20} /> :
-        <FontIstoIcon name="checkbox-passive" color="black" size={20} />
-    )
-  }
+    return alunoInativo ? (
+      <FontIstoIcon name="checkbox-active" color="black" size={20} />
+    ) : (
+      <FontIstoIcon name="checkbox-passive" color="black" size={20} />
+    );
+  };
 
   return (
     <View>
@@ -84,38 +113,48 @@ const ModalEditAluno = () => {
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
             <View style={styles.containerIcon}>
-              <TouchableOpacity onPress={() => [setModalEditAluno(!modalEditAluno), setAlunoInativo(false), setFlagLongPressAluno(false)]}>
+              <TouchableOpacity
+                onPress={() => [
+                  setModalEditAluno(!modalEditAluno),
+                  setAlunoInativo(false),
+                  setFlagLongPressAluno(false),
+                ]}>
                 <MaterialIcon name="cancel" color="black" size={25} />
               </TouchableOpacity>
             </View>
             <Text style={styles.modalText}>{t('Edite o nome do aluno:')}</Text>
             <TextInput
               style={styles.textInput}
-              placeholder='Número do aluno'
+              placeholder="Número do aluno"
               defaultValue={numAlunoSelec}
-              onChange={onChangeInputAlunoNum}>
-            </TextInput>
+              onChange={onChangeInputAlunoNum}></TextInput>
             <TextInput
               style={styles.textInput}
-              placeholder='Nome do aluno'
+              placeholder="Nome do aluno"
               defaultValue={nomeAlunoSelec}
-              onChange={onChangeInputAlunoNome}>
-            </TextInput>
-            <TouchableOpacity style={styles.iconCheckContainer} onPress={() => setAlunoInativo(!alunoInativo)}>
+              onChange={onChangeInputAlunoNome}></TextInput>
+            <TouchableOpacity
+              style={styles.iconCheckContainer}
+              onPress={() => setAlunoInativo(!alunoInativo)}>
               {renderIconCheck()}
-              <Text style={[styles.textStyle, styles.textCheck]}>{t('Aluno inativo?')}</Text>
+              <Text style={[styles.textStyle, styles.textCheck]}>
+                {t('Aluno inativo?')}
+              </Text>
             </TouchableOpacity>
             <Pressable
               style={[styles.button, styles.buttonClose]}
-              onPress={() => [onPressEditAluno(), setFlagLongPressAluno(false)]}>
+              onPress={() => [
+                onPressEditAluno(),
+                setFlagLongPressAluno(false),
+              ]}>
               <Text style={styles.textStyle}>{t('Editar')}</Text>
             </Pressable>
           </View>
         </View>
       </Modal>
     </View>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -124,17 +163,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 16,
     marginBottom: 16,
-    marginRight: 16
+    marginRight: 16,
   },
   containerIcon: {
-    alignItems: 'flex-end'
+    alignItems: 'flex-end',
   },
   iconCheckContainer: {
     flexDirection: 'row',
-    marginBottom: 16
+    marginBottom: 16,
   },
   textCheck: {
-    marginLeft: 16
+    marginLeft: 16,
   },
   centeredView: {
     flex: 1,
@@ -182,9 +221,8 @@ const styles = StyleSheet.create({
   textInput: {
     backgroundColor: 'white',
     minWidth: 100,
-    marginBottom: 20
-  }
-
+    marginBottom: 20,
+  },
 });
 
 export default ModalEditAluno;

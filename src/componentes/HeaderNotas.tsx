@@ -1,25 +1,42 @@
-import React, { useContext } from 'react';
-import { StyleSheet, TouchableWithoutFeedback, View, Text, Dimensions, ToastAndroid } from 'react-native';
-import { Header as HeaderRNE } from '@rneui/themed';
-import { TouchableOpacity } from 'react-native';
-import { Context } from "../data/Provider";
+import React, {useContext} from 'react';
+import {
+  StyleSheet,
+  TouchableWithoutFeedback,
+  View,
+  Text,
+  Dimensions,
+  ToastAndroid,
+} from 'react-native';
+import {Header as HeaderRNE} from '@rneui/themed';
+import {TouchableOpacity} from 'react-native';
+import {Context} from '../data/Provider';
 import Globais from '../data/Globais';
 
 import AntIcon from 'react-native-vector-icons/AntDesign';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 
-const { width } = Dimensions.get('window');
+const {width} = Dimensions.get('window');
 
 type HeaderComponentProps = {
   title: string;
   view?: string;
 };
 
-const HeaderFrequencia: React.FunctionComponent<HeaderComponentProps> = (props) => {
-  const { setModalMenu, flagLongPressDataNotas, setModalDelDataNotas, dataSelec,
-    listaNotas, idUsuario, idPeriodoSelec, idClasseSelec } = useContext(Context);
-  const { t } = useTranslation();
+const HeaderFrequencia: React.FunctionComponent<
+  HeaderComponentProps
+> = props => {
+  const {
+    setModalMenu,
+    flagLongPressDataNotas,
+    setModalDelDataNotas,
+    dataSelec,
+    listaNotas,
+    idUsuario,
+    idPeriodoSelec,
+    idClasseSelec,
+  } = useContext(Context);
+  const {t} = useTranslation();
 
   const onPressBin = () => {
     if (flagLongPressDataNotas) {
@@ -49,11 +66,15 @@ const HeaderFrequencia: React.FunctionComponent<HeaderComponentProps> = (props) 
             <FontAwesomeIcon
               style={styles.icon}
               name="trash-o"
-              color={flagLongPressDataNotas ? 'rgba(255,255,255,1)' : 'rgba(255,255,255,0.6)'}
+              color={
+                flagLongPressDataNotas
+                  ? 'rgba(255,255,255,1)'
+                  : 'rgba(255,255,255,0.6)'
+              }
               size={24}
             />
           </TouchableWithoutFeedback>
-         {/*  <TouchableWithoutFeedback onPress={onPressSave}>
+          {/*  <TouchableWithoutFeedback onPress={onPressSave}>
             <FontAwesomeIcon
               style={styles.icon}
               name="save"

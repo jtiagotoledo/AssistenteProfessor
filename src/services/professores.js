@@ -12,7 +12,7 @@ export const buscarTodosProfessores = async () => {
 };
 
 // GET /professores/:id
-export const buscarProfessorPorId = async (id) => {
+export const buscarProfessorPorId = async id => {
   try {
     const resposta = await api.get(`/professores/id/${id}`);
     return resposta.data;
@@ -23,7 +23,7 @@ export const buscarProfessorPorId = async (id) => {
 };
 
 // POST /professores
-export const criarProfessor = async (dados) => {
+export const criarProfessor = async dados => {
   try {
     const resposta = await api.post('/professores', dados);
     return resposta.data;
@@ -45,7 +45,7 @@ export const atualizarProfessor = async (id, dados) => {
 };
 
 // DELETE /professores/:id
-export const deletarProfessor = async (id) => {
+export const deletarProfessor = async id => {
   try {
     const resposta = await api.delete(`/professores/${id}`);
     return resposta.data;
@@ -54,4 +54,3 @@ export const deletarProfessor = async (id) => {
     throw erro;
   }
 };
-

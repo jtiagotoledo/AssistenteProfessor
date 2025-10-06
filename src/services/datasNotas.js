@@ -1,7 +1,7 @@
 import api from './api';
 
 // Criar nova data de nota (sem o campo título)
-export const criarDataNota = async ({ data, id_classe }) => {
+export const criarDataNota = async ({data, id_classe}) => {
   try {
     const resposta = await api.post('/datas-notas', {
       data,
@@ -15,7 +15,7 @@ export const criarDataNota = async ({ data, id_classe }) => {
 };
 
 // Buscar todas as datas de nota por classe
-export const buscarDatasNotaPorClasse = async (id_classe) => {
+export const buscarDatasNotaPorClasse = async id_classe => {
   try {
     const resposta = await api.get(`/datas-notas/${id_classe}`);
     return resposta.data;
@@ -29,7 +29,7 @@ export const buscarDatasNotaPorClasse = async (id_classe) => {
 export const buscarTituloPorDataEClasse = async (data, id_classe) => {
   try {
     const resposta = await api.get('/datas-notas/buscar-titulo', {
-      params: { data, id_classe }
+      params: {data, id_classe},
     });
     return resposta.data;
   } catch (erro) {
@@ -41,7 +41,7 @@ export const buscarTituloPorDataEClasse = async (data, id_classe) => {
 // Atualizar título
 export const atualizarTitulo = async (id, titulo) => {
   try {
-    const resposta = await api.put(`/datas-notas/${id}`, { titulo });
+    const resposta = await api.put(`/datas-notas/${id}`, {titulo});
     return resposta.data;
   } catch (erro) {
     console.error('Erro ao atualizar título:', erro);
@@ -53,9 +53,9 @@ export const atualizarTitulo = async (id, titulo) => {
 export const buscarIdTituloPorDataEClasse = async (data, id_classe) => {
   try {
     const resposta = await api.get('/datas-notas/buscar-id-titulo', {
-      params: { data, id_classe }
+      params: {data, id_classe},
     });
-    return resposta.data;  // { id: '...', titulo: '...' }
+    return resposta.data; // { id: '...', titulo: '...' }
   } catch (erro) {
     console.error('Erro ao buscar ID e título por data e classe:', erro);
     throw erro;
@@ -63,7 +63,7 @@ export const buscarIdTituloPorDataEClasse = async (data, id_classe) => {
 };
 
 // Deletar data de nota pelo ID
-export const deletarDataNota = async (id) => {
+export const deletarDataNota = async id => {
   try {
     const resposta = await api.delete(`/datas-notas/${id}`);
     return resposta.data;

@@ -20,6 +20,17 @@
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
+
+        <intent-filter android:label="DeepLink">
+            <action android:name="android.intent.action.VIEW" />
+            <category android:name="android.intent.category.DEFAULT" />
+            <category android:name="android.intent.category.BROWSABLE" />
+
+            <!-- Aqui define o esquema e o host -->
+            <data
+              android:scheme="assistenteprofessor"
+              android:host="redefinir-senha" />
+        </intent-filter>
         
         <intent-filter android:label="Deep Link">
             <action android:name="android.intent.action.VIEW" />

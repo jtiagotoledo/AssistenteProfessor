@@ -1,28 +1,40 @@
-import { Text, View, StyleSheet, Pressable, Modal, TouchableOpacity } from "react-native"
-import React, { useContext } from 'react';
-import { Context } from "../data/Provider";
+import {
+  Text,
+  View,
+  StyleSheet,
+  Pressable,
+  Modal,
+  TouchableOpacity,
+} from 'react-native';
+import React, {useContext} from 'react';
+import {Context} from '../data/Provider';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
-import Globais from "../data/Globais";
-import { useTranslation } from 'react-i18next';
-import { deletarAluno } from "../services/alunos";
+import Globais from '../data/Globais';
+import {useTranslation} from 'react-i18next';
+import {deletarAluno} from '../services/alunos';
 
 const ModalDelAluno = () => {
-
-  const { modalDelAluno, setModalDelAluno, setIdAlunoSelec, setFlagLongPressAluno, 
-    setRecarregarAlunos, idAlunoSelec } = useContext(Context);
-  const { t } = useTranslation();
+  const {
+    modalDelAluno,
+    setModalDelAluno,
+    setIdAlunoSelec,
+    setFlagLongPressAluno,
+    setRecarregarAlunos,
+    idAlunoSelec,
+  } = useContext(Context);
+  const {t} = useTranslation();
 
   const delAluno = async () => {
     try {
       await deletarAluno(idAlunoSelec);
-      setIdAlunoSelec(null)
-      setRecarregarAlunos((prev: any) => !prev)
-      setFlagLongPressAluno(false)
-      setModalDelAluno(!modalDelAluno)
+      setIdAlunoSelec(null);
+      setRecarregarAlunos((prev: any) => !prev);
+      setFlagLongPressAluno(false);
+      setModalDelAluno(!modalDelAluno);
     } catch (error) {
       console.error(error);
     }
-  }
+  };
 
   return (
     <View>
@@ -36,11 +48,14 @@ const ModalDelAluno = () => {
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
             <View style={styles.containerIcon}>
-              <TouchableOpacity onPress={() => setModalDelAluno(!modalDelAluno)}>
+              <TouchableOpacity
+                onPress={() => setModalDelAluno(!modalDelAluno)}>
                 <MaterialIcon name="cancel" color="black" size={25} />
               </TouchableOpacity>
             </View>
-            <Text style={styles.modalText}>{t('Deseja realmente excluir o aluno?')}</Text>
+            <Text style={styles.modalText}>
+              {t('Deseja realmente excluir o aluno?')}
+            </Text>
             <Pressable
               style={[styles.button, styles.buttonClose]}
               onPress={delAluno}>
@@ -50,8 +65,8 @@ const ModalDelAluno = () => {
         </View>
       </Modal>
     </View>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -60,7 +75,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 16,
     marginBottom: 16,
-    marginRight: 16
+    marginRight: 16,
   },
   containerIcon: {
     alignItems: 'flex-end',
@@ -110,4 +125,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ModalDelAluno
+export default ModalDelAluno;

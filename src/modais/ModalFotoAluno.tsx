@@ -1,9 +1,16 @@
-import React, { useContext } from 'react';
-import { Modal, View, Image, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import React, {useContext} from 'react';
+import {
+  Modal,
+  View,
+  Image,
+  TouchableOpacity,
+  Text,
+  StyleSheet,
+} from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { launchImageLibrary } from 'react-native-image-picker';
-import { atualizarFotoAluno } from '../services/alunos';
-import { Context } from "../data/Provider";
+import {launchImageLibrary} from 'react-native-image-picker';
+import {atualizarFotoAluno} from '../services/alunos';
+import {Context} from '../data/Provider';
 import Globais from '../data/Globais';
 
 type Props = {
@@ -13,11 +20,11 @@ type Props = {
   idAluno: string;
 };
 
-const ModalFotoAluno = ({ visible, imageUrl, onClose, idAluno }: Props) => {
-  const { setRecarregarAlunos } = useContext(Context);
+const ModalFotoAluno = ({visible, imageUrl, onClose, idAluno}: Props) => {
+  const {setRecarregarAlunos} = useContext(Context);
 
   const handleEditarFoto = async () => {
-    const result = await launchImageLibrary({ mediaType: 'photo' });
+    const result = await launchImageLibrary({mediaType: 'photo'});
 
     if (!result.didCancel && result.assets && result.assets[0].uri) {
       const novaFoto = {
@@ -27,10 +34,9 @@ const ModalFotoAluno = ({ visible, imageUrl, onClose, idAluno }: Props) => {
       };
 
       try {
-        console.log('idAluno',idAluno);
-        console.log('novaFoto',novaFoto);
-        
-        
+        console.log('idAluno', idAluno);
+        console.log('novaFoto', novaFoto);
+
         await atualizarFotoAluno(idAluno, novaFoto);
         setRecarregarAlunos((prev: boolean) => !prev);
         onClose();
@@ -41,14 +47,18 @@ const ModalFotoAluno = ({ visible, imageUrl, onClose, idAluno }: Props) => {
   };
 
   return (
-    <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
+    <Modal
+      visible={visible}
+      transparent
+      animationType="fade"
+      onRequestClose={onClose}>
       <View style={styles.overlay}>
         <View style={styles.modalContainer}>
           <Image
             source={
               imageUrl === 'local'
-                ? require('../assets/user.png') 
-                : { uri: imageUrl } 
+                ? require('../assets/user.png')
+                : {uri: imageUrl}
             }
             style={styles.image}
             resizeMode="contain"

@@ -1,31 +1,44 @@
-import { Text, View, StyleSheet, Pressable, Modal, TouchableOpacity } from "react-native"
-import React, { useContext } from 'react';
-import { Context } from "../data/Provider";
+import {
+  Text,
+  View,
+  StyleSheet,
+  Pressable,
+  Modal,
+  TouchableOpacity,
+} from 'react-native';
+import React, {useContext} from 'react';
+import {Context} from '../data/Provider';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
-import Globais from "../data/Globais";
-import { useTranslation } from 'react-i18next';
-import { deletarDataNota } from "../services/datasNotas";
+import Globais from '../data/Globais';
+import {useTranslation} from 'react-i18next';
+import {deletarDataNota} from '../services/datasNotas';
 
 const ModalDelDataNotas = () => {
-
-  const { idDataNota, setIdDataNota, modalDelDataNotas, setModalDelDataNotas, setFlagLongPressDataNotas,
-    setDataSelec, setRecarregarNotas, setRecarregarDatasMarcadasNotas } = useContext(Context);
-  const { t } = useTranslation();
+  const {
+    idDataNota,
+    setIdDataNota,
+    modalDelDataNotas,
+    setModalDelDataNotas,
+    setFlagLongPressDataNotas,
+    setDataSelec,
+    setRecarregarNotas,
+    setRecarregarDatasMarcadasNotas,
+  } = useContext(Context);
+  const {t} = useTranslation();
 
   const deletarData = async () => {
-      try {
-        await deletarDataNota(idDataNota);
-        setDataSelec(null)
-        setIdDataNota(null)
-        setRecarregarNotas((prev:any)=>!prev)
-        setRecarregarDatasMarcadasNotas((prev:any)=>!prev)
-        setModalDelDataNotas(!modalDelDataNotas)
-        setFlagLongPressDataNotas(false)
-      } catch (error) {
-        console.error(error);
-      }
+    try {
+      await deletarDataNota(idDataNota);
+      setDataSelec(null);
+      setIdDataNota(null);
+      setRecarregarNotas((prev: any) => !prev);
+      setRecarregarDatasMarcadasNotas((prev: any) => !prev);
+      setModalDelDataNotas(!modalDelDataNotas);
+      setFlagLongPressDataNotas(false);
+    } catch (error) {
+      console.error(error);
     }
-  
+  };
 
   return (
     <View>
@@ -39,11 +52,14 @@ const ModalDelDataNotas = () => {
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
             <View style={styles.containerIcon}>
-              <TouchableOpacity onPress={() => setModalDelDataNotas(!modalDelDataNotas)}>
+              <TouchableOpacity
+                onPress={() => setModalDelDataNotas(!modalDelDataNotas)}>
                 <MaterialIcon name="cancel" color="black" size={25} />
               </TouchableOpacity>
             </View>
-            <Text style={styles.modalText}>{t('Deseja realmente excluir a data?')}</Text>
+            <Text style={styles.modalText}>
+              {t('Deseja realmente excluir a data?')}
+            </Text>
             <Pressable
               style={[styles.button, styles.buttonClose]}
               onPress={deletarData}>
@@ -53,8 +69,8 @@ const ModalDelDataNotas = () => {
         </View>
       </Modal>
     </View>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -63,7 +79,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 16,
     marginBottom: 16,
-    marginRight: 16
+    marginRight: 16,
   },
   containerIcon: {
     alignItems: 'flex-end',

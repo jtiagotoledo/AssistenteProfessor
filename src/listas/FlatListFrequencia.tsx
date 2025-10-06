@@ -1,8 +1,15 @@
-import React, { useContext, useState } from 'react'
-import { SafeAreaView, FlatList, View, Text, StyleSheet, TouchableOpacity } from 'react-native'
-import { Context } from "../data/Provider";
+import React, {useContext, useState} from 'react';
+import {
+  SafeAreaView,
+  FlatList,
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native';
+import {Context} from '../data/Provider';
 import Globais from '../data/Globais';
-import { atualizarFrequencia } from "../services/frequencia"
+import {atualizarFrequencia} from '../services/frequencia';
 
 type ItemData = {
   nome: string;
@@ -20,8 +27,13 @@ type ItemProps = {
 
 const FlatListFrequencia = (props: any) => {
   const [selectedId, setSelectedId] = useState<string>();
-  const { setRecarregarFrequencia, setNumAlunoSelec, dataSelec,
-    listaFrequencia, setFlagLongPressDataFreq } = useContext(Context)
+  const {
+    setRecarregarFrequencia,
+    setNumAlunoSelec,
+    dataSelec,
+    listaFrequencia,
+    setFlagLongPressDataFreq,
+  } = useContext(Context);
 
   const onPressItemFreq = async (item: any) => {
     setSelectedId(item.idAluno);
@@ -36,26 +48,31 @@ const FlatListFrequencia = (props: any) => {
     }
   };
 
-  const Item = ({ item, onPress, backgroundColor, textColor }: ItemProps) => (
+  const Item = ({item, onPress, backgroundColor, textColor}: ItemProps) => (
     <View style={styles.containerItem}>
-      <View style={[styles.item, styles.nome, { flexDirection: 'row' }]}>
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <View style={[styles.item, styles.nome, {flexDirection: 'row'}]}>
+        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
           <Text style={[styles.titleNum]}>{item.numero}</Text>
         </View>
-        <View style={{ flex: 10, justifyContent: 'center' }}>
+        <View style={{flex: 10, justifyContent: 'center'}}>
           <Text style={[styles.titleNome]}>{item.nome}</Text>
         </View>
         <TouchableOpacity onPress={onPress} style={[styles.item]}>
-          <Text style={[styles.titleFrequencia]}>{item.presente == 1 ? 'P' : 'A'}</Text>
+          <Text style={[styles.titleFrequencia]}>
+            {item.presente == 1 ? 'P' : 'A'}
+          </Text>
         </TouchableOpacity>
       </View>
     </View>
-
   );
 
-  const renderItem = ({ item }: { item: ItemData }) => {
-    const backgroundColor = item.numero === selectedId ? Globais.corPrimaria : Globais.corTerciaria;
-    const color = item.numero === selectedId ? Globais.corTextoClaro : Globais.corTextoEscuro;
+  const renderItem = ({item}: {item: ItemData}) => {
+    const backgroundColor =
+      item.numero === selectedId ? Globais.corPrimaria : Globais.corTerciaria;
+    const color =
+      item.numero === selectedId
+        ? Globais.corTextoClaro
+        : Globais.corTextoEscuro;
 
     return (
       <Item
@@ -73,23 +90,23 @@ const FlatListFrequencia = (props: any) => {
         {...props}
         data={listaFrequencia}
         renderItem={renderItem}
-        keyExtractor={(item, index) => (item.id ? item.id.toString() : index.toString())}
-        contentContainerStyle={{ paddingBottom: 120 }}
+        keyExtractor={(item, index) =>
+          item.id ? item.id.toString() : index.toString()
+        }
+        contentContainerStyle={{paddingBottom: 120}}
         extraData={selectedId}
       />
-    )
-  }
+    );
+  };
   return (
-    <SafeAreaView style={styles.container}>
-      {renderCarregamento()}
-    </SafeAreaView>
+    <SafeAreaView style={styles.container}>{renderCarregamento()}</SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 8
+    marginTop: 8,
   },
   containerItem: {
     flexDirection: 'row',
@@ -114,18 +131,18 @@ const styles = StyleSheet.create({
     padding: 8,
     fontSize: 20,
     backgroundColor: Globais.corSecundaria,
-    color: Globais.corTextoClaro
+    color: Globais.corTextoClaro,
   },
   nome: {
-    flex: 3
+    flex: 3,
   },
   frequencia: {
-    flex: 1
+    flex: 1,
   },
   textLoad: {
     fontSize: 24,
     color: Globais.corTextoClaro,
-  }
+  },
 });
 
 export default FlatListFrequencia;

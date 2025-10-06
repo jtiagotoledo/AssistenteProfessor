@@ -1,8 +1,17 @@
-import React, { useContext, useMemo, useState } from 'react';
-import { SafeAreaView, FlatList, Text, StyleSheet, TouchableOpacity, View, Dimensions, Image } from 'react-native';
-import { Context } from "../data/Provider";
+import React, {useContext, useMemo, useState} from 'react';
+import {
+  SafeAreaView,
+  FlatList,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+  Dimensions,
+  Image,
+} from 'react-native';
+import {Context} from '../data/Provider';
 import Globais from '../data/Globais';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 import FastImage from 'react-native-fast-image';
 import ModalFotoAluno from '../modais/ModalFotoAluno';
 
@@ -25,49 +34,73 @@ type ItemProps = {
   textColor: string;
 };
 
-const Item = React.memo(({ item, onPress, onLongPress, onPressPhoto, backgroundColor, textColor }: ItemProps) => (
-  <TouchableOpacity onPress={onPress} onLongPress={onLongPress} style={[styles.item, { backgroundColor }]}>
-    <View style={styles.itemHeader}>
-      <TouchableOpacity onPress={() => onPressPhoto(item.foto_url)}>
-        {item.foto_url ? (
-          <FastImage
-            style={styles.avatar}
-            source={{
-              uri: item.foto_url,
-              priority: FastImage.priority.normal,
-              cache: FastImage.cacheControl.immutable,
-            }}
-            resizeMode={FastImage.resizeMode.cover}
-          />
-        ) : (
-          <Image
-            style={styles.avatar}
-            source={require('../assets/user.png')}
-            resizeMode="cover"
-          />
-        )}
-      </TouchableOpacity>
-      <View style={{ marginLeft: 10, flex: 1 }}>
-        <Text style={[styles.title, { color: textColor }]}>
-          {item.numero + '  '}{item.nome}
-        </Text>
+const Item = React.memo(
+  ({
+    item,
+    onPress,
+    onLongPress,
+    onPressPhoto,
+    backgroundColor,
+    textColor,
+  }: ItemProps) => (
+    <TouchableOpacity
+      onPress={onPress}
+      onLongPress={onLongPress}
+      style={[styles.item, {backgroundColor}]}>
+      <View style={styles.itemHeader}>
+        <TouchableOpacity onPress={() => onPressPhoto(item.foto_url)}>
+          {item.foto_url ? (
+            <FastImage
+              style={styles.avatar}
+              source={{
+                uri: item.foto_url,
+                priority: FastImage.priority.normal,
+                cache: FastImage.cacheControl.immutable,
+              }}
+              resizeMode={FastImage.resizeMode.cover}
+            />
+          ) : (
+            <Image
+              style={styles.avatar}
+              source={require('../assets/user.png')}
+              resizeMode="cover"
+            />
+          )}
+        </TouchableOpacity>
+        <View style={{marginLeft: 10, flex: 1}}>
+          <Text style={[styles.title, {color: textColor}]}>
+            {item.numero + '  '}
+            {item.nome}
+          </Text>
+        </View>
       </View>
-    </View>
-    <View style={styles.itemFooter}>
-      <Text style={styles.smallText}>{`${item.mediaNotas != null ? item.mediaNotas : '...'} Média`}</Text>
-      <Text style={styles.smallText}>{`${item.porcFreq != null ? item.porcFreq + '%' : '...'} Frequência`}</Text>
-    </View>
-  </TouchableOpacity>
-));
+      <View style={styles.itemFooter}>
+        <Text style={styles.smallText}>{`${
+          item.mediaNotas != null ? item.mediaNotas : '...'
+        } Média`}</Text>
+        <Text style={styles.smallText}>{`${
+          item.porcFreq != null ? item.porcFreq + '%' : '...'
+        } Frequência`}</Text>
+      </View>
+    </TouchableOpacity>
+  ),
+);
 
 const FlatListAlunos = (props: any) => {
   const {
-    setNumAlunoSelec, setFlagLongPressClasse, listaAlunos,
-    setFlagLongPressAluno, selectedIdAluno, setSelectedIdAluno,
-    setNomeAlunoSelec, setIdAlunoSelec, setAlunoInativo, idAlunoSelec
+    setNumAlunoSelec,
+    setFlagLongPressClasse,
+    listaAlunos,
+    setFlagLongPressAluno,
+    selectedIdAluno,
+    setSelectedIdAluno,
+    setNomeAlunoSelec,
+    setIdAlunoSelec,
+    setAlunoInativo,
+    idAlunoSelec,
   } = useContext(Context);
 
-  const { t } = useTranslation();
+  const {t} = useTranslation();
 
   const [modalVisible, setModalVisible] = useState(false);
   const [modalImageUrl, setModalImageUrl] = useState<string | null>(null);
@@ -98,16 +131,17 @@ const FlatListAlunos = (props: any) => {
     setModalVisible(true);
   };
 
-  const renderItem = ({ item }: { item: ItemData }) => {
+  const renderItem = ({item}: {item: ItemData}) => {
     const backgroundColor = item.inativo
       ? Globais.corAlunoInativo
       : item.idAluno === selectedIdAluno
-        ? Globais.corPrimaria
-        : Globais.corTerciaria;
+      ? Globais.corPrimaria
+      : Globais.corTerciaria;
 
-    const color = item.idAluno === selectedIdAluno
-      ? Globais.corTextoClaro
-      : Globais.corTextoEscuro;
+    const color =
+      item.idAluno === selectedIdAluno
+        ? Globais.corTextoClaro
+        : Globais.corTextoEscuro;
 
     return (
       <Item
@@ -121,9 +155,11 @@ const FlatListAlunos = (props: any) => {
     );
   };
 
-  const keyExtractor = useMemo(() => (item: ItemData, index: number) => (
-    item.idAluno ? item.idAluno.toString() : index.toString()
-  ), []);
+  const keyExtractor = useMemo(
+    () => (item: ItemData, index: number) =>
+      item.idAluno ? item.idAluno.toString() : index.toString(),
+    [],
+  );
 
   return (
     <SafeAreaView style={styles.container}>

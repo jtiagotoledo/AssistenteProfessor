@@ -1,23 +1,38 @@
-import React, { useContext } from 'react';
-import { StyleSheet, TouchableWithoutFeedback, View, Text, Dimensions } from 'react-native';
-import { Header as HeaderRNE } from '@rneui/themed';
-import { TouchableOpacity } from 'react-native';
-import { Context } from "../data/Provider";
+import React, {useContext} from 'react';
+import {
+  StyleSheet,
+  TouchableWithoutFeedback,
+  View,
+  Text,
+  Dimensions,
+} from 'react-native';
+import {Header as HeaderRNE} from '@rneui/themed';
+import {TouchableOpacity} from 'react-native';
+import {Context} from '../data/Provider';
 import Globais from '../data/Globais';
 
 import AntIcon from 'react-native-vector-icons/AntDesign';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 
-const { width } = Dimensions.get('window');
+const {width} = Dimensions.get('window');
 
 type HeaderComponentProps = {
   title: string;
   view?: string;
 };
 
-const HeaderClasses: React.FunctionComponent<HeaderComponentProps> = ({ title }) => {
-  const {setModalMenu, flagLongPressAluno, setModalDelClasse, setModalDelAluno,
-    flagLongPressClasse, setModalEditClasse, setModalEditAluno} = useContext(Context);
+const HeaderClasses: React.FunctionComponent<HeaderComponentProps> = ({
+  title,
+}) => {
+  const {
+    setModalMenu,
+    flagLongPressAluno,
+    setModalDelClasse,
+    setModalDelAluno,
+    flagLongPressClasse,
+    setModalEditClasse,
+    setModalEditAluno,
+  } = useContext(Context);
 
   const onPressBin = () => {
     if (flagLongPressClasse) setModalDelClasse(true);
@@ -32,7 +47,10 @@ const HeaderClasses: React.FunctionComponent<HeaderComponentProps> = ({ title })
   return (
     <HeaderRNE
       backgroundColor={Globais.corPrimaria}
-      containerStyle={[styles.headerContainer, { backgroundColor: Globais.corPrimaria }]}
+      containerStyle={[
+        styles.headerContainer,
+        {backgroundColor: Globais.corPrimaria},
+      ]}
       leftComponent={
         <View style={styles.headerLeft}>
           <TouchableOpacity onPress={() => setModalMenu(true)}>
@@ -51,7 +69,11 @@ const HeaderClasses: React.FunctionComponent<HeaderComponentProps> = ({ title })
               name="edit"
               selectable={false}
               style={styles.iconSpacing}
-              color={flagLongPressClasse || flagLongPressAluno ? 'rgba(255,255,255,1)' : 'rgba(255,255,255,0.6)'}
+              color={
+                flagLongPressClasse || flagLongPressAluno
+                  ? 'rgba(255,255,255,1)'
+                  : 'rgba(255,255,255,0.6)'
+              }
               size={24}
             />
           </TouchableWithoutFeedback>
@@ -60,7 +82,11 @@ const HeaderClasses: React.FunctionComponent<HeaderComponentProps> = ({ title })
               name="trash-o"
               selectable={false}
               style={styles.iconSpacing}
-              color={flagLongPressClasse || flagLongPressAluno ? 'rgba(255,255,255,1)' : 'rgba(255,255,255,0.6)'}
+              color={
+                flagLongPressClasse || flagLongPressAluno
+                  ? 'rgba(255,255,255,1)'
+                  : 'rgba(255,255,255,0.6)'
+              }
               size={24}
             />
           </TouchableWithoutFeedback>

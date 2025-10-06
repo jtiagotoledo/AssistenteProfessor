@@ -1,31 +1,45 @@
-import { Text, View, StyleSheet, Pressable, Modal, TouchableOpacity } from "react-native"
-import React, { useContext } from 'react';
+import {
+  Text,
+  View,
+  StyleSheet,
+  Pressable,
+  Modal,
+  TouchableOpacity,
+} from 'react-native';
+import React, {useContext} from 'react';
 import firestore from '@react-native-firebase/firestore';
-import { Context } from "../data/Provider";
+import {Context} from '../data/Provider';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
-import Globais from "../data/Globais";
-import { deletarDataFrequencia } from "../services/datasFrequencia";
-import { useTranslation } from 'react-i18next';
+import Globais from '../data/Globais';
+import {deletarDataFrequencia} from '../services/datasFrequencia';
+import {useTranslation} from 'react-i18next';
 
 const ModalDelDataFreq = () => {
-
-  const { modalDelDataFreq, setModalDelDataFreq, setFlagLongPressDataFreq, setDataSelec, idDataFreq, setIdDataFreq,
-    setRecarregarFrequencia, setRecarregarDatasMarcadasFreq} = useContext(Context);
-  const { t } = useTranslation();
+  const {
+    modalDelDataFreq,
+    setModalDelDataFreq,
+    setFlagLongPressDataFreq,
+    setDataSelec,
+    idDataFreq,
+    setIdDataFreq,
+    setRecarregarFrequencia,
+    setRecarregarDatasMarcadasFreq,
+  } = useContext(Context);
+  const {t} = useTranslation();
 
   const deletarData = async () => {
     try {
       await deletarDataFrequencia(idDataFreq);
-      setDataSelec(null)
-      setIdDataFreq(null)
-      setRecarregarFrequencia((prev:any)=>!prev)
-      setRecarregarDatasMarcadasFreq((prev:any)=>!prev)
-      setModalDelDataFreq(!modalDelDataFreq)
-      setFlagLongPressDataFreq(false)
+      setDataSelec(null);
+      setIdDataFreq(null);
+      setRecarregarFrequencia((prev: any) => !prev);
+      setRecarregarDatasMarcadasFreq((prev: any) => !prev);
+      setModalDelDataFreq(!modalDelDataFreq);
+      setFlagLongPressDataFreq(false);
     } catch (error) {
       console.error(error);
     }
-  }
+  };
 
   return (
     <View>
@@ -39,11 +53,17 @@ const ModalDelDataFreq = () => {
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
             <View style={styles.containerIcon}>
-              <TouchableOpacity onPress={() => [setModalDelDataFreq(!modalDelDataFreq), setDataSelec('')]}>
+              <TouchableOpacity
+                onPress={() => [
+                  setModalDelDataFreq(!modalDelDataFreq),
+                  setDataSelec(''),
+                ]}>
                 <MaterialIcon name="cancel" color="black" size={25} />
               </TouchableOpacity>
             </View>
-            <Text style={styles.modalText}>{t('Deseja realmente excluir a data?')}</Text>
+            <Text style={styles.modalText}>
+              {t('Deseja realmente excluir a data?')}
+            </Text>
             <Pressable
               style={[styles.button, styles.buttonClose]}
               onPress={deletarData}>
@@ -53,8 +73,8 @@ const ModalDelDataFreq = () => {
         </View>
       </Modal>
     </View>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -63,7 +83,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 16,
     marginBottom: 16,
-    marginRight: 16
+    marginRight: 16,
   },
   containerIcon: {
     alignItems: 'flex-end',

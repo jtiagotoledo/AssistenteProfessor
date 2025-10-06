@@ -5,18 +5,18 @@ Este é um aplicativo desenvolvido com React Native para auxiliar o professor na
 # Estruturas de pastas
 
 src/
-├── components/    # Componentes reutilizáveis
-├── telas/         # Telas principais
-├── banco_dados/   # Consultas ao DB
-├── utils/         # Funções utilitárias
-├── assets/        # Imagens, fontes etc.
-├── data/          # Cores, estados context etc.
-├── listas/        # Listas de períodos, classes e alunos.
-├── modais/        # Telas de modais.
-├── locales/       # Arquivos de tradução.
-├── rotas/         # Rotas para as telas.
-├── services/      # Comunicação com a api backend.
-App.js             # Ponto de entrada da aplicação.
+├── components/ # Componentes reutilizáveis
+├── telas/ # Telas principais
+├── banco_dados/ # Consultas ao DB
+├── utils/ # Funções utilitárias
+├── assets/ # Imagens, fontes etc.
+├── data/ # Cores, estados context etc.
+├── listas/ # Listas de períodos, classes e alunos.
+├── modais/ # Telas de modais.
+├── locales/ # Arquivos de tradução.
+├── rotas/ # Rotas para as telas.
+├── services/ # Comunicação com a api backend.
+App.js # Ponto de entrada da aplicação.
 
 # Banco de dados
 
@@ -28,7 +28,8 @@ Registrado domínio como:
 https://assistente-professor.duckdns.org
 Porta de acesso: 3000
 
-# versões 
+# versões
+
 1.0.0 - versão inicial (rejeitada na play Store).
 1.1.0 - versão inicial.
 1.2.0 - login com google.
@@ -39,5 +40,6 @@ Porta de acesso: 3000
 1.7.0 - Importar alunos em lote no excel.
 
 # Autor
-José Tiago Toledo da Silva 
+
+José Tiago Toledo da Silva
 github.com/jtiagotoledo

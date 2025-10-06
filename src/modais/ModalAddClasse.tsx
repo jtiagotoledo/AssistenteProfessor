@@ -1,22 +1,39 @@
-import { Text, View, StyleSheet, Pressable, TextInput, Modal, NativeSyntheticEvent, TextInputChangeEventData, ToastAndroid, TouchableOpacity } from "react-native"
-import React, { useState, useContext } from 'react';
-import { Context } from "../data/Provider";
-import Globais from "../data/Globais";
+import {
+  Text,
+  View,
+  StyleSheet,
+  Pressable,
+  TextInput,
+  Modal,
+  NativeSyntheticEvent,
+  TextInputChangeEventData,
+  ToastAndroid,
+  TouchableOpacity,
+} from 'react-native';
+import React, {useState, useContext} from 'react';
+import {Context} from '../data/Provider';
+import Globais from '../data/Globais';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
-import { useTranslation } from 'react-i18next';
-import { criarClasse } from '../services/classes';
-
+import {useTranslation} from 'react-i18next';
+import {criarClasse} from '../services/classes';
 
 const ModalAddClasse = () => {
+  const [valueClasse, setValueClasse] = useState<string>('');
+  const {
+    modalAddClasse,
+    setModalAddClasse,
+    idPeriodoSelec,
+    setIdClasseSelec,
+    setNomeClasseSelec,
+    setRecarregarClasses,
+  } = useContext(Context);
+  const {t} = useTranslation();
 
-  const [valueClasse, setValueClasse] = useState<string>('')
-  const { modalAddClasse, setModalAddClasse, idPeriodoSelec, setIdClasseSelec,
-     setNomeClasseSelec, setRecarregarClasses } = useContext(Context)
-  const { t } = useTranslation();
-
-  const onChangeInputClasse = (event: NativeSyntheticEvent<TextInputChangeEventData>) => {
+  const onChangeInputClasse = (
+    event: NativeSyntheticEvent<TextInputChangeEventData>,
+  ) => {
     setValueClasse(event.nativeEvent.text);
-  }
+  };
 
   // inclusão da classe no BD
   const onPressAddClasse = async () => {
@@ -24,18 +41,16 @@ const ModalAddClasse = () => {
       try {
         setModalAddClasse(false);
         const result = await criarClasse(valueClasse, idPeriodoSelec);
-        setNomeClasseSelec(valueClasse)
+        setNomeClasseSelec(valueClasse);
         await setIdClasseSelec(result.id);
-        setRecarregarClasses((prev: any) => !prev)
+        setRecarregarClasses((prev: any) => !prev);
       } catch (error) {
         ToastAndroid.show(t('msg_037'), ToastAndroid.SHORT);
       }
     } else {
-      ToastAndroid.show(
-        t('msg_024'),
-        ToastAndroid.SHORT)
+      ToastAndroid.show(t('msg_024'), ToastAndroid.SHORT);
     }
-  }
+  };
 
   return (
     <View>
@@ -49,12 +64,16 @@ const ModalAddClasse = () => {
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
             <View style={styles.containerIcon}>
-              <TouchableOpacity onPress={() => setModalAddClasse(!modalAddClasse)}>
+              <TouchableOpacity
+                onPress={() => setModalAddClasse(!modalAddClasse)}>
                 <MaterialIcon name="cancel" color="black" size={25} />
               </TouchableOpacity>
             </View>
-            <Text style={styles.modalText}>{t("Crie uma nova classe:")}</Text>
-            <TextInput placeholder={t('Nome da classe')} onChange={onChangeInputClasse} style={styles.textInput}></TextInput>
+            <Text style={styles.modalText}>{t('Crie uma nova classe:')}</Text>
+            <TextInput
+              placeholder={t('Nome da classe')}
+              onChange={onChangeInputClasse}
+              style={styles.textInput}></TextInput>
             <Pressable
               style={[styles.button, styles.buttonClose]}
               onPress={() => onPressAddClasse()}>
@@ -64,8 +83,8 @@ const ModalAddClasse = () => {
         </View>
       </Modal>
     </View>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -74,10 +93,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 16,
     marginBottom: 16,
-    marginRight: 16
+    marginRight: 16,
   },
   containerIcon: {
-    alignItems: 'flex-end'
+    alignItems: 'flex-end',
   },
   centeredView: {
     flex: 1,
@@ -125,9 +144,8 @@ const styles = StyleSheet.create({
   textInput: {
     backgroundColor: 'white',
     minWidth: 100,
-    marginBottom: 20
-  }
-
+    marginBottom: 20,
+  },
 });
 
-export default ModalAddClasse
+export default ModalAddClasse;

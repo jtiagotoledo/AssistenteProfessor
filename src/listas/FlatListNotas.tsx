@@ -1,12 +1,19 @@
-import React, { useContext, useRef, useState } from 'react'
-import { SafeAreaView, FlatList, View, Text, StyleSheet, TextInput } from 'react-native'
-import { Context } from "../data/Provider";
+import React, {useContext, useRef, useState} from 'react';
+import {
+  SafeAreaView,
+  FlatList,
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+} from 'react-native';
+import {Context} from '../data/Provider';
 import Globais from '../data/Globais';
-import { useTranslation } from 'react-i18next';
-import { atualizarNota } from "../services/nota"
+import {useTranslation} from 'react-i18next';
+import {atualizarNota} from '../services/nota';
 
 type ItemData = {
-  id: string,
+  id: string;
   nome: string;
   numero: string;
   nota: string;
@@ -16,13 +23,15 @@ type ItemData = {
 const FlatListNotas = (props: any) => {
   const flatListRef = useRef<FlatList>(null);
   const textInputRefs = useRef<Record<string, TextInput | null>>({});
-  const [notasEditadas, setNotasEditadas] = useState<Record<string, string>>({});
-  const [selection, setSelection] = useState({ start: 0, end: 0 });
-  const { listaNotas, setRecarregarNotas } = useContext(Context)
-  const { t } = useTranslation();
+  const [notasEditadas, setNotasEditadas] = useState<Record<string, string>>(
+    {},
+  );
+  const [selection, setSelection] = useState({start: 0, end: 0});
+  const {listaNotas, setRecarregarNotas} = useContext(Context);
+  const {t} = useTranslation();
 
   const handleNotaChange = (idItem: string, valor: string) => {
-    setNotasEditadas((prev) => ({
+    setNotasEditadas(prev => ({
       ...prev,
       [idItem]: valor,
     }));
@@ -43,7 +52,7 @@ const FlatListNotas = (props: any) => {
   const scrollToItem = (itemId: string) => {
     const index = listaNotas.findIndex((item: any) => item.id === itemId);
     if (index !== -1 && flatListRef.current) {
-      flatListRef.current.scrollToIndex({ index, animated: true });
+      flatListRef.current.scrollToIndex({index, animated: true});
     }
   };
 
@@ -62,29 +71,33 @@ const FlatListNotas = (props: any) => {
   };
 
   const onSelectionChange = (event: any) => {
-    const { nativeEvent } = event;
-    const { selection } = nativeEvent;
+    const {nativeEvent} = event;
+    const {selection} = nativeEvent;
     setSelection(selection);
   };
 
-  const renderItem = ({ item }: { item: ItemData }) => {
+  const renderItem = ({item}: {item: ItemData}) => {
     return (
       <View style={styles.containerItem}>
         <View style={[styles.item, styles.nome]}>
-          <Text style={[styles.title]}>{item.numero + '  '} {item.nome}</Text>
+          <Text style={[styles.title]}>
+            {item.numero + '  '} {item.nome}
+          </Text>
         </View>
         <View>
           <TextInput
-            ref={(ref) => (textInputRefs.current[item.id] = ref!)}
+            ref={ref => (textInputRefs.current[item.id] = ref!)}
             style={styles.itemNota}
             placeholder={t('Nota')}
-            inputMode='numeric'
-            value={notasEditadas[item.id]?.toString() ?? item.nota?.toString() ?? ''}
-            onChangeText={(texto) => handleNotaChange(item.id, texto)}
+            inputMode="numeric"
+            value={
+              notasEditadas[item.id]?.toString() ?? item.nota?.toString() ?? ''
+            }
+            onChangeText={texto => handleNotaChange(item.id, texto)}
             defaultValue={item.nota}
             onFocus={() => scrollToItem(item.id)}
             onSubmitEditing={() => nextItem(item.id)}
-            blurOnSubmit={false} 
+            blurOnSubmit={false}
             selection={selection}
             onSelectionChange={onSelectionChange}
           />
@@ -100,9 +113,11 @@ const FlatListNotas = (props: any) => {
         data={listaNotas}
         renderItem={renderItem}
         ref={flatListRef}
-        keyExtractor={(item, index) => (item.id ? item.id.toString() : index.toString())}
-        contentContainerStyle={{ paddingBottom: 300 }}
-        keyboardShouldPersistTaps='handled'
+        keyExtractor={(item, index) =>
+          item.id ? item.id.toString() : index.toString()
+        }
+        contentContainerStyle={{paddingBottom: 300}}
+        keyboardShouldPersistTaps="handled"
       />
     </SafeAreaView>
   );
@@ -111,7 +126,7 @@ const FlatListNotas = (props: any) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 8
+    marginTop: 8,
   },
   containerItem: {
     flexDirection: 'row',
@@ -130,7 +145,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    color: Globais.corTextoEscuro
+    color: Globais.corTextoEscuro,
   },
   nome: {
     flex: 3,

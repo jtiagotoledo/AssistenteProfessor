@@ -1,31 +1,47 @@
-import { useEffect, useContext } from "react";
-import { Context } from "../data/Provider";
-import Globais from "../data/Globais";
-import { buscarProfessorPorId } from '../services/professores';
-import { buscarPeriodosPorProfessor } from '../services/periodos';
-import { buscarClassesPorPeriodo } from '../services/classes';
-import { buscarAlunosPorClasse } from '../services/alunos';
-import { buscarFrequenciasPorClasseEData } from '../services/frequencia';
-import { buscarNotasPorClasseEData } from '../services/nota';
-import { buscarDatasFrequenciaPorClasse } from '../services/datasFrequencia';
-import { buscarDatasNotaPorClasse } from '../services/datasNotas';
-import { buscarFrequenciasPorClasse } from '../services/frequencia';
-import { buscarNotasPorClasse } from '../services/nota';
+import {useEffect, useContext} from 'react';
+import {Context} from '../data/Provider';
+import Globais from '../data/Globais';
+import {buscarProfessorPorId} from '../services/professores';
+import {buscarPeriodosPorProfessor} from '../services/periodos';
+import {buscarClassesPorPeriodo} from '../services/classes';
+import {buscarAlunosPorClasse} from '../services/alunos';
+import {buscarFrequenciasPorClasseEData} from '../services/frequencia';
+import {buscarNotasPorClasseEData} from '../services/nota';
+import {buscarDatasFrequenciaPorClasse} from '../services/datasFrequencia';
+import {buscarDatasNotaPorClasse} from '../services/datasNotas';
+import {buscarFrequenciasPorClasse} from '../services/frequencia';
+import {buscarNotasPorClasse} from '../services/nota';
 
 const consultasBD = () => {
-
-  const { idProfessor, setListaPeriodos, recarregarNotas, setListaDatasMarcadasFreq, recarregarDatasMarcadasNotas,
-    recarregarFrequencia, idPeriodoSelec, setListaClasses, idClasseSelec, setListaAlunos, recarregarPeriodos, recarregarAlunos, setListaDatasMarcadasNotas,
-    dataSelec, setListaFrequencia, setListaNotas, recarregarClasses, recarregarDatasMarcadasFreq, setFotoProfessor } = useContext(Context)
+  const {
+    idProfessor,
+    setListaPeriodos,
+    recarregarNotas,
+    setListaDatasMarcadasFreq,
+    recarregarDatasMarcadasNotas,
+    recarregarFrequencia,
+    idPeriodoSelec,
+    setListaClasses,
+    idClasseSelec,
+    setListaAlunos,
+    recarregarPeriodos,
+    recarregarAlunos,
+    setListaDatasMarcadasNotas,
+    dataSelec,
+    setListaFrequencia,
+    setListaNotas,
+    recarregarClasses,
+    recarregarDatasMarcadasFreq,
+    setFotoProfessor,
+  } = useContext(Context);
 
   useEffect(() => {
     // recupera dados dos professor e inicia os estados.
     const buscar = async () => {
-
       if (idProfessor) {
         try {
           const result = await buscarProfessorPorId(idProfessor);
-          setFotoProfessor(result.foto)
+          setFotoProfessor(result.foto);
         } catch (erro) {
           console.error('Erro ao buscar professor:', erro);
         }
@@ -40,11 +56,11 @@ const consultasBD = () => {
       try {
         if (!idProfessor) return;
         const periodos = await buscarPeriodosPorProfessor(idProfessor);
-        const periodosFormatados = periodos.map((p) => ({
+        const periodosFormatados = periodos.map(p => ({
           label: p.nome,
           value: p.nome,
           idPeriodo: p.id,
-          periodo: p.nome
+          periodo: p.nome,
         }));
         setListaPeriodos(periodosFormatados);
       } catch (error) {
@@ -59,11 +75,11 @@ const consultasBD = () => {
     const carregarClasses = async () => {
       try {
         if (!idPeriodoSelec) {
-          setListaClasses({})
-          return
+          setListaClasses({});
+          return;
         }
         const classes = await buscarClassesPorPeriodo(idPeriodoSelec);
-        const classesFormatadas = classes.map((c) => ({
+        const classesFormatadas = classes.map(c => ({
           idClasse: c.id,
           classe: c.nome,
           idPeriodo: c.id_periodo,
@@ -75,7 +91,6 @@ const consultasBD = () => {
     };
     carregarClasses();
   }, [idPeriodoSelec, recarregarClasses]);
-
 
   useEffect(() => {
     const carregarAlunosFrequenciasENotas = async () => {
@@ -92,11 +107,11 @@ const consultasBD = () => {
           idAluno: a.id,
           nome: a.nome,
           numero: a.numero,
-          mediaNotas: 0,  // será calculado
-          porcFreq: 0,    // será calculado
+          mediaNotas: 0, // será calculado
+          porcFreq: 0, // será calculado
           inativo: a.inativo,
           idClasseSelec: a.id_classe,
-          foto_url: a.foto_url || null,  // <- Adicionado aqui
+          foto_url: a.foto_url || null, // <- Adicionado aqui
         }));
 
         // 2. Buscar todas as frequências da classe
@@ -107,28 +122,38 @@ const consultasBD = () => {
 
         // 4. Para cada aluno, calcular porcentagem de frequência e média de notas
         const alunosComDados = alunosFormatados.map(aluno => {
-          const freqAluno = todasFreqs.filter(f => f.id_aluno === aluno.idAluno);
+          const freqAluno = todasFreqs.filter(
+            f => f.id_aluno === aluno.idAluno,
+          );
           const totalFreq = freqAluno.length;
           const presencas = freqAluno.filter(f => f.presente).length;
-          const porcFreq = totalFreq === 0 ? 0 : ((presencas / totalFreq) * 100).toFixed(2);
+          const porcFreq =
+            totalFreq === 0 ? 0 : ((presencas / totalFreq) * 100).toFixed(2);
 
-          const notasAluno = todasNotas.filter(n => n.id_aluno === aluno.idAluno);
-          const notasValidas = notasAluno.filter(n => n.nota !== null && !isNaN(parseFloat(n.nota)));
+          const notasAluno = todasNotas.filter(
+            n => n.id_aluno === aluno.idAluno,
+          );
+          const notasValidas = notasAluno.filter(
+            n => n.nota !== null && !isNaN(parseFloat(n.nota)),
+          );
 
           const totalNotas = notasValidas.length;
-          const somaNotas = notasValidas.reduce((sum, n) => sum + parseFloat(n.nota), 0);
+          const somaNotas = notasValidas.reduce(
+            (sum, n) => sum + parseFloat(n.nota),
+            0,
+          );
 
-          const mediaNotas = totalNotas === 0 ? 0 : (somaNotas / totalNotas).toFixed(2);
+          const mediaNotas =
+            totalNotas === 0 ? 0 : (somaNotas / totalNotas).toFixed(2);
 
           return {
             ...aluno,
             porcFreq,
-            mediaNotas
+            mediaNotas,
           };
         });
 
         setListaAlunos(alunosComDados);
-
       } catch (erro) {
         console.error('Erro ao carregar dados de alunos:', erro);
       }
@@ -136,7 +161,6 @@ const consultasBD = () => {
 
     carregarAlunosFrequenciasENotas();
   }, [idClasseSelec, recarregarAlunos]);
-
 
   useEffect(() => {
     // buscar as frequencias dos alunos por classe e data
@@ -146,7 +170,10 @@ const consultasBD = () => {
     }
     const carregarFrequencias = async () => {
       try {
-        const dados = await buscarFrequenciasPorClasseEData(idClasseSelec, dataSelec);
+        const dados = await buscarFrequenciasPorClasseEData(
+          idClasseSelec,
+          dataSelec,
+        );
         setListaFrequencia(dados);
       } catch (erro) {
         setError('Erro ao buscar frequências');
@@ -155,7 +182,6 @@ const consultasBD = () => {
 
     carregarFrequencias();
   }, [recarregarFrequencia]);
-
 
   useEffect(() => {
     // Buscar as notas dos alunos por classe e data
@@ -223,7 +249,6 @@ const consultasBD = () => {
 
     buscarDatasNotas();
   }, [idClasseSelec, recarregarDatasMarcadasNotas]);
+};
 
-}
-
-export default consultasBD
+export default consultasBD;

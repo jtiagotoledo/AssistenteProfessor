@@ -1,5 +1,5 @@
-import { jwtDecode } from 'jwt-decode';
-import { recuperarTokens, salvarTokens } from './tokenStorage';
+import {jwtDecode} from 'jwt-decode';
+import {recuperarTokens, salvarTokens} from './tokenStorage';
 import axios from 'axios';
 
 const API_URL = 'https://assistente-professor.duckdns.org:3000';
@@ -11,7 +11,7 @@ export const verificarValidadeAccessToken = async () => {
     return false;
   }
 
-  const decoded = jwtDecode<{ exp: number }>(tokens.accessToken);
+  const decoded = jwtDecode<{exp: number}>(tokens.accessToken);
   const agora = Math.floor(Date.now() / 1000);
 
   return decoded.exp > agora;
@@ -30,13 +30,12 @@ export const renovarAccessToken = async (): Promise<boolean> => {
       refreshToken: tokens.refreshToken,
     });
 
-    const { accessToken, refreshToken } = response.data;
+    const {accessToken, refreshToken} = response.data;
 
     await salvarTokens(accessToken, refreshToken);
 
     console.log('Token renovado com sucesso');
     return true;
-
   } catch (error) {
     console.error('Erro ao renovar token:', error);
     return false;

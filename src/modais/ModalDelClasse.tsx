@@ -1,29 +1,42 @@
-import { Text, View, StyleSheet, Pressable, Modal, TouchableOpacity } from "react-native"
-import React, { useContext } from 'react';
-import { Context } from "../data/Provider";
+import {
+  Text,
+  View,
+  StyleSheet,
+  Pressable,
+  Modal,
+  TouchableOpacity,
+} from 'react-native';
+import React, {useContext} from 'react';
+import {Context} from '../data/Provider';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
-import Globais from "../data/Globais";
-import { useTranslation } from "react-i18next";
-import { deletarClasse } from "../services/classes";
+import Globais from '../data/Globais';
+import {useTranslation} from 'react-i18next';
+import {deletarClasse} from '../services/classes';
 
 const ModalDelClasse = () => {
-
-  const { idClasseSelec, modalDelClasse, setModalDelClasse,
-    setFlagLongPressClasse, setIdClasseSelec, setRecarregarClasses, setRecarregarAlunos } = useContext(Context);
-  const { t } = useTranslation();
+  const {
+    idClasseSelec,
+    modalDelClasse,
+    setModalDelClasse,
+    setFlagLongPressClasse,
+    setIdClasseSelec,
+    setRecarregarClasses,
+    setRecarregarAlunos,
+  } = useContext(Context);
+  const {t} = useTranslation();
 
   const delClasse = async () => {
     try {
       await deletarClasse(idClasseSelec);
-      setIdClasseSelec(null)
-      setRecarregarClasses((prev: any) => !prev)
-      setRecarregarAlunos((prev: any) => !prev)
-      setFlagLongPressClasse(false)
-      setModalDelClasse(!modalDelClasse)
+      setIdClasseSelec(null);
+      setRecarregarClasses((prev: any) => !prev);
+      setRecarregarAlunos((prev: any) => !prev);
+      setFlagLongPressClasse(false);
+      setModalDelClasse(!modalDelClasse);
     } catch (error) {
       console.error(error);
     }
-  }
+  };
 
   return (
     <View>
@@ -37,11 +50,14 @@ const ModalDelClasse = () => {
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
             <View style={styles.containerIcon}>
-              <TouchableOpacity onPress={() => setModalDelClasse(!modalDelClasse)}>
+              <TouchableOpacity
+                onPress={() => setModalDelClasse(!modalDelClasse)}>
                 <MaterialIcon name="cancel" color="black" size={25} />
               </TouchableOpacity>
             </View>
-            <Text style={styles.modalText}>{t('Deseja realmente excluir a classe?')}</Text>
+            <Text style={styles.modalText}>
+              {t('Deseja realmente excluir a classe?')}
+            </Text>
             <Pressable
               style={[styles.button, styles.buttonClose]}
               onPress={delClasse}>
@@ -51,8 +67,8 @@ const ModalDelClasse = () => {
         </View>
       </Modal>
     </View>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -61,7 +77,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 16,
     marginBottom: 16,
-    marginRight: 16
+    marginRight: 16,
   },
   containerIcon: {
     alignItems: 'flex-end',

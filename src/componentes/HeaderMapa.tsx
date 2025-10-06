@@ -1,16 +1,16 @@
-import React, { useContext } from 'react';
-import { StyleSheet, View, Text, Dimensions } from 'react-native';
-import { Header as HeaderRNE } from '@rneui/themed';
-import { TouchableOpacity } from 'react-native';
-import { Context } from "../data/Provider";
+import React, {useContext} from 'react';
+import {StyleSheet, View, Text, Dimensions} from 'react-native';
+import {Header as HeaderRNE} from '@rneui/themed';
+import {TouchableOpacity} from 'react-native';
+import {Context} from '../data/Provider';
 import Globais from '../data/Globais';
 
 import AntIcon from 'react-native-vector-icons/AntDesign';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 
-const { width } = Dimensions.get('window');
+const {width} = Dimensions.get('window');
 
 // Atualize o tipo para incluir a função onSave
 type HeaderComponentProps = {
@@ -19,9 +19,9 @@ type HeaderComponentProps = {
   onSave: () => void; // A nova prop para a função de salvar
 };
 
-const HeaderMapa: React.FunctionComponent<HeaderComponentProps> = (props) => {
-  const { setModalMenu } = useContext(Context);
-  const { t } = useTranslation();
+const HeaderMapa: React.FunctionComponent<HeaderComponentProps> = props => {
+  const {setModalMenu} = useContext(Context);
+  const {t} = useTranslation();
 
   return (
     <HeaderRNE
@@ -43,11 +43,11 @@ const HeaderMapa: React.FunctionComponent<HeaderComponentProps> = (props) => {
         <View style={styles.headerRight}>
           <TouchableOpacity onPress={props.onSave}>
             <FontAwesomeIcon
-                          style={styles.icon}
-                          name="save"
-                          color={'white'}
-                          size={24}
-                        />
+              style={styles.icon}
+              name="save"
+              color={'white'}
+              size={24}
+            />
           </TouchableOpacity>
         </View>
       }

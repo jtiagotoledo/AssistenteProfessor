@@ -1,38 +1,55 @@
-import { Text, View, StyleSheet, Pressable, TextInput, Modal, NativeSyntheticEvent, TextInputChangeEventData, ToastAndroid, TouchableOpacity } from "react-native"
-import React, { useState, useContext } from 'react';
+import {
+  Text,
+  View,
+  StyleSheet,
+  Pressable,
+  TextInput,
+  Modal,
+  NativeSyntheticEvent,
+  TextInputChangeEventData,
+  ToastAndroid,
+  TouchableOpacity,
+} from 'react-native';
+import React, {useState, useContext} from 'react';
 import firestore from '@react-native-firebase/firestore';
-import { Context } from "../data/Provider";
+import {Context} from '../data/Provider';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
-import Globais from "../data/Globais";
-import { useTranslation } from 'react-i18next';
-import { atualizarClasse } from '../services/classes';
-
+import Globais from '../data/Globais';
+import {useTranslation} from 'react-i18next';
+import {atualizarClasse} from '../services/classes';
 
 const ModalEditClasse = () => {
+  const [valueClasse, setValueClasse] = useState<string>('');
+  const {
+    modalEditClasse,
+    setModalEditClasse,
+    idPeriodoSelec,
+    idClasseSelec,
+    nomeClasseSelec,
+    setFlagLongPressClasse,
+    setNomeClasseSelec,
+    setRecarregarClasses,
+  } = useContext(Context);
+  const {t} = useTranslation();
 
-  const [valueClasse, setValueClasse] = useState<string>('')
-  const { modalEditClasse, setModalEditClasse, idPeriodoSelec, idClasseSelec,
-    nomeClasseSelec, setFlagLongPressClasse, setNomeClasseSelec, setRecarregarClasses } = useContext(Context)
-  const { t } = useTranslation();
-
-  const onChangeInputClasse = (event: NativeSyntheticEvent<TextInputChangeEventData>) => {
+  const onChangeInputClasse = (
+    event: NativeSyntheticEvent<TextInputChangeEventData>,
+  ) => {
     setValueClasse(event.nativeEvent.text);
-  }
+  };
 
   const onPressEditClasse = async () => {
     // edição da classe no BD
     if (valueClasse != '') {
       setModalEditClasse(false);
-      await atualizarClasse(idClasseSelec, valueClasse, idPeriodoSelec)
-      setFlagLongPressClasse(false)
+      await atualizarClasse(idClasseSelec, valueClasse, idPeriodoSelec);
+      setFlagLongPressClasse(false);
       setNomeClasseSelec(valueClasse);
-      setRecarregarClasses((prev: any) => !prev)
+      setRecarregarClasses((prev: any) => !prev);
     } else {
-      ToastAndroid.show(
-        t('msg_030'),
-        ToastAndroid.SHORT)
+      ToastAndroid.show(t('msg_030'), ToastAndroid.SHORT);
     }
-  }
+  };
 
   return (
     <View>
@@ -46,17 +63,17 @@ const ModalEditClasse = () => {
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
             <View style={styles.containerIcon}>
-              <TouchableOpacity onPress={() => setModalEditClasse(!modalEditClasse)}>
+              <TouchableOpacity
+                onPress={() => setModalEditClasse(!modalEditClasse)}>
                 <MaterialIcon name="cancel" color="black" size={25} />
               </TouchableOpacity>
             </View>
             <Text style={styles.modalText}>{t('Edite o nome da classe:')}</Text>
             <TextInput
               style={styles.textInput}
-              placeholder='Nome da classe'
+              placeholder="Nome da classe"
               defaultValue={nomeClasseSelec}
-              onChange={onChangeInputClasse}>
-            </TextInput>
+              onChange={onChangeInputClasse}></TextInput>
             <Pressable
               style={[styles.button, styles.buttonClose]}
               onPress={() => onPressEditClasse()}>
@@ -66,8 +83,8 @@ const ModalEditClasse = () => {
         </View>
       </Modal>
     </View>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -76,10 +93,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 16,
     marginBottom: 16,
-    marginRight: 16
+    marginRight: 16,
   },
   containerIcon: {
-    alignItems: 'flex-end'
+    alignItems: 'flex-end',
   },
   centeredView: {
     flex: 1,
@@ -127,9 +144,8 @@ const styles = StyleSheet.create({
   textInput: {
     backgroundColor: 'white',
     minWidth: 100,
-    marginBottom: 20
-  }
-
+    marginBottom: 20,
+  },
 });
 
 export default ModalEditClasse;
