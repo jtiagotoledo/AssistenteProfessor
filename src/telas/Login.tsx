@@ -12,7 +12,6 @@ import {
   ScrollView,
   ActivityIndicator,
 } from 'react-native';
-import auth from '@react-native-firebase/auth';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import {Context} from '../data/Provider';
 import ConexaoInternet from '../componentes/ConexaoInternet';
@@ -60,6 +59,10 @@ const Login = ({navigation}: any) => {
     i18n.changeLanguage(lng);
     setSelectedLanguage(lng);
   };
+
+  const redefinirSenha = () =>{
+    
+  }
 
   const entrarConta = async () => {
     if (!email || !senha) {
@@ -136,29 +139,6 @@ const Login = ({navigation}: any) => {
     }
   };
 
-  const funcSenha = () => {
-    if (email != '') {
-      auth()
-        .sendPasswordResetEmail(email)
-        .then(() => {
-          ToastAndroid.show(
-            t('msg_008') + email + t('msg_009'),
-            ToastAndroid.LONG,
-          );
-        })
-        .catch(error => {
-          if (error.code === 'auth/invalid-email') {
-            ToastAndroid.show(t('msg_010'), ToastAndroid.SHORT);
-          } else if (error.code === 'auth/user-not-found') {
-            ToastAndroid.show(t('msg_011'), ToastAndroid.SHORT);
-          } else {
-            ToastAndroid.show(t('msg_012') + error.message, ToastAndroid.SHORT);
-          }
-        });
-    } else {
-      ToastAndroid.show(t('msg_013'), ToastAndroid.SHORT);
-    }
-  };
 
   const onChangeInputEmail = (
     event: NativeSyntheticEvent<TextInputChangeEventData>,
@@ -243,7 +223,7 @@ const Login = ({navigation}: any) => {
           </Text>
         </View>
         <View style={styles.containerText}>
-          <Text style={styles.text} onPress={() => funcSenha()}>
+          <Text style={styles.text} onPress={() => redefinirSenha()}>
             {t('Esqueci minha senha')}
           </Text>
         </View>
