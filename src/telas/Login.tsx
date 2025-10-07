@@ -1,4 +1,4 @@
-import React, {useContext, useState, useEffect} from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import {
   TextInput,
   View,
@@ -11,20 +11,23 @@ import {
   TouchableOpacity,
   ScrollView,
   ActivityIndicator,
+  Alert,
+  BackHandler,
 } from 'react-native';
-import {GoogleSignin} from '@react-native-google-signin/google-signin';
-import {Context} from '../data/Provider';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import { Context } from '../data/Provider';
 import ConexaoInternet from '../componentes/ConexaoInternet';
 import Globais from '../data/Globais';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {Picker} from '@react-native-picker/picker';
-import {useTranslation} from 'react-i18next';
+import { Picker } from '@react-native-picker/picker';
+import { useTranslation } from 'react-i18next';
 import i18n from '../../i18n';
-import {salvarTokens} from '../utils/tokenStorage';
-import {login} from '../services/auth';
-import {loginComGoogle as loginComGoogleService} from '../services/auth';
+import { salvarTokens } from '../utils/tokenStorage';
+import { login } from '../services/auth';
+import { loginComGoogle as loginComGoogleService } from '../services/auth';
+import { esqueciSenha } from '../services/auth';
 
-const Login = ({navigation}: any) => {
+const Login = ({ navigation }: any) => {
   const [senhaVisivel, setSenhaVisivel] = useState(false);
   const {
     email,
@@ -33,12 +36,11 @@ const Login = ({navigation}: any) => {
     setSenha,
     setIdProfessor,
     setRecarregarPeriodos,
-    setRecarregarDadosProfessor,
     setNome,
   } = useContext(Context);
   const [loading, setLoading] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState(i18n.language);
-  const {t} = useTranslation();
+  const { t } = useTranslation();
 
   useEffect(() => {
     const setupGoogleSignin = async () => {
@@ -60,9 +62,37 @@ const Login = ({navigation}: any) => {
     setSelectedLanguage(lng);
   };
 
-  const redefinirSenha = () =>{
-    
-  }
+  const redefinirSenha = async () => {
+    if (!email) {
+      Alert.alert('Erro', 'Digite seu e-mail.');
+      return;
+    }
+
+    const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailValido.test(email)) {
+      Alert.alert('Erro', 'Digite um e-mail válido.');
+      return;
+    }
+
+    try {
+      await esqueciSenha(email);
+      Alert.alert(
+        'Verifique seu e-mail',
+        'Enviamos um link de redefinição de senha. Após clicar nele, o app será aberto automaticamente.',
+        [
+          {
+            text: 'OK',
+            onPress: () => {
+              // Fecha o app (Android)
+              BackHandler.exitApp();
+            },
+          },
+        ],
+      );
+    } catch (error) {
+      Alert.alert('Erro', 'Não foi possível enviar o e-mail. Tente novamente.');
+    }
+  };
 
   const entrarConta = async () => {
     if (!email || !senha) {
@@ -74,7 +104,7 @@ const Login = ({navigation}: any) => {
       setLoading(true);
 
       // Faz a requisição de login
-      const result = await login({email, senha});
+      const result = await login({ email, senha });
 
       // Salva tokens
       await salvarTokens(result.accessToken, result.refreshToken);
@@ -86,7 +116,7 @@ const Login = ({navigation}: any) => {
       setRecarregarPeriodos((prev: any) => !prev);
 
       // Navega para o App
-      navigation.reset({index: 0, routes: [{name: 'App'}]});
+      navigation.reset({ index: 0, routes: [{ name: 'App' }] });
 
       ToastAndroid.show(t('msg_042'), ToastAndroid.SHORT); // "Login realizado com sucesso"
     } catch (error: any) {
@@ -106,14 +136,16 @@ const Login = ({navigation}: any) => {
 
   const loginComGoogle = async () => {
     try {
-      await GoogleSignin.hasPlayServices({showPlayServicesUpdateDialog: true});
+      await GoogleSignin.hasPlayServices({
+        showPlayServicesUpdateDialog: true,
+      });
       const result = await GoogleSignin.signIn();
 
       if (result && result.data && result.data.idToken) {
         const idToken = result.data.idToken;
         // Envia para backend
         const resposta = await loginComGoogleService(idToken);
-        const {accessToken, refreshToken} = resposta;
+        const { accessToken, refreshToken } = resposta;
 
         // Salva os tokens seguros
         await salvarTokens(accessToken, refreshToken);
@@ -124,7 +156,7 @@ const Login = ({navigation}: any) => {
         setEmail(resposta.professor.email);
         setRecarregarPeriodos((prev: any) => !prev);
 
-        navigation.reset({index: 0, routes: [{name: 'App'}]});
+        navigation.reset({ index: 0, routes: [{ name: 'App' }] });
       } else {
         ToastAndroid.show(t('msg_004'), ToastAndroid.LONG);
       }
@@ -138,7 +170,6 @@ const Login = ({navigation}: any) => {
       }
     }
   };
-
 
   const onChangeInputEmail = (
     event: NativeSyntheticEvent<TextInputChangeEventData>,
@@ -167,7 +198,7 @@ const Login = ({navigation}: any) => {
           <Text>Selecione a linguaguem/ Select Language</Text>
           <Picker
             selectedValue={selectedLanguage}
-            onValueChange={(itemValue, itemIndex) => {
+            onValueChange={itemValue => {
               changeLanguage(itemValue);
             }}>
             <Picker.Item label="Português" value="pt" />
@@ -216,7 +247,7 @@ const Login = ({navigation}: any) => {
             onPress={() =>
               navigation.reset({
                 index: 0,
-                routes: [{name: 'NovaConta'}],
+                routes: [{ name: 'NovaConta' }],
               })
             }>
             {t('Criar uma conta')}
@@ -229,7 +260,7 @@ const Login = ({navigation}: any) => {
         </View>
         {loading ? (
           <View
-            style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+            style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
             <ActivityIndicator size="large" color="#0000ff" />
           </View>
         ) : null}
