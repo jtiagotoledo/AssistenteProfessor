@@ -1,13 +1,13 @@
 import App from './App';
 import Login from '../telas/Login';
 import NovaConta from '../telas/NovaConta';
-import {jwtDecode} from 'jwt-decode';
-import {Context} from '../data/Provider';
+import { jwtDecode } from 'jwt-decode';
+import { Context } from '../data/Provider';
 import 'react-native-url-polyfill/auto';
-import {NavigationContainer} from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {useContext, useEffect, useState} from 'react';
-import {recuperarTokens, renovarAccessToken} from '../utils/tokenStorage';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { useContext, useEffect, useState } from 'react';
+import { recuperarTokens, renovarAccessToken } from '../utils/tokenStorage';
 import RedefinirSenha from '../telas/RedefinirSenha';
 
 interface MeuTokenPayload {
@@ -22,7 +22,7 @@ const Stack = createNativeStackNavigator();
 
 function Rotas() {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
-  const {setEmail, setIdProfessor, setNome} = useContext(Context);
+  const { setEmail, setIdProfessor, setNome } = useContext(Context);
 
   useEffect(() => {
     const verificarToken = async () => {

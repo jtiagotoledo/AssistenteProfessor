@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   Button,
   FlatList,
@@ -8,22 +8,21 @@ import {
   View,
   Modal,
   ScrollView,
-  StatusBar,
   Image,
   Alert,
 } from 'react-native';
-import {Context} from '../data/Provider';
+import { Context } from '../data/Provider';
 import FlatListClasses from '../listas/FlatListClasses';
 import Globais from '../data/Globais';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Slider from '@react-native-community/slider';
 import HeaderMapa from '../componentes/HeaderMapa';
-import {Divider} from 'react-native-paper';
-import {buscarMapaDeSala, salvarMapaDeSala} from '../services/mapaSala';
+import { Divider } from 'react-native-paper';
+import { buscarMapaDeSala, salvarMapaDeSala } from '../services/mapaSala';
 
 // Definição dos tipos
-type AssentoData = {pos: number; alunoId: string | null};
-type Aluno = {id: string; nome: string; numero: number; foto_url: string};
+type AssentoData = { pos: number; alunoId: string | null };
+type Aluno = { id: string; nome: string; numero: number; foto_url: string };
 
 interface AssentoProps {
   item: AssentoComDadosCompletos;
@@ -36,7 +35,7 @@ interface AssentoComDadosCompletos extends AssentoData {
 }
 
 const MemoizedAssento: React.FC<AssentoProps> = React.memo(
-  ({item, abrirModal, styles}) => {
+  ({ item, abrirModal, styles }) => {
     const aluno = item.aluno;
     return (
       <TouchableOpacity
@@ -44,7 +43,7 @@ const MemoizedAssento: React.FC<AssentoProps> = React.memo(
         style={[styles.assento, aluno && styles.assentoOcupado]}>
         {aluno ? (
           <View style={styles.assentoContent}>
-            <Image source={{uri: aluno.foto_url}} style={styles.alunoFoto} />
+            <Image source={{ uri: aluno.foto_url }} style={styles.alunoFoto} />
             <View style={styles.alunoTextContainer}>
               <Text style={styles.alunoNumero}>{aluno.numero}</Text>
               <Text style={styles.alunoNome} numberOfLines={3}>
@@ -69,7 +68,7 @@ const Mapa = () => {
   const [modalLayoutVisible, setModalLayoutVisible] = useState(false);
   const [posSelecionada, setPosSelecionada] = useState<number | null>(null);
 
-  const {listaAlunos, idClasseSelec} = useContext(Context);
+  const { listaAlunos, idClasseSelec } = useContext(Context);
 
   useEffect(() => {
     const carregarDadosCompletos = async () => {
@@ -82,11 +81,11 @@ const Mapa = () => {
       try {
         const alunosMapeados = listaAlunos
           ? listaAlunos.map((aluno: any) => ({
-              id: aluno.idAluno,
-              nome: aluno.nome,
-              numero: aluno.numero,
-              foto_url: aluno.foto_url,
-            }))
+            id: aluno.idAluno,
+            nome: aluno.nome,
+            numero: aluno.numero,
+            foto_url: aluno.foto_url,
+          }))
           : [];
         setAlunos(alunosMapeados);
 
@@ -112,7 +111,7 @@ const Mapa = () => {
 
         if (!assentosDoBackend || assentosDoBackend.length === 0) {
           const total = colunas * fileiras;
-          assentosDoBackend = Array.from({length: total}, (_, i) => ({
+          assentosDoBackend = Array.from({ length: total }, (_, i) => ({
             pos: i,
             alunoId: null,
           }));
@@ -148,7 +147,7 @@ const Mapa = () => {
   const selecionarAluno = (alunoId: string) => {
     const novoMapa = mapa.map(item =>
       item.pos === posSelecionada
-        ? {...item, alunoId, aluno: alunos.find(a => a.id === alunoId) ?? null}
+        ? {  ...item, alunoId, aluno: alunos.find(a => a.id === alunoId) ?? null }
         : item,
     );
     setMapa(novoMapa);
@@ -159,7 +158,7 @@ const Mapa = () => {
   const limparAssento = () => {
     const novoMapa = mapa.map(item =>
       item.pos === posSelecionada
-        ? {...item, alunoId: null, aluno: null}
+        ? { ...item, alunoId: null, aluno: null }
         : item,
     );
     setMapa(novoMapa);
@@ -210,7 +209,7 @@ const Mapa = () => {
               : `placeholder-${Math.random()}`
           }
           numColumns={colunas}
-          renderItem={({item}) => (
+          renderItem={({ item }) => (
             <MemoizedAssento
               item={item}
               abrirModal={abrirModal}
@@ -230,7 +229,7 @@ const Mapa = () => {
         <View style={styles.modalBackground}>
           <View style={styles.modalContainer}>
             <Text style={styles.modalTitle}>Selecione um aluno</Text>
-            <ScrollView style={{maxHeight: 300}}>
+            <ScrollView style={{ maxHeight: 300 }}>
               {alunos.map(aluno => (
                 <TouchableOpacity
                   key={aluno.id}
@@ -260,7 +259,7 @@ const Mapa = () => {
             <View style={styles.controlRow}>
               <Text style={styles.controlLabel}>Colunas: {colunas}</Text>
               <Slider
-                style={{flex: 1}}
+                style={{ flex: 1 }}
                 minimumValue={1}
                 maximumValue={10}
                 step={1}
@@ -273,7 +272,7 @@ const Mapa = () => {
             <View style={styles.controlRow}>
               <Text style={styles.controlLabel}>Fileiras: {fileiras}</Text>
               <Slider
-                style={{flex: 1}}
+                style={{ flex: 1 }}
                 minimumValue={1}
                 maximumValue={10}
                 step={1}
@@ -413,7 +412,7 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     elevation: 8,
     shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
   },
