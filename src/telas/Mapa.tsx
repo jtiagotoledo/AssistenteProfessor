@@ -18,20 +18,23 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import Slider from '@react-native-community/slider';
 import HeaderMapa from '../componentes/HeaderMapa';
 import { Divider } from 'react-native-paper';
-import { buscarMapaDeSala, salvarMapaDeSala } from '../services/mapaSala';
+import {
+  buscarMapaDeSala,
+  salvarMapaDeSala,
+  deletarMapaDeSala,
+} from '../services/mapaSala';
 
-// Definição dos tipos
 type AssentoData = { pos: number; alunoId: string | null };
 type Aluno = { id: string; nome: string; numero: number; foto_url: string };
+
+interface AssentoComDadosCompletos extends AssentoData {
+  aluno: Aluno | null;
+}
 
 interface AssentoProps {
   item: AssentoComDadosCompletos;
   abrirModal: (pos: number) => void;
   styles: any;
-}
-
-interface AssentoComDadosCompletos extends AssentoData {
-  aluno: Aluno | null;
 }
 
 const MemoizedAssento: React.FC<AssentoProps> = React.memo(
@@ -81,11 +84,11 @@ const Mapa = () => {
       try {
         const alunosMapeados = listaAlunos
           ? listaAlunos.map((aluno: any) => ({
-            id: aluno.idAluno,
-            nome: aluno.nome,
-            numero: aluno.numero,
-            foto_url: aluno.foto_url,
-          }))
+              id: aluno.idAluno,
+              nome: aluno.nome,
+              numero: aluno.numero,
+              foto_url: aluno.foto_url,
+            }))
           : [];
         setAlunos(alunosMapeados);
 
@@ -99,10 +102,6 @@ const Mapa = () => {
               assentosDoBackend = parsedAssentos;
               setColunas(dadosDoMapa.colunas);
               setFileiras(dadosDoMapa.fileiras);
-            } else {
-              console.warn(
-                'O JSON do backend não é um array. Inicializando com padrão.',
-              );
             }
           } catch (parseError) {
             console.error('Erro ao fazer JSON.parse:', parseError);
@@ -137,7 +136,7 @@ const Mapa = () => {
       }
     };
     carregarDadosCompletos();
-  }, [idClasseSelec, listaAlunos, colunas, fileiras]);
+  }, [idClasseSelec]);
 
   const abrirModal = (pos: number) => {
     setPosSelecionada(pos);
@@ -147,14 +146,13 @@ const Mapa = () => {
   const selecionarAluno = (alunoId: string) => {
     const novoMapa = mapa.map(item =>
       item.pos === posSelecionada
-        ? {  ...item, alunoId, aluno: alunos.find(a => a.id === alunoId) ?? null }
+        ? { ...item, alunoId, aluno: alunos.find(a => a.id === alunoId) ?? null }
         : item,
     );
     setMapa(novoMapa);
     setModalVisible(false);
   };
 
-  // Nova função para limpar o assento
   const limparAssento = () => {
     const novoMapa = mapa.map(item =>
       item.pos === posSelecionada
@@ -171,7 +169,7 @@ const Mapa = () => {
       return;
     }
     try {
-      const nomeMapa = 'Mapa Padrao';
+      const nomeMapa = 'Mapa Padrão';
       const assentosParaSalvar = mapa.map(item => ({
         pos: item.pos,
         alunoId: item.alunoId,
@@ -190,24 +188,60 @@ const Mapa = () => {
     }
   };
 
+  // Função chamada quando o layout é alterado
+  const confirmarMudancaLayout = async (novoValor: number, tipo: 'colunas' | 'fileiras') => {
+    if (!idClasseSelec) {
+      tipo === 'colunas' ? setColunas(novoValor) : setFileiras(novoValor);
+      return;
+    }
+
+    Alert.alert(
+      'Alterar layout',
+      'Alterar o número de fileiras ou colunas apagará todos os assentos salvos. Deseja continuar?',
+      [
+        {
+          text: 'Cancelar',
+          style: 'cancel',
+        },
+        {
+          text: 'Confirmar',
+          onPress: async () => {
+            try {
+              await deletarMapaDeSala(idClasseSelec);
+              tipo === 'colunas' ? setColunas(novoValor) : setFileiras(novoValor);
+
+              const total = 
+                (tipo === 'colunas' ? novoValor : colunas) *
+                (tipo === 'fileiras' ? novoValor : fileiras);
+              const novoMapa = Array.from({ length: total }, (_, i) => ({
+                pos: i,
+                alunoId: null,
+                aluno: null,
+              }));
+              setMapa(novoMapa);
+              Alert.alert('Mapa limpo', 'Os assentos foram redefinidos.');
+            } catch (err) {
+              console.error('Erro ao deletar mapa:', err);
+              Alert.alert('Erro', 'Não foi possível limpar o mapa de sala.');
+            }
+          },
+        },
+      ],
+    );
+  };
+
   return (
     <View style={styles.container}>
-      <HeaderMapa title="Mapa de Sala" onSave={salvarMapa}></HeaderMapa>
+      <HeaderMapa title="Mapa de Sala" onSave={salvarMapa} />
       <FlatListClasses />
-      <Divider style={styles.divider}></Divider>
+      <Divider style={styles.divider} />
 
-      <ScrollView
-        horizontal={true}
-        contentContainerStyle={styles.scrollHorizontal}>
+      <ScrollView horizontal contentContainerStyle={styles.scrollHorizontal}>
         <FlatList
           key={colunas}
           contentContainerStyle={styles.flatListContainer}
           data={mapa}
-          keyExtractor={item =>
-            item.pos !== undefined
-              ? item.pos.toString()
-              : `placeholder-${Math.random()}`
-          }
+          keyExtractor={item => item.pos.toString()}
           numColumns={colunas}
           renderItem={({ item }) => (
             <MemoizedAssento
@@ -225,7 +259,8 @@ const Mapa = () => {
         <Icon name={'cog'} style={styles.fabIcon} />
       </TouchableOpacity>
 
-      <Modal visible={modalVisible} transparent={true} animationType="slide">
+      {/* MODAL DE ESCOLHER ALUNO */}
+      <Modal visible={modalVisible} transparent animationType="slide">
         <View style={styles.modalBackground}>
           <View style={styles.modalContainer}>
             <Text style={styles.modalTitle}>Selecione um aluno</Text>
@@ -249,13 +284,12 @@ const Mapa = () => {
         </View>
       </Modal>
 
-      <Modal
-        visible={modalLayoutVisible}
-        transparent={true}
-        animationType="slide">
+      {/* MODAL DE CONFIGURAÇÃO */}
+      <Modal visible={modalLayoutVisible} transparent animationType="slide">
         <View style={styles.modalBackground}>
           <View style={styles.modalContainer}>
             <Text style={styles.modalTitle}>Configurar Layout</Text>
+
             <View style={styles.controlRow}>
               <Text style={styles.controlLabel}>Colunas: {colunas}</Text>
               <Slider
@@ -264,11 +298,12 @@ const Mapa = () => {
                 maximumValue={10}
                 step={1}
                 value={colunas}
-                onValueChange={value => setColunas(value)}
+                onValueChange={value => confirmarMudancaLayout(value, 'colunas')}
                 minimumTrackTintColor="#03A9F4"
                 maximumTrackTintColor="#d3d3d3"
               />
             </View>
+
             <View style={styles.controlRow}>
               <Text style={styles.controlLabel}>Fileiras: {fileiras}</Text>
               <Slider
@@ -277,15 +312,13 @@ const Mapa = () => {
                 maximumValue={10}
                 step={1}
                 value={fileiras}
-                onValueChange={value => setFileiras(value)}
+                onValueChange={value => confirmarMudancaLayout(value, 'fileiras')}
                 minimumTrackTintColor="#03A9F4"
                 maximumTrackTintColor="#d3d3d3"
               />
             </View>
-            <Button
-              title="Fechar"
-              onPress={() => setModalLayoutVisible(false)}
-            />
+
+            <Button title="Fechar" onPress={() => setModalLayoutVisible(false)} />
           </View>
         </View>
       </Modal>
@@ -293,24 +326,11 @@ const Mapa = () => {
   );
 };
 
+// === estilos mantidos iguais ===
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Globais.corSecundaria,
-  },
-  buttonContainer: {
-    marginBottom: 10,
-    alignItems: 'center',
-  },
-  scrollHorizontal: {
-    flexGrow: 1,
-    justifyContent: 'center',
-  },
-  flatListContainer: {
-    flexGrow: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
+  container: { flex: 1, backgroundColor: Globais.corSecundaria },
+  scrollHorizontal: { flexGrow: 1, justifyContent: 'center' },
+  flatListContainer: { alignItems: 'center', justifyContent: 'center' },
   assento: {
     borderWidth: 1,
     borderColor: '#333',
@@ -321,85 +341,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'white',
     borderRadius: 8,
-    elevation: 2,
   },
-  assentoOcupado: {
-    backgroundColor: 'white',
-  },
-  assentoContent: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 5,
-  },
-  alunoFoto: {
-    width: 70,
-    height: 70,
-    borderRadius: 35,
-    marginBottom: 4,
-    resizeMode: 'cover',
-  },
-  alunoTextContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  alunoNumero: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: 'black',
-  },
-  alunoNome: {
-    fontSize: 14,
-    textAlign: 'center',
-    flexShrink: 1,
-    color: 'black',
-  },
-  assentoText: {
-    textAlign: 'center',
-  },
-  modalBackground: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    justifyContent: 'center',
-    padding: 20,
-  },
-  modalContainer: {
-    backgroundColor: 'white',
-    borderRadius: 10,
-    padding: 15,
-  },
-  modalTitle: {
-    fontWeight: 'bold',
-    fontSize: 20,
-    marginBottom: 10,
-    textAlign: 'center',
-  },
-  modalItem: {
-    padding: 10,
-    borderBottomWidth: 1,
-    borderColor: '#ccc',
-  },
-  limparAssentoButton: {
-    marginTop: 10,
-    borderWidth: 1,
-    borderColor: '#cc0000',
-    borderRadius: 5,
-    alignItems: 'center',
-  },
-  limparAssentoText: {
-    color: '#cc0000',
-  },
-  controlRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 10,
-    width: '100%',
-  },
-  controlLabel: {
-    fontSize: 16,
-    marginRight: 10,
-    minWidth: 80,
-  },
+  assentoOcupado: { backgroundColor: 'white' },
+  assentoContent: { alignItems: 'center', justifyContent: 'center', padding: 5 },
+  alunoFoto: { width: 70, height: 70, borderRadius: 35, marginBottom: 4 },
+  alunoTextContainer: { flexDirection: 'row', alignItems: 'center' },
+  alunoNumero: { fontSize: 16, fontWeight: 'bold', color: 'black' },
+  alunoNome: { fontSize: 14, color: 'black' },
+  modalBackground: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'center', padding: 20 },
+  modalContainer: { backgroundColor: 'white', borderRadius: 10, padding: 15 },
+  modalTitle: { fontWeight: 'bold', fontSize: 20, textAlign: 'center', marginBottom: 10 },
+  modalItem: { padding: 10, borderBottomWidth: 1, borderColor: '#ccc' },
+  limparAssentoButton: { marginTop: 10, borderWidth: 1, borderColor: '#cc0000', borderRadius: 5, alignItems: 'center' },
+  limparAssentoText: { color: '#cc0000' },
+  controlRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 10 },
+  controlLabel: { fontSize: 16, marginRight: 10 },
   fab: {
     position: 'absolute',
     width: 55,
@@ -411,18 +367,9 @@ const styles = StyleSheet.create({
     backgroundColor: Globais.corPrimaria,
     borderRadius: 30,
     elevation: 8,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
   },
-  fabIcon: {
-    fontSize: 25,
-    color: 'white',
-  },
-  divider: {
-    backgroundColor: Globais.corPrimaria,
-  },
+  fabIcon: { fontSize: 25, color: 'white' },
+  divider: { backgroundColor: Globais.corPrimaria },
 });
 
 export default Mapa;

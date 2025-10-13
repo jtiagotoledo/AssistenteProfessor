@@ -41,3 +41,13 @@ export const salvarMapaDeSala = async (
     throw erro;
   }
 };
+
+export const deletarMapaDeSala = async idClasse => {
+  try {
+    const resposta = await api.delete(`${MAPA_SALA_URL}/${idClasse}`);
+    return resposta.data;
+  } catch (erro) {
+    console.error('Erro ao excluir mapa de sala:', erro);
+    throw erro;
+  }
+};

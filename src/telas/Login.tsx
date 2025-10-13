@@ -77,15 +77,11 @@ const Login = ({ navigation }: any) => {
     try {
       await esqueciSenha(email);
       Alert.alert(
-        'Verifique seu e-mail',
+        'Feche esse app e verifique seu e-mail',
         'Enviamos um link de redefinição de senha. Após clicar nele, o app será aberto automaticamente.',
         [
           {
             text: 'OK',
-            onPress: () => {
-              // Fecha o app (Android)
-              BackHandler.exitApp();
-            },
           },
         ],
       );
